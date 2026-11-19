@@ -1,0 +1,62 @@
+services:
+  mniplab:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      # MININET_VERSION is deliberately not repeated here: the Dockerfile's
+      # ARG default is the pin, and a copy in this file is a copy that can
+      # drift. Override it for a one-off build with
+      #   docker compose build --build-arg MININET_VERSION=<ref>
+
+    image: mininet-iplab:latest
+    container_name: mininet-iplab    
+    privileged: true
+    # A tiny init as PID 1, as the dev container gets from --init. The
+    # entrypoint execs its command, so without this that command (a lab
+    # or pytest) becomes PID 1: it has no parent, and it never reaps the
+    # orphaned processes a Node leaves behind, which linger as zombies.
+    init: true
+    stdin_open: true
+    tty: true    
+    network_mode: "bridge"
+    hostname: "mniplab"    
+
+    extra_hosts:
+      mniplab: "127.0.1.1"
+      host.docker.internal: "host-gateway"
+    
+    volumes:
+      # Read-only kernel modules for network operations
+      - /lib/modules:/lib/modules:ro
+      # Project directory for lab configurations and examples
+      - ./:/mininet-iplab:rw
+      # The nested daemon that backs ContainerHost keeps its images and
+      # layers here. Left on the container's own filesystem it is
+      # overlay-on-overlay, which the kernel refuses with "invalid
+      # argument", so every ContainerHost fails to start. A volume gives
+      # the daemon a real filesystem to lay overlay2 on.
+      - docker-storage:/var/lib/docker
+    
+    environment:
+      - MININET_DOCKER=true
+      - PYTHONUNBUFFERED=1
+      - DEBIAN_FRONTEND=noninteractive
+  
+    ports:
+      - "8050:8050"  # Web UI access
+      
+    # Restart policy for high availability
+    restart: unless-stopped
+    
+    # Health check to monitor service status
+    healthcheck:
+      test: ["CMD", "ovs-vsctl", "show"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
+
+volumes:
+  # Named, so the nested daemon's layers survive between runs and a rebuild
+  # does not re-pull every ContainerHost image.
+  docker-storage:

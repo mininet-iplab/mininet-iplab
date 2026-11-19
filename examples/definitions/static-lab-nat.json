@@ -1,0 +1,102 @@
+{
+  "schema_version": 3,
+  "address_family": "ipv4",
+  "persistent_config": false,
+  "example": "static-lab-nat",
+  "seeds": "frr-config/static-lab-nat",
+  "topology": {
+    "nodes": [
+      {
+        "id": "nat1",
+        "name": "nat1",
+        "type": "nat",
+        "subnet": "100.64.0.0/23",
+        "ip": "100.64.0.1/24"
+      },
+      {
+        "id": "r1",
+        "name": "r1",
+        "type": "router",
+        "protocols": [],
+        "frr_config": "",
+        "fast_timers": false,
+        "startup": []
+      },
+      {
+        "id": "h1",
+        "name": "h1",
+        "type": "host",
+        "ipv4_gateway": "100.64.1.1",
+        "ipv6_gateway": "",
+        "startup": []
+      },
+      {
+        "id": "h2",
+        "name": "h2",
+        "type": "host",
+        "ipv4_gateway": "100.64.2.1",
+        "ipv6_gateway": "",
+        "startup": []
+      }
+    ],
+    "links": [
+      {
+        "id": "nat1-r1",
+        "ends": [
+          {
+            "node_id": "nat1",
+            "interface_id": "if-000000000001",
+            "port": 0,
+            "ipv4": "",
+            "ipv6": ""
+          },
+          {
+            "node_id": "r1",
+            "interface_id": "if-000000000002",
+            "port": 0,
+            "ipv4": "100.64.0.2/24",
+            "ipv6": ""
+          }
+        ]
+      },
+      {
+        "id": "h1-r1",
+        "ends": [
+          {
+            "node_id": "h1",
+            "interface_id": "if-000000000003",
+            "port": 0,
+            "ipv4": "100.64.1.2/24",
+            "ipv6": ""
+          },
+          {
+            "node_id": "r1",
+            "interface_id": "if-000000000004",
+            "port": 1,
+            "ipv4": "100.64.1.1/24",
+            "ipv6": ""
+          }
+        ]
+      },
+      {
+        "id": "h2-r1",
+        "ends": [
+          {
+            "node_id": "h2",
+            "interface_id": "if-000000000005",
+            "port": 0,
+            "ipv4": "100.64.2.2/24",
+            "ipv6": ""
+          },
+          {
+            "node_id": "r1",
+            "interface_id": "if-000000000006",
+            "port": 2,
+            "ipv4": "100.64.2.1/24",
+            "ipv6": ""
+          }
+        ]
+      }
+    ]
+  }
+}

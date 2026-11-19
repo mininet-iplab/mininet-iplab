@@ -1,0 +1,73 @@
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.installed.cfg
+*.egg
+build/
+dist/
+.venv/
+venv/
+.vscode/
+.agent/
+.agents/
+.claude/
+.scratch/
+AGENTS.md
+CLAUDE.md
+CONTEXT.md
+LANGUAGE.md
+MANIFEST.txt
+ONBOARDING.md
+skills-lock.json
+.github/*
+!.github/workflows/
+!.github/workflows/**
+!.github/ISSUE_TEMPLATE/
+!.github/ISSUE_TEMPLATE/**
+!.github/PULL_REQUEST_TEMPLATE.md
+!.github/CODEOWNERS
+!.github/FUNDING.yml
+!.github/dependabot.yml
+!.github/DISCUSSION_TEMPLATE/
+!.github/DISCUSSION_TEMPLATE/**
+/tests/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+.env
+.env.local
+*.log
+*.bak
+tmp_*
+references/
+docs/prj/
+
+# vtysh writes a backup beside the config it replaces. A Lab Example's seed
+# is the config, not its history, and the copy handed to a Group is the whole
+# directory — backups would ride along.
+*.sav
+
+# A Seed holds only frr.conf. A Router renders its other FRR files from its
+# Protocols on every start, which in CLI Mode lands them in the Seed itself.
+frr-config/**/daemons
+frr-config/**/vtysh.conf
+frr-config/**/support_bundle_commands.conf
+
+# Assignments the Instructor edits in the web UI, saved beside .env
+assignments.json
+
+# Logins the Instructor adds in the web UI, with their passwords in plain text
+accounts.json
+
+# Limits the Instructor changes in the web UI's Server settings
+settings.json
+
+# Each Group's copies of Persistent Config, seeded from frr-config/ by the
+# web UI's manager in Multi-Lab Mode
+group-config/
+
+# Instructor-authored Lab Example drafts and published recipes are local data.
+authored-labs/

@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet type="text/xsl" href="pdml2html.xsl"?>
+<!-- You can find pdml2html.xsl in /usr/share/wireshark or at https://gitlab.com/wireshark/wireshark/-/raw/master/pdml2html.xsl. -->
+<pdml version="0" creator="wireshark/4.0.17" time="Tue Sep 22 19:08:01 2026" capture_file="">
+<packet>
+  <proto name="geninfo" pos="0" showname="General information" size="75">
+    <field name="num" pos="0" show="1" showname="Number" value="1" size="75"/>
+    <field name="len" pos="0" show="75" showname="Frame Length" value="4b" size="75"/>
+    <field name="caplen" pos="0" show="75" showname="Captured Length" value="4b" size="75"/>
+    <field name="timestamp" pos="0" show="Sep 22, 2026 19:08:03.116371858 UTC" showname="Captured Time" value="1790104083.116371858" size="75"/>
+  </proto>
+  <proto name="frame" showname="Frame 1: 75 bytes on wire (600 bits), 75 bytes captured (600 bits) on interface dns1-eth0, id 0" size="75" pos="0">
+    <field name="frame.section_number" showname="Section number: 1" size="0" pos="0" show="1"/>
+    <field name="frame.interface_id" showname="Interface id: 0 (dns1-eth0)" size="0" pos="0" show="0">
+      <field name="frame.interface_name" showname="Interface name: dns1-eth0" size="0" pos="0" show="dns1-eth0"/>
+    </field>
+    <field name="frame.encap_type" showname="Encapsulation type: Ethernet (1)" size="0" pos="0" show="1"/>
+    <field name="frame.time" showname="Arrival Time: Sep 22, 2026 19:08:03.116371858 UTC" size="0" pos="0" show="Sep 22, 2026 19:08:03.116371858 UTC"/>
+    <field name="frame.offset_shift" showname="Time shift for this packet: 0.000000000 seconds" size="0" pos="0" show="0.000000000"/>
+    <field name="frame.time_epoch" showname="Epoch Time: 1790104083.116371858 seconds" size="0" pos="0" show="1790104083.116371858"/>
+    <field name="frame.time_delta" showname="Time delta from previous captured frame: 0.000000000 seconds" size="0" pos="0" show="0.000000000"/>
+    <field name="frame.time_delta_displayed" showname="Time delta from previous displayed frame: 0.000000000 seconds" size="0" pos="0" show="0.000000000"/>
+    <field name="frame.time_relative" showname="Time since reference or first frame: 0.000000000 seconds" size="0" pos="0" show="0.000000000"/>
+    <field name="frame.number" showname="Frame Number: 1" size="0" pos="0" show="1"/>
+    <field name="frame.len" showname="Frame Length: 75 bytes (600 bits)" size="0" pos="0" show="75"/>
+    <field name="frame.cap_len" showname="Capture Length: 75 bytes (600 bits)" size="0" pos="0" show="75"/>
+    <field name="frame.marked" showname="Frame is marked: False" size="0" pos="0" show="0"/>
+    <field name="frame.ignored" showname="Frame is ignored: False" size="0" pos="0" show="0"/>
+    <field name="frame.protocols" showname="Protocols in frame: eth:ethertype:ip:udp:dns" size="0" pos="0" show="eth:ethertype:ip:udp:dns"/>
+  </proto>
+  <proto name="eth" showname="Ethernet II, Src: 00:00:00:00:00:01, Dst: 00:00:00:00:00:02" size="14" pos="0">
+    <field name="eth.dst" showname="Destination: 00:00:00:00:00:02" size="6" pos="0" show="00:00:00:00:00:02" value="000000000002">
+      <field name="eth.dst_resolved" showname="Destination (resolved): 00:00:00:00:00:02" hide="yes" size="6" pos="0" show="00:00:00:00:00:02" value="000000000002"/>
+      <field name="eth.dst.oui" showname="Destination OUI: 00:00:00 (Officially Xerox, but" hide="yes" size="3" pos="0" show="0" value="000000"/>
+      <field name="eth.dst.oui_resolved" showname="Destination OUI (resolved): Officially Xerox, but 0:0:0:0:0:0 is more common" hide="yes" size="6" pos="0" show="Officially Xerox, but 0:0:0:0:0:0 is more common" value="000000000002"/>
+      <field name="eth.addr" showname="Address: 00:00:00:00:00:02" size="6" pos="0" show="00:00:00:00:00:02" value="000000000002"/>
+      <field name="eth.addr_resolved" showname="Address (resolved): 00:00:00:00:00:02" hide="yes" size="6" pos="0" show="00:00:00:00:00:02" value="000000000002"/>
+      <field name="eth.addr.oui" showname="Address OUI: 00:00:00 (Officially Xerox, but" hide="yes" size="3" pos="0" show="0" value="000000"/>
+      <field name="eth.addr.oui_resolved" showname="Address OUI (resolved): Officially Xerox, but 0:0:0:0:0:0 is more common" hide="yes" size="6" pos="0" show="Officially Xerox, but 0:0:0:0:0:0 is more common" value="000000000002"/>
+      <field name="eth.dst.lg" showname=".... ..0. .... .... .... .... = LG bit: Globally unique address (factory default)" size="3" pos="0" show="0" value="0" unmaskedvalue="000000"/>
+      <field name="eth.lg" showname=".... ..0. .... .... .... .... = LG bit: Globally unique address (factory default)" hide="yes" size="3" pos="0" show="0" value="0" unmaskedvalue="000000"/>
+      <field name="eth.dst.ig" showname=".... ...0 .... .... .... .... = IG bit: Individual address (unicast)" size="3" pos="0" show="0" value="0" unmaskedvalue="000000"/>
+      <field name="eth.ig" showname=".... ...0 .... .... .... .... = IG bit: Individual address (unicast)" hide="yes" size="3" pos="0" show="0" value="0" unmaskedvalue="000000"/>
+    </field>
+    <field name="eth.src" showname="Source: 00:00:00:00:00:01" size="6" pos="6" show="00:00:00:00:00:01" value="000000000001">
+      <field name="eth.src_resolved" showname="Source (resolved): 00:00:00:00:00:01" hide="yes" size="6" pos="6" show="00:00:00:00:00:01" value="000000000001"/>
+      <field name="eth.src.oui" showname="Source OUI: 00:00:00 (Officially Xerox, but" hide="yes" size="3" pos="6" show="0" value="000000"/>
+      <field name="eth.src.oui_resolved" showname="Source OUI (resolved): Officially Xerox, but 0:0:0:0:0:0 is more common" hide="yes" size="6" pos="6" show="Officially Xerox, but 0:0:0:0:0:0 is more common" value="000000000001"/>
+      <field name="eth.addr" showname="Address: 00:00:00:00:00:01" size="6" pos="6" show="00:00:00:00:00:01" value="000000000001"/>
+      <field name="eth.addr_resolved" showname="Address (resolved): 00:00:00:00:00:01" hide="yes" size="6" pos="6" show="00:00:00:00:00:01" value="000000000001"/>
+      <field name="eth.addr.oui" showname="Address OUI: 00:00:00 (Officially Xerox, but" hide="yes" size="3" pos="6" show="0" value="000000"/>
+      <field name="eth.addr.oui_resolved" showname="Address OUI (resolved): Officially Xerox, but 0:0:0:0:0:0 is more common" hide="yes" size="6" pos="6" show="Officially Xerox, but 0:0:0:0:0:0 is more common" value="000000000001"/>
+      <field name="eth.src.lg" showname=".... ..0. .... .... .... .... = LG bit: Globally unique address (factory default)" size="3" pos="6" show="0" value="0" unmaskedvalue="000000"/>
+      <field name="eth.lg" showname=".... ..0. .... .... .... .... = LG bit: Globally unique address (factory default)" hide="yes" size="3" pos="6" show="0" value="0" unmaskedvalue="000000"/>
+      <field name="eth.src.ig" showname=".... ...0 .... .... .... .... = IG bit: Individual address (unicast)" size="3" pos="6" show="0" value="0" unmaskedvalue="000000"/>
+      <field name="eth.ig" showname=".... ...0 .... .... .... .... = IG bit: Individual address (unicast)" hide="yes" size="3" pos="6" show="0" value="0" unmaskedvalue="000000"/>
+    </field>
+    <field name="eth.type" showname="Type: IPv4 (0x0800)" size="2" pos="12" show="0x0800" value="0800"/>
+  </proto>
+  <proto name="ip" showname="Internet Protocol Version 4, Src: 10.0.1.2, Dst: 10.0.0.2" size="20" pos="14">
+    <field name="ip.version" showname="0100 .... = Version: 4" size="1" pos="14" show="4" value="45"/>
+    <field name="ip.hdr_len" showname=".... 0101 = Header Length: 20 bytes (5)" size="1" pos="14" show="20" value="45"/>
+    <field name="ip.dsfield" showname="Differentiated Services Field: 0x00 (DSCP: CS0, ECN: Not-ECT)" size="1" pos="15" show="0x00" value="00">
+      <field name="ip.dsfield.dscp" showname="0000 00.. = Differentiated Services Codepoint: Default (0)" size="1" pos="15" show="0" value="0" unmaskedvalue="00"/>
+      <field name="ip.dsfield.ecn" showname=".... ..00 = Explicit Congestion Notification: Not ECN-Capable Transport (0)" size="1" pos="15" show="0" value="0" unmaskedvalue="00"/>
+    </field>
+    <field name="ip.len" showname="Total Length: 61" size="2" pos="16" show="61" value="003d"/>
+    <field name="ip.id" showname="Identification: 0x9e4b (40523)" size="2" pos="18" show="0x9e4b" value="9e4b"/>
+    <field name="ip.flags" showname="000. .... = Flags: 0x0" size="1" pos="20" show="0x00" value="0" unmaskedvalue="00">
+      <field name="ip.flags.rb" showname="0... .... = Reserved bit: Not set" size="1" pos="20" show="0" value="0" unmaskedvalue="00"/>
+      <field name="ip.flags.df" showname=".0.. .... = Don&#x27;t fragment: Not set" size="1" pos="20" show="0" value="0" unmaskedvalue="00"/>
+      <field name="ip.flags.mf" showname="..0. .... = More fragments: Not set" size="1" pos="20" show="0" value="0" unmaskedvalue="00"/>
+    </field>
+    <field name="ip.frag_offset" showname="...0 0000 0000 0000 = Fragment Offset: 0" size="2" pos="20" show="0" value="0" unmaskedvalue="0000"/>
+    <field name="ip.ttl" showname="Time to Live: 63" size="1" pos="22" show="63" value="3f"/>
+    <field name="ip.proto" showname="Protocol: UDP (17)" size="1" pos="23" show="17" value="11"/>
+    <field name="ip.checksum" showname="Header Checksum: 0xc861 [validation disabled]" size="2" pos="24" show="0xc861" value="c861"/>
+    <field name="ip.checksum.status" showname="Header checksum status: Unverified" size="0" pos="24" show="2"/>
+    <field name="ip.src" showname="Source Address: 10.0.1.2" size="4" pos="26" show="10.0.1.2" value="0a000102"/>
+    <field name="ip.addr" showname="Source or Destination Address: 10.0.1.2" hide="yes" size="4" pos="26" show="10.0.1.2" value="0a000102"/>
+    <field name="ip.src_host" showname="Source Host: 10.0.1.2" hide="yes" size="4" pos="26" show="10.0.1.2" value="0a000102"/>
+    <field name="ip.host" showname="Source or Destination Host: 10.0.1.2" hide="yes" size="4" pos="26" show="10.0.1.2" value="0a000102"/>
+    <field name="ip.dst" showname="Destination Address: 10.0.0.2" size="4" pos="30" show="10.0.0.2" value="0a000002"/>
+    <field name="ip.addr" showname="Source or Destination Address: 10.0.0.2" hide="yes" size="4" pos="30" show="10.0.0.2" value="0a000002"/>
+    <field name="ip.dst_host" showname="Destination Host: 10.0.0.2" hide="yes" size="4" pos="30" show="10.0.0.2" value="0a000002"/>
+    <field name="ip.host" showname="Source or Destination Host: 10.0.0.2" hide="yes" size="4" pos="30" show="10.0.0.2" value="0a000002"/>
+  </proto>
+  <proto name="udp" showname="User Datagram Protocol, Src Port: 46692, Dst Port: 53" size="8" pos="34">
+    <field name="udp.srcport" showname="Source Port: 46692" size="2" pos="34" show="46692" value="b664"/>
+    <field name="udp.dstport" showname="Destination Port: 53" size="2" pos="36" show="53" value="0035"/>
+    <field name="udp.port" showname="Source or Destination Port: 46692" hide="yes" size="2" pos="34" show="46692" value="b664"/>
+    <field name="udp.port" showname="Source or Destination Port: 53" hide="yes" size="2" pos="36" show="53" value="0035"/>
+    <field name="udp.length" showname="Length: 41" size="2" pos="38" show="41" value="0029"/>
+    <field name="udp.checksum" showname="Checksum: 0x153e [unverified]" size="2" pos="40" show="0x153e" value="153e"/>
+    <field name="udp.checksum.status" showname="Checksum Status: Unverified" size="0" pos="40" show="2"/>
+    <field name="udp.stream" showname="Stream index: 0" size="0" pos="42" show="0"/>
+    <field name="" show="Timestamps" size="0" pos="34">
+      <field name="udp.time_relative" showname="Time since first frame: 0.000000000 seconds" size="0" pos="34" show="0.000000000"/>
+      <field name="udp.time_delta" showname="Time since previous frame: 0.000000000 seconds" size="0" pos="34" show="0.000000000"/>
+    </field>
+    <field name="udp.payload" showname="UDP payload (33 bytes)" size="33" pos="42" show="00:b2:01:20:00:01:00:00:00:00:00:00:03:77:77:77:07:65:78:61:6d:70:6c:65:03:63:6f:6d:00:00:01:00:01" value="00b20120000100000000000003777777076578616d706c6503636f6d0000010001"/>
+  </proto>
+  <proto name="dns" showname="Domain Name System (query)" size="33" pos="42">
+    <field name="dns.id" showname="Transaction ID: 0x00b2" size="2" pos="42" show="0x00b2" value="00b2"/>
+    <field name="dns.flags" showname="Flags: 0x0120 Standard query" size="2" pos="44" show="0x0120" value="0120">
+      <field name="dns.flags.response" showname="0... .... .... .... = Response: Message is a query" size="2" pos="44" show="0" value="0" unmaskedvalue="0120"/>
+      <field name="dns.flags.opcode" showname=".000 0... .... .... = Opcode: Standard query (0)" size="2" pos="44" show="0" value="0" unmaskedvalue="0120"/>
+      <field name="dns.flags.truncated" showname=".... ..0. .... .... = Truncated: Message is not truncated" size="2" pos="44" show="0" value="0" unmaskedvalue="0120"/>
+      <field name="dns.flags.recdesired" showname=".... ...1 .... .... = Recursion desired: Do query recursively" size="2" pos="44" show="1" value="1" unmaskedvalue="0120"/>
+      <field name="dns.flags.z" showname=".... .... .0.. .... = Z: reserved (0)" size="2" pos="44" show="0" value="0" unmaskedvalue="0120"/>
+      <field name="dns.flags.authenticated" showname=".... .... ..1. .... = AD bit: Set" size="2" pos="44" show="1" value="1" unmaskedvalue="0120"/>
+      <field name="dns.flags.checkdisable" showname=".... .... ...0 .... = Non-authenticated data: Unacceptable" size="2" pos="44" show="0" value="0" unmaskedvalue="0120"/>
+    </field>
+    <field name="dns.count.queries" showname="Questions: 1" size="2" pos="46" show="1" value="0001"/>
+    <field name="dns.count.answers" showname="Answer RRs: 0" size="2" pos="48" show="0" value="0000"/>
+    <field name="dns.count.auth_rr" showname="Authority RRs: 0" size="2" pos="50" show="0" value="0000"/>
+    <field name="dns.count.add_rr" showname="Additional RRs: 0" size="2" pos="52" show="0" value="0000"/>
+    <field name="" show="Queries" size="21" pos="54" value="03777777076578616d706c6503636f6d0000010001">
+      <field name="" show="www.example.com: type A, class IN" size="21" pos="54" value="03777777076578616d706c6503636f6d0000010001">
+        <field name="dns.qry.name" showname="Name: www.example.com" size="17" pos="54" show="www.example.com" value="03777777076578616d706c6503636f6d00"/>
+        <field name="dns.qry.name.len" showname="Name Length: 15" size="17" pos="54" show="15" value="03777777076578616d706c6503636f6d00"/>
+        <field name="dns.count.labels" showname="Label Count: 3" size="17" pos="54" show="3" value="03777777076578616d706c6503636f6d00"/>
+        <field name="dns.qry.type" showname="Type: A (Host Address) (1)" size="2" pos="71" show="1" value="0001"/>
+        <field name="dns.qry.class" showname="Class: IN (0x0001)" size="2" pos="73" show="0x0001" value="0001"/>
+      </field>
+    </field>
+  </proto>
+</packet>
+<packet>
+  <proto name="geninfo" pos="0" showname="General information" size="127">
+    <field name="num" pos="0" show="2" showname="Number" value="2" size="127"/>
+    <field name="len" pos="0" show="127" showname="Frame Length" value="7f" size="127"/>
+    <field name="caplen" pos="0" show="127" showname="Captured Length" value="7f" size="127"/>
+    <field name="timestamp" pos="0" show="Sep 22, 2026 19:08:03.117225622 UTC" showname="Captured Time" value="1790104083.117225622" size="127"/>
+  </proto>
+  <proto name="frame" showname="Frame 2: 127 bytes on wire (1016 bits), 127 bytes captured (1016 bits) on interface dns1-eth0, id 0" size="127" pos="0">
+    <field name="frame.section_number" showname="Section number: 1" size="0" pos="0" show="1"/>
+    <field name="frame.interface_id" showname="Interface id: 0 (dns1-eth0)" size="0" pos="0" show="0">
+      <field name="frame.interface_name" showname="Interface name: dns1-eth0" size="0" pos="0" show="dns1-eth0"/>
+    </field>
+    <field name="frame.encap_type" showname="Encapsulation type: Ethernet (1)" size="0" pos="0" show="1"/>
+    <field name="frame.time" showname="Arrival Time: Sep 22, 2026 19:08:03.117225622 UTC" size="0" pos="0" show="Sep 22, 2026 19:08:03.117225622 UTC"/>
+    <field name="frame.offset_shift" showname="Time shift for this packet: 0.000000000 seconds" size="0" pos="0" show="0.000000000"/>
+    <field name="frame.time_epoch" showname="Epoch Time: 1790104083.117225622 seconds" size="0" pos="0" show="1790104083.117225622"/>
+    <field name="frame.time_delta" showname="Time delta from previous captured frame: 0.000853764 seconds" size="0" pos="0" show="0.000853764"/>
+    <field name="frame.time_delta_displayed" showname="Time delta from previous displayed frame: 0.000853764 seconds" size="0" pos="0" show="0.000853764"/>
+    <field name="frame.time_relative" showname="Time since reference or first frame: 0.000853764 seconds" size="0" pos="0" show="0.000853764"/>
+    <field name="frame.number" showname="Frame Number: 2" size="0" pos="0" show="2"/>
+    <field name="frame.len" showname="Frame Length: 127 bytes (1016 bits)" size="0" pos="0" show="127"/>
+    <field name="frame.cap_len" showname="Capture Length: 127 bytes (1016 bits)" size="0" pos="0" show="127"/>
+    <field name="frame.marked" showname="Frame is marked: False" size="0" pos="0" show="0"/>
+    <field name="frame.ignored" showname="Frame is ignored: False" size="0" pos="0" show="0"/>
+    <field name="frame.protocols" showname="Protocols in frame: eth:ethertype:ip:udp:dns" size="0" pos="0" show="eth:ethertype:ip:udp:dns"/>
+  </proto>
+  <proto name="eth" showname="Ethernet II, Src: 00:00:00:00:00:02, Dst: 00:00:00:00:00:01" size="14" pos="0">
+    <field name="eth.dst" showname="Destination: 00:00:00:00:00:01" size="6" pos="0" show="00:00:00:00:00:01" value="000000000001">
+      <field name="eth.dst_resolved" showname="Destination (resolved): 00:00:00:00:00:01" hide="yes" size="6" pos="0" show="00:00:00:00:00:01" value="000000000001"/>
+      <field name="eth.dst.oui" showname="Destination OUI: 00:00:00 (Officially Xerox, but" hide="yes" size="3" pos="0" show="0" value="000000"/>
+      <field name="eth.dst.oui_resolved" showname="Destination OUI (resolved): Officially Xerox, but 0:0:0:0:0:0 is more common" hide="yes" size="6" pos="0" show="Officially Xerox, but 0:0:0:0:0:0 is more common" value="000000000001"/>
+      <field name="eth.addr" showname="Address: 00:00:00:00:00:01" size="6" pos="0" show="00:00:00:00:00:01" value="000000000001"/>
+      <field name="eth.addr_resolved" showname="Address (resolved): 00:00:00:00:00:01" hide="yes" size="6" pos="0" show="00:00:00:00:00:01" value="000000000001"/>
+      <field name="eth.addr.oui" showname="Address OUI: 00:00:00 (Officially Xerox, but" hide="yes" size="3" pos="0" show="0" value="000000"/>
+      <field name="eth.addr.oui_resolved" showname="Address OUI (resolved): Officially Xerox, but 0:0:0:0:0:0 is more common" hide="yes" size="6" pos="0" show="Officially Xerox, but 0:0:0:0:0:0 is more common" value="000000000001"/>
+      <field name="eth.dst.lg" showname=".... ..0. .... .... .... .... = LG bit: Globally unique address (factory default)" size="3" pos="0" show="0" value="0" unmaskedvalue="000000"/>
+      <field name="eth.lg" showname=".... ..0. .... .... .... .... = LG bit: Globally unique address (factory default)" hide="yes" size="3" pos="0" show="0" value="0" unmaskedvalue="000000"/>
+      <field name="eth.dst.ig" showname=".... ...0 .... .... .... .... = IG bit: Individual address (unicast)" size="3" pos="0" show="0" value="0" unmaskedvalue="000000"/>
+      <field name="eth.ig" showname=".... ...0 .... .... .... .... = IG bit: Individual address (unicast)" hide="yes" size="3" pos="0" show="0" value="0" unmaskedvalue="000000"/>
+    </field>
+    <field name="eth.src" showname="Source: 00:00:00:00:00:02" size="6" pos="6" show="00:00:00:00:00:02" value="000000000002">
+      <field name="eth.src_resolved" showname="Source (resolved): 00:00:00:00:00:02" hide="yes" size="6" pos="6" show="00:00:00:00:00:02" value="000000000002"/>
+      <field name="eth.src.oui" showname="Source OUI: 00:00:00 (Officially Xerox, but" hide="yes" size="3" pos="6" show="0" value="000000"/>
+      <field name="eth.src.oui_resolved" showname="Source OUI (resolved): Officially Xerox, but 0:0:0:0:0:0 is more common" hide="yes" size="6" pos="6" show="Officially Xerox, but 0:0:0:0:0:0 is more common" value="000000000002"/>
+      <field name="eth.addr" showname="Address: 00:00:00:00:00:02" size="6" pos="6" show="00:00:00:00:00:02" value="000000000002"/>
+      <field name="eth.addr_resolved" showname="Address (resolved): 00:00:00:00:00:02" hide="yes" size="6" pos="6" show="00:00:00:00:00:02" value="000000000002"/>
+      <field name="eth.addr.oui" showname="Address OUI: 00:00:00 (Officially Xerox, but" hide="yes" size="3" pos="6" show="0" value="000000"/>
+      <field name="eth.addr.oui_resolved" showname="Address OUI (resolved): Officially Xerox, but 0:0:0:0:0:0 is more common" hide="yes" size="6" pos="6" show="Officially Xerox, but 0:0:0:0:0:0 is more common" value="000000000002"/>
+      <field name="eth.src.lg" showname=".... ..0. .... .... .... .... = LG bit: Globally unique address (factory default)" size="3" pos="6" show="0" value="0" unmaskedvalue="000000"/>
+      <field name="eth.lg" showname=".... ..0. .... .... .... .... = LG bit: Globally unique address (factory default)" hide="yes" size="3" pos="6" show="0" value="0" unmaskedvalue="000000"/>
+      <field name="eth.src.ig" showname=".... ...0 .... .... .... .... = IG bit: Individual address (unicast)" size="3" pos="6" show="0" value="0" unmaskedvalue="000000"/>
+      <field name="eth.ig" showname=".... ...0 .... .... .... .... = IG bit: Individual address (unicast)" hide="yes" size="3" pos="6" show="0" value="0" unmaskedvalue="000000"/>
+    </field>
+    <field name="eth.type" showname="Type: IPv4 (0x0800)" size="2" pos="12" show="0x0800" value="0800"/>
+  </proto>
+  <proto name="ip" showname="Internet Protocol Version 4, Src: 10.0.0.2, Dst: 10.0.1.2" size="20" pos="14">
+    <field name="ip.version" showname="0100 .... = Version: 4" size="1" pos="14" show="4" value="45"/>
+    <field name="ip.hdr_len" showname=".... 0101 = Header Length: 20 bytes (5)" size="1" pos="14" show="20" value="45"/>
+    <field name="ip.dsfield" showname="Differentiated Services Field: 0x00 (DSCP: CS0, ECN: Not-ECT)" size="1" pos="15" show="0x00" value="00">
+      <field name="ip.dsfield.dscp" showname="0000 00.. = Differentiated Services Codepoint: Default (0)" size="1" pos="15" show="0" value="0" unmaskedvalue="00"/>
+      <field name="ip.dsfield.ecn" showname=".... ..00 = Explicit Congestion Notification: Not ECN-Capable Transport (0)" size="1" pos="15" show="0" value="0" unmaskedvalue="00"/>
+    </field>
+    <field name="ip.len" showname="Total Length: 113" size="2" pos="16" show="113" value="0071"/>
+    <field name="ip.id" showname="Identification: 0x949a (38042)" size="2" pos="18" show="0x949a" value="949a"/>
+    <field name="ip.flags" showname="000. .... = Flags: 0x0" size="1" pos="20" show="0x00" value="0" unmaskedvalue="00">
+      <field name="ip.flags.rb" showname="0... .... = Reserved bit: Not set" size="1" pos="20" show="0" value="0" unmaskedvalue="00"/>
+      <field name="ip.flags.df" showname=".0.. .... = Don&#x27;t fragment: Not set" size="1" pos="20" show="0" value="0" unmaskedvalue="00"/>
+      <field name="ip.flags.mf" showname="..0. .... = More fragments: Not set" size="1" pos="20" show="0" value="0" unmaskedvalue="00"/>
+    </field>
+    <field name="ip.frag_offset" showname="...0 0000 0000 0000 = Fragment Offset: 0" size="2" pos="20" show="0" value="0" unmaskedvalue="0000"/>
+    <field name="ip.ttl" showname="Time to Live: 64" size="1" pos="22" show="64" value="40"/>
+    <field name="ip.proto" showname="Protocol: UDP (17)" size="1" pos="23" show="17" value="11"/>
+    <field name="ip.checksum" showname="Header Checksum: 0xd0de [validation disabled]" size="2" pos="24" show="0xd0de" value="d0de"/>
+    <field name="ip.checksum.status" showname="Header checksum status: Unverified" size="0" pos="24" show="2"/>
+    <field name="ip.src" showname="Source Address: 10.0.0.2" size="4" pos="26" show="10.0.0.2" value="0a000002"/>
+    <field name="ip.addr" showname="Source or Destination Address: 10.0.0.2" hide="yes" size="4" pos="26" show="10.0.0.2" value="0a000002"/>
+    <field name="ip.src_host" showname="Source Host: 10.0.0.2" hide="yes" size="4" pos="26" show="10.0.0.2" value="0a000002"/>
+    <field name="ip.host" showname="Source or Destination Host: 10.0.0.2" hide="yes" size="4" pos="26" show="10.0.0.2" value="0a000002"/>
+    <field name="ip.dst" showname="Destination Address: 10.0.1.2" size="4" pos="30" show="10.0.1.2" value="0a000102"/>
+    <field name="ip.addr" showname="Source or Destination Address: 10.0.1.2" hide="yes" size="4" pos="30" show="10.0.1.2" value="0a000102"/>
+    <field name="ip.dst_host" showname="Destination Host: 10.0.1.2" hide="yes" size="4" pos="30" show="10.0.1.2" value="0a000102"/>
+    <field name="ip.host" showname="Source or Destination Host: 10.0.1.2" hide="yes" size="4" pos="30" show="10.0.1.2" value="0a000102"/>
+  </proto>
+  <proto name="udp" showname="User Datagram Protocol, Src Port: 53, Dst Port: 46692" size="8" pos="34">
+    <field name="udp.srcport" showname="Source Port: 53" size="2" pos="34" show="53" value="0035"/>
+    <field name="udp.dstport" showname="Destination Port: 46692" size="2" pos="36" show="46692" value="b664"/>
+    <field name="udp.port" showname="Source or Destination Port: 53" hide="yes" size="2" pos="34" show="53" value="0035"/>
+    <field name="udp.port" showname="Source or Destination Port: 46692" hide="yes" size="2" pos="36" show="46692" value="b664"/>
+    <field name="udp.length" showname="Length: 93" size="2" pos="38" show="93" value="005d"/>
+    <field name="udp.checksum" showname="Checksum: 0x1572 [unverified]" size="2" pos="40" show="0x1572" value="1572"/>
+    <field name="udp.checksum.status" showname="Checksum Status: Unverified" size="0" pos="40" show="2"/>
+    <field name="udp.stream" showname="Stream index: 0" size="0" pos="42" show="0"/>
+    <field name="" show="Timestamps" size="0" pos="34">
+      <field name="udp.time_relative" showname="Time since first frame: 0.000853764 seconds" size="0" pos="34" show="0.000853764"/>
+      <field name="udp.time_delta" showname="Time since previous frame: 0.000853764 seconds" size="0" pos="34" show="0.000853764"/>
+    </field>
+    <field name="udp.payload" showname="UDP payload (85 bytes)" size="85" pos="42" show="00:b2:85:03:00:01:00:00:00:01:00:00:03:77:77:77:07:65:78:61:6d:70:6c:65:03:63:6f:6d:00:00:01:00:01:c0:10:00:06:00:01:00:00:01:2c:00:28:04:64:6e:73:31:c0:10:0a:68:6f:73:74:6d:61:73:74:65:72:c0:10:00:00:00:01:00:00:0e:10:00:00:00:3c:00:00:02:58:00:00:01:2c" value="00b28503000100000001000003777777076578616d706c6503636f6d0000010001c010000600010000012c002804646e7331c0100a686f73746d6173746572c0100000000100000e100000003c000002580000012c"/>
+  </proto>
+  <proto name="dns" showname="Domain Name System (response)" size="85" pos="42">
+    <field name="dns.id" showname="Transaction ID: 0x00b2" size="2" pos="42" show="0x00b2" value="00b2"/>
+    <field name="dns.flags" showname="Flags: 0x8503 Standard query response, No such name" size="2" pos="44" show="0x8503" value="8503">
+      <field name="dns.flags.response" showname="1... .... .... .... = Response: Message is a response" size="2" pos="44" show="1" value="1" unmaskedvalue="8503"/>
+      <field name="dns.flags.opcode" showname=".000 0... .... .... = Opcode: Standard query (0)" size="2" pos="44" show="0" value="0" unmaskedvalue="8503"/>
+      <field name="dns.flags.authoritative" showname=".... .1.. .... .... = Authoritative: Server is an authority for domain" size="2" pos="44" show="1" value="1" unmaskedvalue="8503"/>
+      <field name="dns.flags.truncated" showname=".... ..0. .... .... = Truncated: Message is not truncated" size="2" pos="44" show="0" value="0" unmaskedvalue="8503"/>
+      <field name="dns.flags.recdesired" showname=".... ...1 .... .... = Recursion desired: Do query recursively" size="2" pos="44" show="1" value="1" unmaskedvalue="8503"/>
+      <field name="dns.flags.recavail" showname=".... .... 0... .... = Recursion available: Server can&#x27;t do recursive queries" size="2" pos="44" show="0" value="0" unmaskedvalue="8503"/>
+      <field name="dns.flags.z" showname=".... .... .0.. .... = Z: reserved (0)" size="2" pos="44" show="0" value="0" unmaskedvalue="8503"/>
+      <field name="dns.flags.authenticated" showname=".... .... ..0. .... = Answer authenticated: Answer/authority portion was not authenticated by the server" size="2" pos="44" show="0" value="0" unmaskedvalue="8503"/>
+      <field name="dns.flags.checkdisable" showname=".... .... ...0 .... = Non-authenticated data: Unacceptable" size="2" pos="44" show="0" value="0" unmaskedvalue="8503"/>
+      <field name="dns.flags.rcode" showname=".... .... .... 0011 = Reply code: No such name (3)" size="2" pos="44" show="3" value="3" unmaskedvalue="8503"/>
+    </field>
+    <field name="dns.count.queries" showname="Questions: 1" size="2" pos="46" show="1" value="0001"/>
+    <field name="dns.count.answers" showname="Answer RRs: 0" size="2" pos="48" show="0" value="0000"/>
+    <field name="dns.count.auth_rr" showname="Authority RRs: 1" size="2" pos="50" show="1" value="0001"/>
+    <field name="dns.count.add_rr" showname="Additional RRs: 0" size="2" pos="52" show="0" value="0000"/>
+    <field name="" show="Queries" size="21" pos="54" value="03777777076578616d706c6503636f6d0000010001">
+      <field name="" show="www.example.com: type A, class IN" size="21" pos="54" value="03777777076578616d706c6503636f6d0000010001">
+        <field name="dns.qry.name" showname="Name: www.example.com" size="17" pos="54" show="www.example.com" value="03777777076578616d706c6503636f6d00"/>
+        <field name="dns.qry.name.len" showname="Name Length: 15" size="17" pos="54" show="15" value="03777777076578616d706c6503636f6d00"/>
+        <field name="dns.count.labels" showname="Label Count: 3" size="17" pos="54" show="3" value="03777777076578616d706c6503636f6d00"/>
+        <field name="dns.qry.type" showname="Type: A (Host Address) (1)" size="2" pos="71" show="1" value="0001"/>
+        <field name="dns.qry.class" showname="Class: IN (0x0001)" size="2" pos="73" show="0x0001" value="0001"/>
+      </field>
+    </field>
+    <field name="" show="Authoritative nameservers" size="52" pos="75" value="c010000600010000012c002804646e7331c0100a686f73746d6173746572c0100000000100000e100000003c000002580000012c">
+      <field name="" show="example.com: type SOA, class IN, mname dns1.example.com" size="52" pos="75" value="c010000600010000012c002804646e7331c0100a686f73746d6173746572c0100000000100000e100000003c000002580000012c">
+        <field name="dns.resp.name" showname="Name: example.com" size="2" pos="75" show="example.com" value="c010"/>
+        <field name="dns.resp.type" showname="Type: SOA (Start Of a zone of Authority) (6)" size="2" pos="77" show="6" value="0006"/>
+        <field name="dns.resp.class" showname="Class: IN (0x0001)" size="2" pos="79" show="0x0001" value="0001"/>
+        <field name="dns.resp.ttl" showname="Time to live: 300 (5 minutes)" size="4" pos="81" show="300" value="0000012c"/>
+        <field name="dns.resp.len" showname="Data length: 40" size="2" pos="85" show="40" value="0028"/>
+        <field name="dns.soa.mname" showname="Primary name server: dns1.example.com" size="7" pos="87" show="dns1.example.com" value="04646e7331c010"/>
+        <field name="dns.soa.rname" showname="Responsible authority&#x27;s mailbox: hostmaster.example.com" size="13" pos="94" show="hostmaster.example.com" value="0a686f73746d6173746572c010"/>
+        <field name="dns.soa.serial_number" showname="Serial Number: 1" size="4" pos="107" show="1" value="00000001"/>
+        <field name="dns.soa.refresh_interval" showname="Refresh Interval: 3600 (1 hour)" size="4" pos="111" show="3600" value="00000e10"/>
+        <field name="dns.soa.retry_interval" showname="Retry Interval: 60 (1 minute)" size="4" pos="115" show="60" value="0000003c"/>
+        <field name="dns.soa.expire_limit" showname="Expire limit: 600 (10 minutes)" size="4" pos="119" show="600" value="00000258"/>
+        <field name="dns.soa.minimum_ttl" showname="Minimum TTL: 300 (5 minutes)" size="4" pos="123" show="300" value="0000012c"/>
+      </field>
+    </field>
+    <field name="dns.response_to" showname="Request In: 1" size="0" pos="42" show="1"/>
+    <field name="dns.time" showname="Time: 0.000853764 seconds" size="0" pos="42" show="0.000853764"/>
+  </proto>
+</packet>
+</pdml>

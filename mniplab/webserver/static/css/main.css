@@ -1,0 +1,6842 @@
+/* mnIPLab Web UI Styles */
+
+:root {
+    color-scheme: light;
+
+    /* Colors - Light Theme Default */
+    --primary-color: #0066cc;
+    --primary-hover: #0056b3;
+    --secondary-color: #28a745;
+    --bg-color: #f4f6f8;
+    --surface-color: #ffffff;
+    --surface-hover: #f8f9fa;
+    --text-color: #212529;
+    --text-muted: #595959;
+    --border-color: #e1e4e8;
+    --error-color: #dc3545;
+    --success-color: #28a745;
+    --focus-color: #007bff;
+    --router-color: #0099ff;
+    --host-color: #5fcc00;
+    --switch-color: #f38a00;
+    --bgp-speaker-color: #a333c8;
+    --container-color: #2496ed; /* Docker blue */
+    /* Internet Gateways: teal, so caption and colour both set them apart from Routers. */
+    --nat-color: #0b8a78;
+
+    /* Button fills paired with white text. Kept distinct from --primary-color/
+       --error-color (also used as *text* on dark surfaces) because a single
+       hue can't satisfy both roles at once: white-on-fill needs a dark fill,
+       text-on-dark-surface needs a light one. Light theme reuses the base
+       token since it already passes both roles. */
+    --primary-button-bg: var(--primary-color);
+    --danger-button-bg: var(--error-color);
+    --input-border-color: #7a838d;
+
+    /* Terminal & Console */
+    --terminal-bg: #1e1e1e;
+    --terminal-fg: #d4d4d4;
+    --console-bg: #121212;
+    --console-fg: #4af626;
+
+    /* Effects */
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    --radius: 8px;
+    --modal-radius: 12px;
+    --header-height: 64px;
+
+    /* Typography */
+    --font-main: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+
+    /* Node Styling */
+    --node-bg: #ffffff;
+
+    /* Topology Typography */
+    --topo-node-size: 18px;
+    --topo-node-stroke: 6px;
+    --topo-link-size: 12px;
+    --topo-link-stroke: 3px;
+}
+
+#app {
+    /* A flex column, not a grid: the header is flex-shrink:0 so it can grow to
+       fit its content under large text/spacing (WCAG 1.4.12) without being
+       squeezed by the footer's inflated block. The main region flexes to fill
+       the space between the two. */
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    height: 100vh;
+    overflow: hidden;
+}
+
+[data-theme="dark"] {
+    color-scheme: dark;
+    --primary-color: #4a90e2;
+    --primary-hover: #357abd;
+    --secondary-color: #7ed321;
+    --bg-color: #272727;
+    --surface-color: #1e1e1e;
+    --surface-hover: #2d2d2d;
+    --text-color: #e0e0e0;
+    --text-muted: #aaaaaa;
+    --border-color: #333333;
+    /* Lightened from #cf6679: that value passed as text on --surface-color
+       (4.63:1) but fell short against --bg-color (4.15:1) — the token is
+       used as text against both. */
+    --error-color: #d37183;
+    --success-color: #03dac6;
+    --focus-color: #4a90e2;
+    --router-color: #0099ff;
+    --host-color: #5fcc00;
+    --switch-color: #f38a00;
+    --bgp-speaker-color: #bb6bd9;
+    --container-color: #4fbaff;
+    --nat-color: #2bbfa6;
+    --shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+
+    /* Darker than --primary-color/--error-color on purpose: at 4.5:1+ against
+       white button text, per the :root comment above. */
+    --primary-button-bg: #3b73b5;
+    --danger-button-bg: #a65261;
+    --input-border-color: #7a7a7a;
+
+    /* Node Styling */
+    --node-bg: #2c2c2c;
+}
+
+/* Reset and base styles */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+/* The hidden attribute must win over component display rules (e.g.
+   .dhcp-form-group's flex), or toggling hidden leaves an element shown. */
+[hidden] {
+    display: none !important;
+}
+
+body {
+    font-family: var(--font-main);
+    background: var(--bg-color);
+    color: var(--text-color);
+    line-height: 1.6;
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Skip link for accessibility */
+.skip-link {
+    position: absolute;
+    top: -40px;
+    left: 0;
+    background: var(--primary-button-bg);
+    color: white;
+    padding: 8px;
+    text-decoration: none;
+    z-index: 100;
+    border-radius: 0 0 4px 0;
+}
+
+.skip-link:focus {
+    top: 0;
+}
+
+/* Header */
+header {
+    background: var(--surface-color);
+    /* A minimum, not a fixed height: the WCAG 1.4.12 text-spacing stress test
+       (or an OS-level accessibility setting) can make the Lab title and status
+       pills taller, and the header must grow to fit them rather than clip.
+       flex-shrink:0 keeps it from being squeezed by the footer's block. */
+    min-height: var(--header-height);
+    flex-shrink: 0;
+    padding: 0.5rem 0.75rem;
+    border-bottom: 1px solid var(--border-color);
+    box-shadow: var(--shadow);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.5rem;
+    z-index: 10;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.header-breadcrumb {
+    display: flex;
+    align-items: center;
+}
+
+.breadcrumb-list {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.breadcrumb-list li {
+    display: inline-flex;
+    align-items: center;
+}
+
+.header-brand-link {
+    display: inline-flex;
+    align-items: center;
+    gap: .5rem;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    text-decoration: none;
+}
+
+.header-brand-link:hover {
+    color: var(--primary-hover);
+}
+
+.breadcrumb-separator {
+    color: var(--text-muted);
+    font-size: 1.1rem;
+    user-select: none;
+}
+
+.header-page-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--text-color);
+    margin: 0;
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+header h1 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.header-info {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    background: var(--bg-color);
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    border: 1px solid var(--border-color);
+}
+
+.header-info strong {
+    color: var(--text-color);
+}
+
+.btn-lab-prompt {
+    font-size: 0.75rem;
+    padding: 0.15rem 0.5rem;
+    margin-left: 0.35rem;
+    border-radius: 12px;
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    color: var(--text-color);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    vertical-align: middle;
+    transition: background var(--transition-fast, 0.15s), border-color var(--transition-fast, 0.15s);
+}
+
+.btn-lab-prompt:hover:not(:disabled) {
+    background: var(--surface-hover);
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+}
+
+.btn-lab-prompt:focus-visible {
+    outline: 2px solid var(--focus-color);
+    outline-offset: 2px;
+}
+
+/* Connection-status indicator: plain text reflecting the topology
+   WebSocket's state (connected / reconnecting / polling). It leads the
+   status footer's readout so a dropped connection is visible, not silent.
+   The dot's color carries the state; the words beside it say it too. */
+.ws-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: var(--text-muted);
+}
+
+.ws-status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--text-muted);
+    flex: 0 0 auto;
+}
+
+.ws-status-dot[data-state="connected"] {
+    background: var(--success-color);
+}
+
+.ws-status-dot[data-state="reconnecting"] {
+    background: var(--warning-color, #f38a00);
+}
+
+.ws-status-dot[data-state="polling"] {
+    background: var(--error-color);
+}
+
+/* Buttons */
+button {
+    background: var(--primary-button-bg);
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius);
+    cursor: pointer;
+    /* Inherit the body's font stack: without this, buttons fall back to the
+       browser default (Arial), which is off-theme next to the rest of the UI.
+       A button that needs its own face still overrides this below. */
+    font-family: inherit;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+button:hover:not(:disabled) {
+    background: var(--primary-hover);
+    transform: translateY(-1px);
+}
+
+button:active:not(:disabled) {
+    transform: scale(0.97);
+}
+
+button:focus-visible {
+    outline: 2px solid var(--focus-color);
+    outline-offset: 2px;
+}
+
+button:disabled {
+    background: var(--text-muted);
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.btn-secondary,
+a.btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius);
+    background: transparent;
+    border: 1px solid var(--border-color);
+    color: var(--text-color);
+    font-family: inherit;
+    font-size: 0.9rem;
+    font-weight: 500;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+/* Outranks the base button's :not(:disabled) hover, which would turn a
+   secondary button blue under its own dark text. */
+.btn-secondary:hover:not(:disabled),
+a.btn-secondary:hover {
+    background: var(--surface-hover);
+    border-color: var(--text-muted);
+    color: var(--text-color);
+    transform: translateY(-1px);
+}
+
+a.btn-secondary:active {
+    transform: scale(0.97);
+}
+
+a.btn-secondary:focus-visible {
+    outline: 2px solid var(--focus-color);
+    outline-offset: 2px;
+}
+
+.btn-danger {
+    background: var(--danger-button-bg);
+    color: white;
+}
+
+.btn-danger:hover:not(:disabled) {
+    background: #b94a5c;
+}
+
+.btn-danger:focus-visible {
+    outline: 3px solid var(--error-color);
+    outline-offset: 2px;
+}
+
+.btn-icon {
+    padding: 0.5rem;
+    border-radius: 50%;
+    background: transparent;
+    color: var(--text-color);
+}
+
+button.btn-icon:hover:not(:disabled) {
+    background: var(--surface-hover);
+    color: var(--primary-color);
+    transform: none;
+}
+
+/* Main content */
+main {
+    /* Flex-fills the space between the (unshrinkable) header and footer; the
+       inner grid lays out the sidebar/content/terminal columns. */
+    display: grid;
+    grid-template-rows: 1fr;
+    flex: 1 1 0;
+    min-height: 0;
+    overflow: hidden;
+}
+
+#main {
+    padding: .75rem;
+}
+@media (min-width: 769px) {
+    #main {
+        padding: .1875rem 0;
+    }
+    /* A closed sidebar leaves no outer gutter. */
+    #lab-tabpanel:has(> .sidebar[data-sidebar-view="closed"]) {
+        column-gap: 0;
+    }
+}
+#app > header {
+    /* 48px with 32px controls. Still a minimum (see the header rule). */
+    min-height: 3rem;
+    padding-top: .25rem;
+    padding-bottom: .25rem;
+    gap: .375rem;
+}
+#app > header :is(button, a.btn-secondary) {
+    min-height: 2rem;
+    padding-top: 0;
+    padding-bottom: 0;
+}
+#app > header .btn-icon {
+    width: 2rem;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+#app #authoring-link {
+    font-weight: 400;
+    padding: 0 1rem;
+}
+#lab-tabpanel #view-options-btn,
+#lab-tabpanel #tools-btn,
+#lab-tabpanel #stop-lab-btn {
+    padding: .375rem .75rem;
+}
+#lab-tabpanel #view-options-btn {
+    gap: .375rem;
+}
+#lab-tabpanel .topology-container > .controls {
+    min-height: 3rem;
+    padding: .34375rem .375rem;
+    gap: .25rem;
+}
+#lab-tabpanel .topology-container > .controls > button,
+#lab-tabpanel .controls > .toolbar-dropdown > button {
+    min-height: 2.25rem;
+}
+#topology-canvas-controls > button {
+    /* The footer's controls: 28px, above the 24px WCAG 2.5.8 minimum. */
+    min-height: 1.75rem;
+    height: 1.75rem;
+    padding-top: 0;
+    padding-bottom: 0;
+}
+#lab-tabpanel .topology-container > .controls > .separator-vertical {
+    flex-shrink: 0;
+    margin: 0 .125rem;
+}
+#topology-canvas-controls #zoom-in,
+#topology-canvas-controls #zoom-out {
+    width: 1.75rem;
+    font-size: .875rem;
+}
+#lab-tabpanel .topology-container {
+    grid-template-rows: auto minmax(0, 1fr);
+}
+#topology-canvas-controls {
+    position: static;
+    background: transparent;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    border: 0;
+    padding: 0;
+    box-shadow: none;
+}
+/* Reserve the toolbar's space while inspecting connections or the class so
+   returning to the topology does not resize its canvas or change the zoom. */
+#app:has(#lab-tab-overview[aria-selected="true"]) #topology-canvas-controls,
+#app:has(#lab-tabpanel[data-monitoring="true"]) #topology-canvas-controls {
+    visibility: hidden;
+}
+
+.workspace-status-line {
+    flex-shrink: 0;
+    padding: .125rem .75rem;
+    font-size: .8rem;
+    color: var(--text-muted);
+}
+.workspace-status-line .header-info {
+    display: flex;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    gap: .5rem;
+}
+.workspace-status-line .header-info > .separator-horizontal {
+    margin-inline: .25rem;
+}
+.workspace-status-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: .5rem;
+    max-width: 100%;
+    margin-inline-start: auto;
+}
+/* The running Lab's name: the breadcrumb's last step, plain text that reads
+   like the page title beside it. */
+.breadcrumb-list li[hidden] {
+    display: none;
+}
+.header-lab-step {
+    min-width: 0;
+    max-width: 40ch;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--text-color);
+}
+.header-lab-step #lab-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+/* Lab Prompt, Tools and Stop Lab sit at the toolbar's far end. */
+.controls-spacer {
+    flex: 1 1 0;
+}
+#app .controls {
+    flex-wrap: wrap;
+}
+#app .header-right {
+    flex-wrap: wrap;
+    gap: .375rem;
+    justify-content: flex-end;
+}
+
+/* Monitoring shares the content columns, without changing the mounted
+   topology or terminal dimensions and their resize observers. */
+#lab-tabpanel > .sidebar {
+    grid-column: 1;
+    grid-row: 1;
+}
+#lab-tabpanel > .main-content {
+    grid-column: 2;
+    grid-row: 1;
+}
+.workspace-monitor {
+    grid-column: 2 / -1;
+    grid-row: 1;
+    z-index: 2;
+    min-width: 0;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+}
+.workspace-monitor[hidden] {
+    display: none;
+}
+#lab-tabpanel[data-monitoring="true"] > [data-pane],
+#lab-tabpanel[data-monitoring="true"] > [data-pane] * {
+    visibility: hidden;
+}
+
+/* The Panes. With no Lab running only the Topology is shown, beside the
+   Labs list; js/ui/pane-arrangement.js shows the others while a Lab runs. */
+#lab-tabpanel > [data-pane][data-pane-shown="false"] {
+    display: none;
+}
+
+/* While a Lab runs the workspace is one grid of Panes, its tracks and each
+   Pane's grid lines set by js/ui/pane-arrangement.js. The sidebar and its
+   button belong to the Labs list, so they are not shown. */
+#lab-tabpanel[data-panes] {
+    position: relative;
+    min-width: 0;
+    gap: 0;
+}
+#lab-tabpanel[data-panes] > .sidebar,
+#lab-tabpanel[data-panes] #toggle-sidebar {
+    display: none;
+}
+#lab-tabpanel[data-panes] > [data-pane] {
+    margin: .1875rem;
+    min-width: 0;
+    min-height: 0;
+}
+/* Full view: the Pane is fixed over the whole page, header and footer
+   included, without leaving the workspace. The other Panes are inert and the
+   separators are not shown. */
+#lab-tabpanel[data-panes] > [data-pane][data-pane-full] {
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    margin: 0;
+    border-radius: 0;
+}
+#lab-tabpanel[data-pane-full] .pane-separator {
+    display: none;
+}
+.pane-exit-full {
+    display: none;
+    margin-right: .25rem;
+    white-space: nowrap;
+}
+[data-pane-full] .pane-exit-full {
+    display: inline-flex;
+}
+
+/* The minimum sizes, in pixels, js/ui/pane-arrangement.js reads: the Centre,
+   the Bottom, one of two stacked Panes, and each Pane's width at a side or
+   side by side at the Bottom. A side Slot is as wide as its widest Pane needs. */
+#lab-tabpanel {
+    --pane-min-centre-w: 400px;
+    --pane-min-centre-h: 280px;
+    --pane-min-bottom-h: 260px;
+    --pane-min-stack-h: 140px;
+    --pane-min-terminal-w: 420px;
+    --pane-min-packet-w: 360px;
+    --pane-min-guide-w: 240px;
+    --pane-min-topology-w: 300px;
+}
+
+/* A separator lies over the boundary it resizes; its grabbable strip is
+   8px thick and only a 2px line shows. */
+.pane-separator {
+    position: absolute;
+    z-index: 40;
+    touch-action: none;
+}
+.pane-separator[hidden] {
+    display: none;
+}
+.pane-separator[aria-orientation="vertical"] {
+    cursor: col-resize;
+}
+.pane-separator[aria-orientation="horizontal"] {
+    cursor: row-resize;
+}
+.pane-separator::after {
+    content: "";
+    position: absolute;
+    background: transparent;
+    transition: background .15s ease;
+}
+.pane-separator[aria-orientation="vertical"]::after {
+    left: 3px;
+    width: 2px;
+    top: 0;
+    bottom: 0;
+}
+.pane-separator[aria-orientation="horizontal"]::after {
+    top: 3px;
+    height: 2px;
+    left: 0;
+    right: 0;
+}
+.pane-separator:is(:hover, :focus-visible, [data-resizing])::after {
+    background: var(--primary-color);
+}
+.pane-separator:focus-visible {
+    outline: 2px solid var(--focus-color);
+    outline-offset: 0;
+}
+
+/* The Topology pane's toolbar stays on one row in a narrow Slot: below
+   about 520px View, Lab Prompt and Tools show only their icons. The text
+   stays in the button for its accessible name. */
+#lab-tabpanel > .main-content[data-pane="topology"] {
+    container: topology-pane / inline-size;
+}
+#lab-tabpanel[data-panes] .topology-container > .controls {
+    flex-wrap: nowrap;
+}
+@container topology-pane (max-width: 520px) {
+    #lab-tabpanel[data-panes] .controls .btn-label {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+    }
+    #lab-tabpanel[data-panes] .topology-container > .controls {
+        gap: .125rem;
+    }
+    #lab-tabpanel[data-panes] #view-options-btn,
+    #lab-tabpanel[data-panes] #tools-btn,
+    #lab-tabpanel[data-panes] #lab-prompt-btn {
+        padding-left: .5rem;
+        padding-right: .5rem;
+    }
+}
+
+/* Not a Pane: the Instructor's Overview covers the whole workspace. */
+#lab-tabpanel[data-panes] > .workspace-monitor {
+    grid-area: auto;
+    position: absolute;
+    inset: 0;
+}
+#lab-tabpanel[data-panes][data-monitoring="true"] {
+    overflow: hidden;
+}
+
+.monitor-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: .5rem;
+    padding: .75rem;
+    border-bottom: 1px solid var(--border-color);
+}
+.monitor-toolbar h2 {
+    font-size: 1rem;
+    margin: 0;
+}
+.monitor-scope {
+    padding: .5rem .75rem;
+    color: var(--text-muted);
+    font-size: .85rem;
+}
+#monitor-status:empty {
+    display: none;
+}
+#monitor-status {
+    padding: .5rem .75rem;
+}
+.monitor-content {
+    flex: 1;
+    min-height: 0;
+    overflow: auto;
+    padding: .75rem;
+}
+.monitor-content th, .monitor-content td{
+    padding: .6rem .75rem;
+}
+
+
+@media (max-width: 768px) {
+    #lab-tabpanel {
+        grid-template-columns: minmax(0, 1fr);
+        /* Match the existing mobile topology minimum. The stack scrolls. */
+        grid-template-rows: auto minmax(400px, 1fr);
+        overflow-y: auto;
+    }
+    #lab-tabpanel > .sidebar {
+        grid-column: 1;
+        grid-row: 1;
+    }
+    /* The Topology's 400px minimum can leave the Labs row no room in a short
+       window, which squeezed the list to its borders; the stack scrolls, so
+       the open list keeps room for its search, filters and a few Labs. */
+    #lab-tabpanel > .sidebar:not([data-sidebar-view="closed"]) {
+        min-height: 420px;
+        max-height: none;
+    }
+    #lab-tabpanel > .main-content {
+        grid-column: 1;
+        grid-row: 2;
+    }
+    #lab-tabpanel > .workspace-monitor {
+        grid-column: 1;
+        grid-row: 1 / -1;
+    }
+    /* A running Lab's open Panes stack in a fixed order, one column, each
+       with a usable height; the workspace scrolls. */
+    #lab-tabpanel[data-panes] {
+        grid-template-rows: none;
+        grid-auto-rows: auto;
+    }
+    #lab-tabpanel[data-panes] > [data-pane] {
+        grid-column: 1;
+        grid-row: auto;
+        margin: 0 0 .75rem;
+        min-height: 320px;
+    }
+    #lab-tabpanel[data-panes] > .main-content {
+        min-height: 400px;
+    }
+    #app .breadcrumb-list {
+        flex-wrap: wrap;
+    }
+}
+
+.layout-wrapper {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 0.75rem;
+    flex: 1;
+    min-height: 0;
+    width: 100%;
+    align-items: stretch;
+}
+
+.main-content {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    min-width: 0;
+    overflow: hidden;
+}
+
+.topology-container {
+    flex: 1;
+    background: var(--surface-color);
+    border-radius: var(--radius);
+    border: 1px solid var(--border-color);
+    display: grid;
+    grid-template-rows: auto 1fr;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.controls {
+    padding: 0.5rem 0.75rem;
+    background: var(--surface-color);
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.toolbar-dropdown {
+    position: relative;
+}
+
+.toolbar-dropdown-menu {
+    position: absolute;
+    top: calc(100% + 0.35rem);
+    left: 0;
+    z-index: 120;
+    min-width: 230px;
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-lg);
+    padding: 0.35rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.toolbar-dropdown-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+}
+
+.toolbar-dropdown-label {
+    min-height: 2rem;
+    padding: 0.25rem 0.4rem;
+    border-radius: 6px;
+}
+
+.toolbar-dropdown-label:hover {
+    background: var(--surface-hover);
+}
+
+fieldset.toolbar-dropdown-group {
+    border: 0;
+    margin: 0;
+    padding: 0;
+    min-width: 0;
+}
+
+.toolbar-dropdown-legend {
+    padding: 0.25rem 0.4rem 0;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-muted);
+}
+
+.toolbar-dropdown-divider {
+    border-top: 1px solid var(--border-color);
+    margin: 0.1rem 0;
+}
+
+.toolbar-dropdown-action {
+    width: 100%;
+    min-height: 2rem;
+    justify-content: flex-start;
+    padding: 0.25rem 0.6rem;
+    border-radius: 6px;
+    transform: none;
+}
+
+.toolbar-dropdown-action:hover:not(:disabled) {
+    transform: none;
+}
+
+.separator-vertical {
+    width: 1px;
+    height: 24px;
+    background-color: var(--border-color);
+    margin: 0 0.5rem;
+}
+
+label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    cursor: pointer;
+    color: var(--text-color);
+    user-select: none;
+}
+
+input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    accent-color: var(--primary-color);
+}
+
+/* Topology SVG */
+#topology {
+    flex: 1;
+    width: 100%;
+    background: var(--bg-color);
+    transition: background-color 0.3s ease;
+}
+
+.node {
+    cursor: pointer;
+}
+
+.node circle {
+    stroke: var(--surface-color);
+    stroke-width: 2px;
+    transition: all 0.2s;
+}
+
+.node:hover circle {
+    stroke: var(--focus-color);
+    stroke-width: 3px;
+    filter: brightness(1.1);
+}
+
+.node:focus {
+    outline: none;
+}
+
+.node:focus-visible circle {
+    stroke: var(--focus-color);
+    stroke-width: 4px;
+}
+
+.node.pinned circle {
+    stroke-dasharray: 4, 2;
+}
+
+.node text.node-label,
+.node text:not(.service-badge-text):not(.relay-badge-text),
+.link-label {
+    fill: var(--text-color);
+    font-weight: 600;
+    text-anchor: middle;
+    pointer-events: none;
+    user-select: none;
+    paint-order: stroke;
+    stroke: var(--bg-color);
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.node text.node-label,
+.node text:not(.service-badge-text):not(.relay-badge-text) {
+    font-size: var(--topo-node-size);
+    stroke-width: var(--topo-node-stroke);
+}
+
+.link {
+    stroke: var(--text-muted);
+    stroke-width: 3px;
+    /* 0.72, not 0.4: at rest this must still clear 3:1 against the canvas in
+       both themes (worst case is light theme's near-white canvas), while
+       staying below the 0.8 hover/1.0 selected opacity it's a weaker state
+       of. */
+    stroke-opacity: 0.72;
+    transition: stroke 0.3s ease, stroke-width 0.3s ease, stroke-opacity 0.3s ease;
+    cursor: pointer;
+}
+
+.link:hover {
+    stroke-width: 4px;
+    stroke-opacity: 0.8;
+}
+
+.link:focus-visible, .link.selected {
+    outline: none;
+    stroke: var(--primary-color);
+    stroke-opacity: 1;
+    stroke-width: 5px;
+}
+
+/* The View menu's VLAN Labels option; badges set their own inline display. */
+.layer-labels.hide-vlan-labels .vlan-badge {
+    display: none !important;
+}
+
+.link-label {
+    font-size: var(--topo-link-size);
+    stroke-width: var(--topo-link-stroke);
+    opacity: 0.9;
+}
+
+/* Sidebar */
+.sidebar {
+    width: var(--sidebar-width, 240px);
+    background: var(--surface-color);
+    border-radius: var(--radius);
+    border: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    box-shadow: var(--shadow);
+    transition: all 0.3s ease;
+    height: 100%;
+    overflow: hidden;
+    position: relative;
+}
+
+.sidebar[data-sidebar-view="closed"] {
+    width: 0;
+    padding: 0;
+    border: none;
+    box-shadow: none;
+    min-width: 0;
+}
+
+.sidebar-resize-handle {
+    position: absolute;
+    right: -4px;
+    top: 0;
+    width: 8px;
+    height: 100%;
+    cursor: col-resize;
+    z-index: 40;
+}
+
+.sidebar-resize-handle::after {
+    content: "";
+    width: 2px;
+    height: 100%;
+    position: absolute;
+    left: 3px;
+    background: var(--border-color);
+    transition: background 0.2s ease;
+}
+
+.sidebar-resize-handle:hover::after,
+.sidebar-resize-handle[data-resizing="true"]::after,
+.sidebar-resize-handle:focus-visible::after {
+    background: var(--primary-color);
+}
+
+.sidebar[data-sidebar-view="closed"] .sidebar-resize-handle {
+    display: none;
+}
+
+.sidebar-resize-handle:focus-visible {
+    outline: 2px solid var(--focus-color);
+    outline-offset: 2px;
+}
+
+.sidebar-header {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.sidebar h2 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-color);
+    margin: 0;
+}
+
+/* The Guide pane: its title row stays at the top and only the Guide text
+   scrolls, as in the other Panes. */
+.lab-guide-container {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+}
+
+.lab-guide-toolbar {
+    display: flex;
+    flex: none;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: 2.25rem;
+    padding: 0.25rem 0.5rem 0.25rem 0.75rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.lab-guide-heading {
+    margin: 0 auto 0 0;
+    font-size: 0.95rem;
+    font-weight: 600;
+}
+
+.lab-guide-status {
+    flex: none;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    margin: 0.5rem 0.75rem;
+}
+
+.lab-guide-content {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    margin: 0 0.75rem 0.75rem;
+    word-break: break-word;
+    font-size: 0.92rem;
+    line-height: 1.55;
+    color: var(--text-color);
+    background: var(--bg-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    padding: 0.75rem;
+}
+
+.lab-guide-content h1,
+.lab-guide-content h2,
+.lab-guide-content h3,
+.lab-guide-content h4 {
+    line-height: 1.35;
+    margin: 1rem 0 0.6rem;
+}
+
+.lab-guide-content h1,
+.lab-guide-content h2 {
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 0.25rem;
+}
+
+.lab-guide-content h1 { font-size: 1.2rem; }
+.lab-guide-content h2 { font-size: 1.1rem; }
+.lab-guide-content h3 { font-size: 1rem; }
+.lab-guide-content h4 { font-size: 0.95rem; }
+
+.lab-guide-content p,
+.lab-guide-content ul,
+.lab-guide-content ol,
+.lab-guide-content blockquote,
+.lab-guide-content table,
+.lab-guide-content pre {
+    margin: 0.55rem 0;
+}
+
+.lab-guide-content ul,
+.lab-guide-content ol {
+    padding-left: 1.2rem;
+}
+
+.lab-guide-content a {
+    color: var(--primary-color);
+    text-decoration: underline;
+}
+
+.lab-guide-content a:focus-visible {
+    outline: 2px solid var(--focus-color);
+    outline-offset: 2px;
+}
+
+.lab-guide-content code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+    background: var(--surface-hover);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    padding: 0.1rem 0.3rem;
+    font-size: 0.85em;
+}
+
+.lab-guide-content pre {
+    overflow-x: auto;
+    border-radius: var(--radius);
+    border: 1px solid var(--border-color);
+    background: var(--surface-hover);
+    padding: 0.6rem;
+}
+
+.lab-guide-content pre code {
+    border: none;
+    background: transparent;
+    padding: 0;
+}
+
+.lab-guide-content table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.88rem;
+}
+
+.lab-guide-content th,
+.lab-guide-content td {
+    border: 1px solid var(--border-color);
+    text-align: left;
+    padding: 0.4rem;
+}
+
+.lab-guide-content img {
+    max-width: 100%;
+    height: auto;
+}
+
+
+/* The Terminal pane */
+.terminal-pane {
+    position: relative;
+    background: var(--surface-color);
+    border-radius: var(--radius);
+    border: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    box-shadow: var(--shadow);
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+    overflow: hidden;
+}
+
+
+.context-controls {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-left: 0.5rem;
+    border-left: 1px solid var(--border-color);
+    padding-left: 0.5rem;
+}
+
+#tools-btn {
+    margin-right: 0.5rem;
+}
+
+.workspace-status-messages {
+    flex: 1;
+    min-width: 0;
+    text-align: center;
+    overflow-wrap: anywhere;
+}
+
+.link-context-menu {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 140;
+    min-width: 220px;
+    padding: 0.5rem;
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-lg);
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+}
+
+/* Utility classes */
+.flex-1 {
+    flex: 1;
+}
+
+.hidden {
+    display: none;
+}
+
+.separator-horizontal {
+    margin: 0 0.5rem;
+    color: var(--border-color);
+}
+
+.btn-full {
+    width: 100%;
+    margin-top: 1rem;
+}
+
+.form-row-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.form-row-checkbox input {
+    margin: 0;
+}
+
+.form-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.console-output-large {
+    height: 300px;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.p-8 {
+    padding: 2rem;
+}
+
+.mt-2 { margin-top: 0.5rem; }
+.mt-4 { margin-top: 1rem; }
+.mt-6 { margin-top: 1.5rem; }
+
+.primary-text { color: var(--primary-color); }
+
+.terminal-tab-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--bg-color);
+    border-bottom: 1px solid var(--border-color);
+    padding: 0.25rem 0.5rem;
+    gap: 0.5rem;
+}
+
+
+.terminal-tabs-container {
+    display: flex;
+    overflow-x: auto;
+    flex-shrink: 0;
+    padding: 0.25rem;
+    background: var(--surface-hover);
+    border-radius: var(--radius);
+}
+
+/* The tablist element only names the tabs it owns; it takes no room. */
+.terminal-tablist {
+    position: absolute;
+    width: 0;
+    height: 0;
+    overflow: hidden;
+}
+
+.terminal-tabs {
+    position: relative;
+    display: flex;
+    gap: 0.25rem;
+    flex: 1;
+    min-width: 0;
+    overflow-x: auto;
+}
+
+/* A tab and its close control, side by side; the item carries the tab's
+   background so the control reads as part of it. */
+.terminal-tab-item {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    border-radius: 6px;
+    color: var(--text-muted);
+    transition: all 0.2s;
+}
+
+.terminal-tab-item:hover {
+    background: rgba(0, 0, 0, 0.05);
+}
+
+[data-theme="dark"] .terminal-tab-item:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.terminal-tab-item:has(> .terminal-tab[aria-selected="true"]) {
+    background: var(--surface-color);
+    color: var(--text-color);
+    box-shadow: var(--shadow-sm);
+}
+
+.terminal-tab {
+    /* Compact 70x31px minimum; longer labels and larger text can grow. */
+    min-width: 4.375rem;
+    min-height: 1.9375rem;
+    flex-shrink: 0;
+    padding: 0.125rem 0.25rem 0.125rem 0.5rem;
+    background: transparent;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    color: var(--text-muted);
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.2s;
+    font-size: 0.9rem;
+    font-family: monospace;
+}
+
+.terminal-tab:hover {
+    color: var(--text-color);
+}
+
+.terminal-tab[aria-selected="true"] {
+    color: var(--text-color);
+    font-weight: 600;
+}
+
+.terminal-tab:focus-visible {
+    outline: 2px solid var(--focus-color);
+    outline-offset: -2px;
+}
+
+.terminal-tab-close {
+    /* Padding keeps the rendered hit target at 26x26px (14px icon + 6px each
+       side) under the global border-box, clearing WCAG 2.5.8's 24px minimum. */
+    padding: 0.375rem;
+    margin-right: 0.25rem;
+    background: transparent;
+    border: none;
+    color: inherit;
+    cursor: pointer;
+    border-radius: 1px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    transition: all 0.2s;
+    flex-shrink: 0;
+}
+
+.terminal-tab-close:hover {
+    background: rgba(0, 0, 0, 0.1);
+    color: var(--error-color);
+}
+
+/* Tab drag-and-drop reordering */
+.terminal-tab.dragging {
+    opacity: 0.5;
+    cursor: grabbing;
+}
+
+.terminal-tab.drag-over {
+    position: relative;
+}
+
+.terminal-tab.drag-over-left::before {
+    content: '';
+    position: absolute;
+    left: -2px;
+    top: 4px;
+    bottom: 4px;
+    width: 3px;
+    background: var(--primary-color);
+    border-radius: 2px;
+}
+
+.terminal-tab.drag-over-right::after {
+    content: '';
+    position: absolute;
+    right: -2px;
+    top: 4px;
+    bottom: 4px;
+    width: 3px;
+    background: var(--primary-color);
+    border-radius: 2px;
+}
+
+.terminal-tab-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    flex-shrink: 0;
+}
+
+.terminal-content {
+    flex: 1;
+    background: #000;
+    color: #f0f0f0;
+    overflow: hidden;
+    position: relative;
+    min-height: 0;
+}
+
+.terminal-instance {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    inset: 0;
+    padding: 10px;
+    overflow: auto;
+    visibility: hidden;
+    opacity: 0;
+    transition: visibility 0.2s, opacity 0.2s;
+}
+
+.terminal-instance[data-active="true"] {
+    visibility: visible;
+    opacity: 1;
+    z-index: 10;
+}
+
+.terminal-instance .xterm {
+    width: 100%;
+    height: 100%;
+}
+
+
+/* The font and Clear controls act on a Terminal on show. */
+.terminal-pane:not(:has(.terminal-instance)) .terminal-view-control {
+    display: none;
+}
+
+/* Copy and Paste are for touch screens, where the Terminal canvas offers
+   neither: its text cannot be selected, and iOS shows no Paste on it. */
+.terminal-touch-control {
+    display: none;
+}
+
+@media (pointer: coarse) {
+    .terminal-pane:has(.terminal-instance) .terminal-touch-control {
+        display: inline-flex;
+    }
+}
+
+.terminal-text-modal {
+    width: min(36rem, calc(100vw - 2rem));
+}
+
+.terminal-text-form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.terminal-text-form textarea {
+    width: 100%;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+    font-size: 16px;
+}
+
+.terminal-text-hint {
+    margin: 0;
+    color: var(--text-muted);
+    font-size: 0.875rem;
+}
+
+.terminal-text-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+}
+
+/* The Packet Analysis pane */
+.packet-analysis {
+    container-type: inline-size;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background: var(--surface-color);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+}
+
+.packet-analysis[hidden] {
+    display: none;
+}
+
+/* Up to two Captures, one tab each. The selected pane's state, count and
+   actions share the row after the tabs; the row never wraps, and the tabs
+   scroll when it is narrow. */
+.packet-analysis-tabbar {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.3rem 0.5rem 0 0.75rem;
+    background: var(--bg-color);
+    border-bottom: 1px solid var(--border-color);
+    flex-shrink: 0;
+}
+
+.capture-tabs {
+    display: flex;
+    gap: 0.25rem;
+    flex: 0 1 auto;
+    min-width: 4rem;
+    overflow-x: auto;
+}
+
+.packet-analysis-header-slot {
+    display: flex;
+    flex: 1 0 auto;
+    justify-content: flex-end;
+}
+
+.packet-analysis-header-slot .packet-analysis-header {
+    padding: 0 0 0.2rem;
+    background: transparent;
+    border-bottom: 0;
+    white-space: nowrap;
+}
+
+/* Keep the tabs on one scrolling row; narrow Panes put status and actions
+   underneath so every Capture control remains reachable. */
+@container (max-width: 600px) {
+    .packet-analysis-tabbar {
+        display: grid;
+        grid-template-columns: auto auto minmax(0, 1fr) auto;
+        row-gap: 0;
+    }
+
+    .packet-analysis-tabbar > .pane-grip { grid-area: 1 / 1; }
+    .packet-analysis-tabbar > .packet-analysis-heading { grid-area: 1 / 2; }
+    .packet-analysis-tabbar > .capture-tabs { grid-area: 1 / 3; }
+    .packet-analysis-tabbar > .pane-menu { grid-area: 1 / 4; margin-left: 0; }
+
+    .capture-tabs {
+        min-width: 0;
+    }
+
+    .packet-analysis-header-slot {
+        grid-column: 1 / -1;
+        justify-content: flex-start;
+        margin: 0.2rem -0.5rem 0 -0.75rem;
+        padding: 0.2rem 0.5rem 0.2rem 0.75rem;
+        border-top: 1px solid var(--border-color);
+    }
+}
+
+.capture-tab {
+    font-family: "Cascadia Code", "Courier New", monospace;
+    font-size: 0.8rem;
+    padding: 0.25rem 0.6rem;
+    border: 1px solid var(--border-color);
+    border-bottom: none;
+    border-radius: 4px 4px 0 0;
+    background: var(--bg-color);
+    color: var(--text-color);
+    cursor: pointer;
+    min-height: 24px;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+/* Inside the tabs' scroll area an outside outline would be clipped. */
+.capture-tab:focus-visible {
+    outline-offset: -2px;
+}
+
+.capture-tab[aria-selected="true"] {
+    background: var(--surface-color);
+    box-shadow: inset 0 2px 0 var(--primary-color);
+    font-weight: 600;
+}
+
+.capture-panes {
+    flex: 1 1 auto;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.capture-pane {
+    flex: 1 1 auto;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.capture-pane[hidden] {
+    display: none;
+}
+
+.capture-note p,
+.info-note p {
+    margin: 0 0 0.3rem;
+}
+
+.capture-note p:last-child,
+.info-note p:last-child {
+    margin-bottom: 0;
+}
+
+/* Presets beside the filter box, wrapping under it in a narrow Packet
+   Analysis: a preset writes its expression into the box. */
+.capture-filter {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.25rem 0.75rem;
+    padding: 0.3rem 0.75rem;
+    border-bottom: 1px solid var(--border-color);
+    flex-shrink: 0;
+}
+
+.capture-presets {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+}
+
+.capture-preset {
+    font-size: 0.75rem;
+    padding: 0.15rem 0.5rem;
+    min-height: 24px;
+}
+
+.capture-preset[aria-pressed="true"] {
+    box-shadow: inset 0 0 0 2px var(--primary-color);
+    font-weight: 600;
+}
+
+/* The filter box shares the presets' row, taking what they leave. */
+.capture-filter-row {
+    flex: 1 1 14rem;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.capture-filter-label {
+    font-size: 0.75rem;
+    white-space: nowrap;
+}
+
+.capture-filter-input {
+    flex: 1 1 auto;
+    width: 6rem;
+    min-width: 6rem;
+    font-family: "Cascadia Code", "Courier New", monospace;
+    font-size: 0.75rem;
+    padding: 0.2rem 0.4rem;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    background: var(--bg-color);
+    color: var(--text-color);
+}
+
+.capture-filter-apply {
+    font-size: 0.75rem;
+    padding: 0.2rem 0.6rem;
+    min-height: 24px;
+}
+
+.packet-analysis-problem,
+.capture-drop-notice {
+    margin: 0;
+    padding: 0.3rem 0.75rem;
+    font-size: 0.8rem;
+    color: var(--text-color);
+    border-left: 3px solid var(--error-color);
+    border-bottom: 1px solid var(--border-color);
+    flex-shrink: 0;
+}
+
+.packet-analysis-problem[hidden],
+.capture-drop-notice[hidden] {
+    display: none;
+}
+
+.packet-analysis-header {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.2rem 0.5rem 0.2rem 0.75rem;
+    background: var(--bg-color);
+    border-bottom: 1px solid var(--border-color);
+    flex-shrink: 0;
+}
+
+.packet-analysis-heading {
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin: 0;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+/* Where the Capture stands, in a word: a small badge. */
+.packet-analysis-state {
+    padding: 0.05rem 0.45rem;
+    border: 1px solid var(--border-color);
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.packet-analysis-state:empty {
+    display: none;
+}
+
+.packet-analysis-count {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin: 0 auto 0 0.25rem;
+    font-variant-numeric: tabular-nums;
+}
+
+.capture-packet-list {
+    flex: 1 1 40%;
+    min-height: 4rem;
+    overflow: auto;
+}
+
+.capture-packet-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: "Cascadia Code", "Courier New", monospace;
+    font-size: 0.75rem;
+}
+
+.capture-packet-table th {
+    position: sticky;
+    top: 0;
+    background: var(--bg-color);
+    text-align: left;
+    font-weight: 600;
+    padding: 0.2rem 0.4rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.capture-packet-table td {
+    padding: 0.15rem 0.4rem;
+    white-space: nowrap;
+}
+
+.capture-packet-table tbody tr {
+    cursor: pointer;
+}
+
+.capture-packet-table tbody tr:hover {
+    background: var(--surface-hover);
+}
+
+.capture-packet-table tbody tr.selected {
+    background: var(--surface-hover);
+    box-shadow: inset 3px 0 0 var(--primary-color);
+}
+
+.capture-row-select {
+    background: none;
+    border: none;
+    color: inherit;
+    font: inherit;
+    padding: 0;
+    cursor: pointer;
+}
+
+/* The focus ring goes round the packet's row, not its number alone. */
+.capture-row-select:focus-visible {
+    outline: none;
+}
+
+.capture-packet-table tbody tr:has(.capture-row-select:focus-visible) {
+    outline: 2px solid var(--focus-color);
+    outline-offset: -2px;
+}
+
+.capture-packet-detail {
+    flex: 1 1 60%;
+    min-height: 4rem;
+    overflow: auto;
+    padding: 0.4rem 0.75rem;
+    border-top: 1px solid var(--border-color);
+    font-family: "Cascadia Code", "Courier New", monospace;
+    font-size: 0.75rem;
+}
+
+.capture-packet-detail[hidden] {
+    display: none;
+}
+
+.capture-detail-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0 0 0.3rem;
+}
+
+.capture-detail-heading {
+    font-size: 0.8rem;
+    margin: 0;
+}
+
+.capture-detail-close {
+    margin-left: auto;
+    flex-shrink: 0;
+}
+
+.capture-detail-empty {
+    color: var(--text-muted);
+    margin: 0;
+}
+
+.capture-tree summary {
+    cursor: pointer;
+}
+
+.capture-tree-children {
+    padding-left: 1.1rem;
+}
+
+.capture-tree-leaf {
+    padding-left: 1.1rem;
+}
+
+/* Packet Capture modal, opened from the Link menu */
+.link-capture-hint,
+.link-capture-none {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin: 0 0 0.5rem;
+}
+
+.link-capture-ends {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.link-capture-message {
+    margin: 0.5rem 0 0;
+    font-size: 0.85rem;
+    color: var(--text-color);
+}
+
+.link-capture-message:empty {
+    display: none;
+}
+
+/* NAT Table: a translating Router's connection tracking table, polled */
+.nat-table-state {
+    margin-right: auto;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+/* Paused is a state, not a sentence: a small badge. */
+.nat-table-state.nat-table-paused {
+    padding: 0.05rem 0.45rem;
+    border: 1px solid var(--border-color);
+    border-radius: 999px;
+    color: var(--text-color);
+    font-weight: 600;
+}
+
+.nat-table-info[aria-expanded="true"],
+.nat-table-pause[aria-pressed="true"],
+.capture-info[aria-expanded="true"],
+.info-toggle[aria-expanded="true"] {
+    background: var(--surface-hover);
+    color: var(--primary-color);
+}
+
+.nat-table-note,
+.capture-note,
+.info-note {
+    margin: 0;
+    padding: 0.4rem 0.75rem;
+    font-size: 0.75rem;
+    color: var(--text-color);
+    background: var(--bg-color);
+    border-bottom: 1px solid var(--border-color);
+    flex-shrink: 0;
+}
+
+.nat-table-error {
+    margin: 0;
+    padding: 0.3rem 0.75rem;
+    font-size: 0.8rem;
+    color: var(--text-color);
+    border-bottom: 1px solid var(--border-color);
+    flex-shrink: 0;
+}
+
+.nat-table-tables {
+    flex: 1 1 auto;
+    min-height: 4rem;
+    overflow: auto;
+}
+
+.nat-table-tables:focus-visible {
+    outline: 2px solid var(--focus-color);
+    outline-offset: -2px;
+}
+
+.nat-table-title {
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+    padding: 0.4rem 0.75rem 0.2rem;
+}
+
+.nat-table-heading {
+    font-family: "Cascadia Code", "Courier New", monospace;
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+.nat-table-table tbody tr {
+    cursor: default;
+}
+
+/* A header or a lifetime split over two lines is harder to read than a
+   table that scrolls sideways in a narrow Packet Analysis. */
+.nat-table-table th,
+.nat-table-lifetime {
+    white-space: nowrap;
+}
+
+.nat-table-lifetime {
+    font-variant-numeric: tabular-nums;
+}
+
+.nat-table-empty {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+.nat-table-rules-block {
+    padding: 0 0.75rem 0.4rem;
+}
+
+.nat-table-rules-heading {
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin: 0.2rem 0;
+}
+
+.nat-table-rules {
+    font-family: "Cascadia Code", "Courier New", monospace;
+    font-size: 0.75rem;
+    margin: 0 0 0.4rem;
+    padding-left: 1.2rem;
+}
+
+.nat-table-rules-empty {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin: 0 0 0.4rem;
+}
+
+
+/* Login Page */
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: var(--bg-color);
+    padding: 1rem;
+    position: relative;
+}
+
+.login-container::before {
+    content: '';
+    position: absolute;
+    inset: -50%;
+    background: radial-gradient(circle at center, rgba(74, 144, 226, 0.05) 0%, transparent 50%);
+    pointer-events: none;
+}
+
+.login-box {
+    background: color-mix(in srgb, var(--surface-color) 80%, transparent);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    padding: 2rem;
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    width: 100%;
+    max-width: 480px;
+    box-shadow: var(--shadow-lg);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    position: relative;
+    z-index: 1;
+}
+
+[data-theme="dark"] .login-box {
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.login-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.login-logo {
+    color: var(--primary-color);
+    margin-bottom: 1.5rem;
+    filter: drop-shadow(0 0 8px rgba(74, 144, 226, 0.3));
+}
+
+.login-box h1 {
+    color: var(--text-color);
+    text-align: center;
+    margin-bottom: 0;
+    font-size: 2rem;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+}
+
+.login-description {
+    color: var(--text-muted);
+    text-align: center;
+    margin-bottom: 2.5rem;
+    font-size: 0.95rem;
+    line-height: 1.6;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: var(--text-color);
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 0.875rem 1rem;
+    background: var(--bg-color);
+    border: 1px solid var(--input-border-color);
+    border-radius: var(--radius);
+    color: var(--text-color);
+    font-size: 1rem;
+    transition: all 0.2s;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    background: var(--surface-color);
+    box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.15);
+}
+
+#login-form button[type="submit"] {
+    width: 100%;
+    padding: 1rem;
+    margin-top: 1rem;
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 12px rgba(74, 144, 226, 0.2);
+}
+
+#login-form button[type="submit"]:hover:not(:disabled) {
+    box-shadow: 0 6px 16px rgba(74, 144, 226, 0.3);
+    transform: translateY(-2px);
+}
+
+#login-form button[type="submit"]:active:not(:disabled) {
+    transform: scale(0.97);
+    box-shadow: 0 2px 4px rgba(74, 144, 226, 0.2);
+}
+
+.error-message {
+    background: rgba(231, 76, 60, 0.1);
+    color: var(--error-color);
+    padding: 0.75rem;
+    border-radius: var(--radius);
+    font-size: 0.9rem;
+    margin-top: 1.5rem;
+    text-align: center;
+    display: none;
+    border: 1px solid rgba(231, 76, 60, 0.2);
+    animation: shake 0.4s cubic-bezier(.36, .07, .19, .97) both;
+}
+
+@keyframes shake {
+
+    10%,
+    90% {
+        transform: translate3d(-1px, 0, 0);
+    }
+
+    20%,
+    80% {
+        transform: translate3d(2px, 0, 0);
+    }
+
+    30%,
+    50%,
+    70% {
+        transform: translate3d(-4px, 0, 0);
+    }
+
+    40%,
+    60% {
+        transform: translate3d(4px, 0, 0);
+    }
+}
+
+.error-message.show {
+    display: block;
+}
+
+/* Footer */
+footer {
+    background: var(--surface-color);
+    padding: 1rem 2rem;
+    border-top: 1px solid var(--border-color);
+    text-align: center;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    flex-shrink: 0;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+/* Modal Styles */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    display: none; /* Hidden by default */
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 1rem;
+    animation: fadeIn 0.2s ease;
+}
+
+.modal-overlay:not(.hidden) {
+    display: flex; /* Only show when not hidden */
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.modal-content {
+    background: var(--surface-color);
+    border-radius: var(--modal-radius);
+    border: 1px solid var(--border-color);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 15px rgba(0,0,0,0.05);
+    max-width: 500px;
+    width: 100%;
+    max-height: 80vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.modal-content.confirm-modal,
+.modal-content.input-modal {
+    max-width: 400px;
+}
+
+.modal-header {
+    padding: 0.5rem 1rem;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--surface-color);
+    border-top-left-radius: inherit;
+    border-top-right-radius: inherit;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.modal-body {
+    padding: 0.75rem 1rem;
+    overflow-y: auto;
+    border-bottom-left-radius: inherit;
+    border-bottom-right-radius: inherit;
+}
+
+.modal-body .form-group {
+    margin-bottom: 0.625rem;
+}
+
+.modal-body .form-group label {
+    margin-bottom: 0.25rem;
+    display: block;
+    color: var(--text-color);
+    font-weight: 500;
+}
+
+.modal-body .form-control {
+    width: 100%;
+    min-height: 2rem;
+    padding: 0.25rem 0.6rem;
+    border: 1px solid var(--input-border-color);
+    border-radius: var(--radius);
+    background: var(--bg-color);
+    color: var(--text-color);
+    transition: border-color 0.2s;
+}
+
+.modal-body .form-control:focus {
+    outline: none;
+    border-color: var(--focus-color);
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.modal-content :is(input:not([type="checkbox"], [type="radio"], [type="range"]), select),
+.modal-content :is(.dns-record-submit-btn, .dns-record-cancel-btn,
+    .speaker-submit-btn, .resolver-danger-btn) {
+    box-sizing: border-box;
+    min-height: 2rem;
+}
+
+.assignment-search {
+    padding: 0.25rem 0.6rem;
+}
+
+/* A select is one line, and Safari sizes it from its own metrics, not from
+   padding or min-height, so it takes the height outright. */
+.modal-content select,
+.modal-content .modal-body select.form-control {
+    height: 2rem;
+    padding-top: 0;
+    padding-bottom: 0;
+    line-height: normal;
+}
+
+.modal-header .btn-icon {
+    width: 2rem;
+    min-height: 2rem;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* 32px controls, as in the page bars. A minimum, so WCAG 1.4.12 text
+   spacing can still grow them. */
+.modal-content :is(button.btn-primary, button.btn-secondary) {
+    min-height: 2rem;
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+#confirm-modal-message {
+    color: var(--text-color);
+    line-height: 1.5;
+    margin: 0;
+    white-space: pre-line;
+}
+
+@keyframes slideUp {
+    from {
+        transform: scale(0.96) translateY(10px);
+        opacity: 0;
+    }
+
+    to {
+        transform: scale(1) translateY(0);
+        opacity: 1;
+    }
+}
+
+
+.modal-header h2 {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-color);
+}
+
+
+.modal-content.help-modal {
+    max-width: 650px;
+}
+
+.help-section {
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.help-section:last-child {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: none;
+}
+
+.help-section h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--primary-color);
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.help-section ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+.help-section li {
+    padding: 0.25rem 0;
+    padding-left: 1.5rem;
+    position: relative;
+    color: var(--text-color);
+    font-size: 0.95rem;
+    line-height: 1.4;
+}
+
+.help-section li::before {
+    content: '•';
+    position: absolute;
+    left: 0.5rem;
+    color: var(--primary-color);
+    font-weight: bold;
+}
+
+.shortcut-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 0.75rem;
+}
+
+.shortcut-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.5rem 0.75rem;
+    background: var(--bg-color);
+    border-radius: var(--radius);
+    font-size: 0.9rem;
+}
+
+.shortcut-item span {
+    color: var(--text-color);
+}
+
+kbd {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    font-family: monospace;
+    font-size: 0.85rem;
+    color: var(--text-color);
+    box-shadow: 0 2px 0 var(--border-color);
+}
+
+/* Scrollbar styling (standards-based + webkit fallback) */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: var(--border-color) var(--bg-color);
+}
+
+@media (prefers-contrast: more) {
+    * {
+        scrollbar-color: var(--text-color) var(--bg-color);
+    }
+}
+
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg-color);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--text-muted);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .sidebar {
+        width: 100%;
+        max-height: 200px;
+    }
+
+    .sidebar[data-sidebar-open="false"] {
+        width: 100%;
+        max-height: 0;
+    }
+
+    .main-content {
+        flex: 1;
+        min-height: 400px;
+    }
+
+    header {
+        padding: 0.5rem 1rem;
+    }
+
+    header h1 {
+        font-size: 1.1rem;
+    }
+
+    /* Reflow the Lab/Node/Terminal status block into the layout at narrow
+       widths instead of hiding it — the information is relocated, not dropped. */
+    .header-left {
+        flex-wrap: wrap;
+    }
+
+    /* Keep Group identity and Logout reachable beside the Lab actions. */
+    .header-right {
+        max-width: 100%;
+        flex-wrap: wrap;
+    }
+
+    .header-info {
+        flex-wrap: wrap;
+        row-gap: 0.25rem;
+    }
+
+    .controls {
+        flex-wrap: wrap;
+    }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    :root {
+        --border-color: CanvasText;
+        --text-color: CanvasText;
+        --bg-color: Canvas;
+        --surface-color: Canvas;
+    }
+
+    .node circle {
+        stroke-width: 3px;
+    }
+
+    button {
+        border: 2px solid CanvasText;
+    }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* Grouping Boxes */
+.group-box {
+    fill: rgba(0, 0, 0, 0.05);
+    stroke: var(--text-muted);
+    stroke-width: 2;
+    stroke-dasharray: 5, 5;
+    rx: 8;
+    cursor: grab;
+    transition: stroke 0.2s, fill 0.2s;
+}
+
+[data-theme="dark"] .group-box {
+    fill: rgba(255, 255, 255, 0.05);
+}
+
+.group-box:hover {
+    stroke: var(--primary-color);
+    fill: rgba(0, 102, 204, 0.05);
+}
+
+.group-box.dragging {
+    cursor: grabbing;
+}
+
+.group-box.selected {
+    stroke: var(--primary-color);
+    stroke-width: 3;
+    stroke-dasharray: none;
+    fill: rgba(0, 102, 204, 0.1);
+}
+
+/* A Group is keyboard-focusable (tabindex=0, role=button); give its box the
+   same focus ring the Node circle gets so a keyboard user can see which
+   cluster is focused. */
+.group-item:focus {
+    outline: none;
+}
+
+.group-item:focus-visible .group-box {
+    stroke: var(--focus-color);
+    stroke-width: 3;
+    stroke-dasharray: none;
+}
+
+.group-label {
+    font-size: 14px;
+    font-weight: 600;
+    fill: var(--text-muted);
+    text-anchor: start;
+    pointer-events: none;
+    user-select: none;
+}
+
+/* Node Selection */
+.node.selected circle {
+    stroke: var(--primary-color);
+    stroke-width: 4px;
+    filter: drop-shadow(0 0 4px var(--primary-color));
+}
+
+.node.selected.pinned circle {
+    stroke-dasharray: none;
+    /* Solid stroke for selected even if pinned */
+}
+
+/* ── Sidebar Lab List ───────────────────────────────────────────────────── */
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Container filling sidebar below the header */
+.sidebar-labs {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    min-height: 0;
+}
+
+/* Search + filter chips area */
+.sidebar-labs-controls {
+    padding: 0.5rem 0.5rem 0.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    flex-shrink: 0;
+    border-bottom: 1px solid var(--border-color);
+}
+
+/* Search input */
+.sidebar-lab-search {
+    width: 100%;
+    padding: 0.3rem 0.55rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    background: var(--bg-color);
+    color: var(--text-color);
+    font-size: 0.82rem;
+    font-family: inherit;
+}
+
+::placeholder {
+    color: var(--text-muted);
+    opacity: 1; /* Firefox otherwise dims placeholder text below this */
+}
+
+.sidebar-lab-search:focus-visible {
+    outline: 2px solid var(--focus-color);
+    outline-offset: 1px;
+}
+
+/* Results count */
+.sidebar-lab-count {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    margin: 0;
+    padding: 0 0.1rem;
+}
+
+/* Scrollable lab list */
+.sidebar-lab-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    flex: 1;
+    overflow-y: auto;
+    min-height: 0;
+}
+
+/* Individual lab row */
+.sidebar-lab-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    padding: 0.5rem 0.6rem;
+    border-bottom: 1px solid var(--border-color);
+    transition: background 0.12s;
+}
+
+.sidebar-lab-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.4rem;
+    width: 100%;
+}
+
+.sidebar-lab-item:hover {
+    background: var(--surface-hover);
+}
+
+.sidebar-lab-name {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--text-color);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
+    flex: 1;
+}
+
+.sidebar-lab-desc {
+    font-size: 0.71rem;
+    color: var(--text-muted);
+    line-height: 1.4;
+    margin: 0;
+    width: 100%;
+}
+
+.sidebar-lab-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+    width: 100%;
+    margin-top: 0.15rem;
+}
+
+.sidebar-lab-tag {
+    font-size: 0.62rem;
+    font-weight: 500;
+    color: var(--text-muted);
+    background: var(--surface-color);
+    padding: 0.15rem 0.35rem;
+    border-radius: 4px;
+    border: 1px solid var(--border-color);
+}
+
+/* Play button inside lab row */
+.sidebar-lab-start {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.3rem;
+    width: 26px;
+    height: 26px;
+    flex-shrink: 0;
+    border-radius: 50%;
+}
+
+/* Persistent Config on the Group page: resume or seed, and "Start clean" */
+.sidebar-lab-config {
+    font-size: 0.71rem;
+    color: var(--text-muted);
+    line-height: 1.4;
+    margin: 0;
+    width: 100%;
+}
+
+.sidebar-lab-start-clean {
+    align-self: flex-start;
+    /* WCAG 2.2 AA 2.5.8: a 24px target. */
+    min-height: 24px;
+    padding: 0.15rem 0.5rem;
+    font-size: 0.78rem;
+    font-family: inherit;
+    color: var(--text-color);
+    background: transparent;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.sidebar-lab-start-clean:hover,
+.sidebar-lab-start-clean:focus-visible {
+    border-color: var(--primary-color);
+}
+
+/* Empty / loading states */
+.sidebar-lab-empty {
+    padding: 1.25rem 0.75rem;
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 0.82rem;
+    list-style: none;
+}
+
+/* Status/spinner strip at the bottom of sidebar during lab start */
+.sidebar-lab-status {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.65rem 0.75rem;
+    background: var(--surface-color);
+    border-top: 1px solid var(--border-color);
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: var(--text-color);
+    flex-shrink: 0;
+}
+
+.sidebar-lab-spinner {
+    width: 14px;
+    height: 14px;
+    border: 2px solid var(--border-color);
+    border-top-color: var(--primary-color);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    flex-shrink: 0;
+}
+
+/* ── Topology Viewport & Empty State ────────────────────────────────────── */
+
+/* Wraps SVG + empty-state overlay within .topology-container grid row 2 */
+.topology-viewport {
+    position: relative;
+    overflow: hidden;
+    min-height: 0;
+}
+
+/* Shared zoom and arrange controls. The running Lab and Authoring status
+   rows each override the placement in their own scope. */
+.canvas-controls {
+    position: absolute;
+    bottom: .75rem;
+    right: .75rem;
+    z-index: 10;
+    display: flex;
+    gap: .25rem;
+    padding: .25rem;
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: .4rem;
+    box-shadow: var(--shadow-sm);
+}
+
+.canvas-controls .btn-icon {
+    width: 2.25rem;
+    height: 2.25rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    cursor: pointer;
+}
+
+.canvas-controls .canvas-control-labelled {
+    width: auto;
+    gap: .25rem;
+    padding: 0 .5rem;
+    font-weight: 600;
+}
+
+/* Centered placeholder shown when no lab is running */
+.topology-empty-state {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.topology-empty-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.65rem;
+    text-align: center;
+    color: var(--text-muted);
+    opacity: 0.6;
+}
+
+.topology-empty-inner h2 {
+    font-size: 1.05rem;
+    font-weight: 600;
+    margin: 0;
+    color: var(--text-muted);
+}
+
+.topology-empty-inner p {
+    font-size: 0.88rem;
+    margin: 0;
+}
+
+/* The Learner's start screen (Multi-Lab Mode): the Group's Assignment as
+   cards, in place of the empty state. Scrolls when the Assignment is long. */
+.start-screen {
+    position: absolute;
+    inset: 0;
+    overflow-y: auto;
+    z-index: 1;
+    padding: 1rem;
+}
+
+.start-screen-inner {
+    max-width: 44rem;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.start-screen-inner h2 {
+    font-size: 1.05rem;
+    font-weight: 600;
+    margin: 0;
+    color: var(--text-color);
+}
+
+.start-screen-sub {
+    font-size: 0.88rem;
+    margin: -0.4rem 0 0;
+    color: var(--text-muted);
+}
+
+.start-screen-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.catalog-area-heading {
+    font-size: 1rem;
+    margin: 0.5rem 0;
+    color: var(--text-color);
+}
+
+/* In the sidebar an Area is a compact tinted band, so the Labs under it
+   read as its members. */
+.sidebar-lab-area .catalog-area-heading {
+    margin: 0;
+    padding: 0.2rem 0.75rem;
+    font-size: 0.8rem;
+    font-weight: 700;
+    background: var(--bg-color);
+    border-top: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.catalog-area-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.start-screen-area-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
+    gap: 0.5rem;
+    align-content: start;
+}
+
+/* A card on the start screen is a Catalog card that also carries a Start
+   control, so it keeps the Catalog card's spacing and adds the action row. */
+.start-screen-card .catalog-card-actions {
+    align-items: center;
+}
+
+/*
+  Protocol badges (OSPF, BGP, ExaBGP, static).
+  Light: #1e3a5f on #eff6ff  → contrast 10.57:1  (WCAG AA ✓)
+  Dark:  #93c5fd on #1e1e1e  → contrast 9.24:1   (WCAG AA ✓)
+*/
+.badge {
+    display: inline-block;
+    padding: 0.2rem 0.6rem;
+    background: #eff6ff;
+    color: #1e3a5f;
+    border: 1px solid #bfdbfe;
+    font-size: 0.72rem;
+    font-weight: 700;
+    border-radius: 12px;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+/*
+  Node-count badge (neutral).
+  Light: #374151 on #f3f4f6  → contrast 9.37:1  (WCAG AA ✓)
+  Dark:  #9ca3af on #1e1e1e  → contrast 6.57:1  (WCAG AA ✓)
+*/
+.badge-nodes {
+    background: #f3f4f6;
+    color: #374151;
+    border-color: #d1d5db;
+}
+
+/* Dark theme overrides */
+
+[data-theme="dark"] .badge {
+    background: transparent;
+    color: #93c5fd;
+    border-color: #3b82f6;
+}
+
+[data-theme="dark"] .badge-nodes {
+    background: transparent;
+    color: #9ca3af;
+    border-color: #4b5563;
+}
+
+/*
+  Service badge in Topology (e.g. DHCP).
+  Light: #1e3a5f on #eff6ff  → contrast 10.57:1  (WCAG AA ✓)
+  Dark:  #93c5fd on #1e1e1e  → contrast 9.24:1   (WCAG AA ✓)
+*/
+.service-badge {
+    user-select: none;
+}
+
+.service-badge-bg {
+    fill: #eff6ff;
+    stroke: #2563eb;
+    stroke-width: 1px;
+}
+
+.service-badge-text {
+    fill: #1e3a5f;
+    font-size: 10px;
+    font-weight: 700;
+    text-anchor: middle;
+    dominant-baseline: central;
+    letter-spacing: 0.03em;
+    stroke: none;
+    stroke-width: 0;
+    paint-order: normal;
+}
+
+[data-theme="dark"] .service-badge-bg {
+    fill: #1e1e1e;
+    stroke: #3b82f6;
+}
+
+[data-theme="dark"] .service-badge-text {
+    fill: #93c5fd;
+}
+
+/*
+  Relay badge in Topology. The square corners and dashed outline distinguish a
+  Relay from a Service without relying on colour; the text also names the
+  covered Subnets.
+  Light: #7c2d12 on #fff7ed  → contrast 8.26:1  (WCAG AA ✓)
+  Dark:  #fdba74 on #1e1e1e  → contrast 9.69:1   (WCAG AA ✓)
+*/
+.relay-badge {
+    user-select: none;
+}
+
+.relay-badge-bg {
+    fill: #fff7ed;
+    stroke: #c2410c;
+    stroke-width: 1px;
+    stroke-dasharray: 4 2;
+}
+
+.relay-badge-text {
+    fill: #7c2d12;
+    font-size: 10px;
+    font-weight: 700;
+    text-anchor: middle;
+    dominant-baseline: central;
+    letter-spacing: 0.03em;
+    stroke: none;
+    stroke-width: 0;
+    paint-order: normal;
+}
+
+/* Stacked Relay badge: the heading reads like the Service badges; the tag
+   and Subnet lines are monospaced so prefixes line up under one another. */
+.relay-badge-tag {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-weight: 700;
+    letter-spacing: 0;
+    opacity: 0.75;
+}
+
+.relay-badge-subnet {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-weight: 600;
+    letter-spacing: 0;
+}
+
+[data-theme="dark"] .relay-badge-bg {
+    fill: #1e1e1e;
+    stroke: #fb923c;
+}
+
+[data-theme="dark"] .relay-badge-text {
+    fill: #fdba74;
+}
+
+/* A badge for a Service with a detail panel (e.g. DHCP's Lease table) is a
+   real control, not just an indicator — cursor, hover and focus feedback say
+   so, matching the Node circle's own :focus-visible treatment below. A Relay
+   badge is the same kind of control: it opens the Relay's activity panel. */
+.service-badge[role="button"],
+.relay-badge[role="button"] {
+    cursor: pointer;
+}
+
+.service-badge[role="button"]:hover .service-badge-bg,
+.relay-badge[role="button"]:hover .relay-badge-bg {
+    stroke-width: 2px;
+}
+
+.service-badge[role="button"]:focus,
+.relay-badge[role="button"]:focus {
+    outline: none;
+}
+
+.service-badge[role="button"]:focus-visible .service-badge-bg,
+.relay-badge[role="button"]:focus-visible .relay-badge-bg {
+    stroke-width: 2px;
+    outline: 2px solid var(--focus-color);
+    outline-offset: 1px;
+}
+
+/* ── Relay Path Overlay ──────────────────────────────────────────────────── */
+
+.layer-relay-paths {
+    pointer-events: none;
+}
+
+.relay-path-halo {
+    fill: none;
+    stroke: rgba(255, 255, 255, 0.9);
+    stroke-width: 6px;
+    stroke-linecap: round;
+    pointer-events: none;
+}
+
+[data-theme="dark"] .relay-path-halo {
+    stroke: rgba(30, 30, 30, 0.9);
+}
+
+.relay-path-spline {
+    fill: none;
+    stroke: #c2410c;
+    stroke-width: 2.5px;
+    stroke-dasharray: 6 3;
+    stroke-linecap: round;
+    pointer-events: none;
+    animation: relayFlow 1s linear infinite;
+}
+
+[data-theme="dark"] .relay-path-spline {
+    stroke: #fb923c;
+}
+
+.relay-arrow-head {
+    fill: #c2410c;
+}
+
+[data-theme="dark"] .relay-arrow-head {
+    fill: #fb923c;
+}
+
+@keyframes relayFlow {
+    to {
+        stroke-dashoffset: -18;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .relay-path-spline {
+        animation: none !important;
+    }
+}
+
+/* Midpoint Address Family Chip */
+.relay-path-chip {
+    pointer-events: none;
+    user-select: none;
+}
+
+.relay-path-chip rect {
+    fill: #fff7ed;
+    stroke: #c2410c;
+    stroke-width: 1px;
+}
+
+.relay-path-chip text {
+    fill: #7c2d12;
+    font-size: 10px;
+    font-weight: 700;
+    text-anchor: middle;
+    dominant-baseline: central;
+}
+
+[data-theme="dark"] .relay-path-chip rect {
+    fill: #1e1e1e;
+    stroke: #fb923c;
+}
+
+[data-theme="dark"] .relay-path-chip text {
+    fill: #fdba74;
+}
+
+/* Unreachable floating terminus */
+.relay-unreachable-terminus {
+    pointer-events: auto;
+    cursor: help;
+    user-select: none;
+    outline: none;
+}
+
+.relay-unreachable-terminus:focus-visible rect,
+.relay-unreachable-terminus:focus rect {
+    stroke: var(--focus-color, #2563eb);
+    stroke-width: 2px;
+}
+
+.relay-unreachable-terminus rect {
+    fill: #fef2f2;
+    stroke: #dc2626;
+    stroke-width: 1px;
+}
+
+.relay-unreachable-terminus text {
+    fill: #991b1b;
+    font-size: 11px;
+    font-weight: 600;
+    text-anchor: middle;
+    dominant-baseline: central;
+}
+
+[data-theme="dark"] .relay-unreachable-terminus rect {
+    fill: #2d1515;
+    stroke: #f87171;
+}
+
+[data-theme="dark"] .relay-unreachable-terminus text {
+    fill: #fca5a5;
+}
+
+/* DNS Service badge in Topology. Purple distinguishes DNS from the default
+   Service blue; the Service/Relay interaction styles above still apply.
+   Light: #4c1d95 on #f5f3ff → contrast 9.99:1  (WCAG AA ✓)
+   Dark:  #c4b5fd on #1e1e1e → contrast 9.03:1   (WCAG AA ✓) */
+.service-badge-dns .service-badge-bg {
+    fill: #f5f3ff;
+    stroke: #7c3aed;
+}
+
+.service-badge-dns .service-badge-text {
+    fill: #4c1d95;
+}
+
+[data-theme="dark"] .service-badge-dns .service-badge-bg {
+    fill: #1e1e1e;
+    stroke: #a78bfa;
+}
+
+[data-theme="dark"] .service-badge-dns .service-badge-text {
+    fill: #c4b5fd;
+}
+
+/* Recursive Caching Resolver badge in Topology. Teal separates the Resolver
+   from the Authoritative DNS purple next to it in the same hierarchy; the
+   Service/Relay interaction styles above still apply.
+   Light: #134e4a on #f0fdfa → contrast 9.09:1  (WCAG AA ✓)
+   Dark:  #5eead4 on #1e1e1e → contrast 11.27:1 (WCAG AA ✓) */
+.service-badge-resolver .service-badge-bg {
+    fill: #f0fdfa;
+    stroke: #0d9488;
+}
+
+.service-badge-resolver .service-badge-text {
+    fill: #134e4a;
+}
+
+[data-theme="dark"] .service-badge-resolver .service-badge-bg {
+    fill: #1e1e1e;
+    stroke: #2dd4bf;
+}
+
+[data-theme="dark"] .service-badge-resolver .service-badge-text {
+    fill: #5eead4;
+}
+
+/* ── DNS Service (Zone & Records, Query Activity, Zone Status) panel ────── */
+
+.modal-content.dns-modal {
+    max-width: 640px;
+}
+
+.dns-modal-section {
+    margin-bottom: 1.25rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.dns-modal-section:last-child {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: none;
+}
+
+.dns-section-heading {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text-color);
+    margin: 0 0 0.6rem;
+}
+
+.dns-modal-status {
+    margin: 0 0 0.75rem;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+}
+
+.dns-modal-status:empty {
+    display: none;
+}
+
+.dns-modal-status.dns-modal-status-error {
+    color: var(--error-color);
+}
+
+.dns-modal-error {
+    margin: 0.5rem 0;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.8rem;
+    line-height: 1.3;
+    color: var(--error-color);
+    font-weight: 500;
+    border: 1px solid var(--error-color);
+    border-radius: 4px;
+    background: var(--surface-hover);
+}
+
+.dns-modal-error[hidden] {
+    display: none;
+}
+
+.dns-records-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+    margin-bottom: 0.75rem;
+}
+
+.dns-records-table th,
+.dns-records-table td {
+    padding: 0.4rem 0.5rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border-color);
+    color: var(--text-color);
+}
+
+.dns-records-table th {
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+.dns-record-form {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 0.75rem;
+}
+
+.dns-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    flex: 1 1 120px;
+}
+
+.dns-form-group-wide {
+    flex: 2 1 180px;
+}
+
+.dns-form-group label {
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--text-color);
+}
+
+.dns-form-group input,
+.dns-form-group select {
+    padding: 0.35rem 0.5rem;
+    font-size: 0.85rem;
+    font-family: monospace;
+    border: 1px solid var(--input-border-color);
+    border-radius: 4px;
+    background: var(--surface-color);
+    color: var(--text-color);
+}
+
+.dns-form-group input:focus-visible,
+.dns-form-group select:focus-visible {
+    outline: 2px solid var(--focus-color);
+    outline-offset: 1px;
+}
+
+.dns-record-form-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.dns-record-submit-btn {
+    padding: 0.35rem 0.75rem;
+    font-size: 0.85rem;
+    font-weight: 500;
+    border-radius: 4px;
+    background: var(--primary-button-bg);
+    color: #ffffff;
+    border: none;
+    cursor: pointer;
+}
+
+.dns-record-submit-btn:hover:not(:disabled) {
+    background: var(--primary-hover);
+}
+
+.dns-record-submit-btn:focus-visible {
+    outline: 2px solid var(--focus-color);
+    outline-offset: 2px;
+}
+
+.dns-record-submit-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.dns-record-cancel-btn {
+    padding: 0.35rem 0.6rem;
+    font-size: 0.8rem;
+    border-radius: 4px;
+    background: var(--surface-color);
+    color: var(--text-color);
+    border: 1px solid var(--input-border-color);
+    cursor: pointer;
+}
+
+.dns-record-cancel-btn:hover {
+    background: var(--primary-hover);
+    color: #ffffff;
+}
+
+.dns-record-cancel-btn:focus-visible {
+    outline: 2px solid var(--focus-color);
+    outline-offset: 2px;
+}
+
+.dns-record-cancel-btn[hidden] {
+    display: none;
+}
+
+.dns-record-action-btn {
+    padding: 0.15rem 0.5rem;
+    font-size: 0.75rem;
+    border-radius: 4px;
+    background: var(--surface-color);
+    color: var(--text-color);
+    border: 1px solid var(--input-border-color);
+    cursor: pointer;
+}
+
+.dns-record-action-btn:hover {
+    background: var(--primary-hover);
+    color: #ffffff;
+}
+
+.dns-record-action-btn:focus-visible {
+    outline: 2px solid var(--focus-color);
+    outline-offset: 2px;
+}
+
+.dns-record-delete-btn:hover {
+    background: var(--error-color);
+    color: #ffffff;
+    border-color: var(--error-color);
+}
+
+.dns-record-actions {
+    display: flex;
+    gap: 0.4rem;
+}
+
+/* ── RPKI CA (ROAs and ASPAs per Hosted CA) panel ───────────────────────── */
+
+.modal-content.rpki-modal {
+    max-width: 680px;
+}
+
+.rpki-modal-status {
+    margin: 0 0 0.75rem;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+}
+
+.rpki-modal-status:empty {
+    display: none;
+}
+
+.rpki-modal-status.rpki-modal-status-error {
+    color: var(--error-color);
+}
+
+/* One Hosted CA shows at a time, chosen here. */
+.rpki-ca-picker {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--border-color);
+    font-size: 0.85rem;
+}
+
+.rpki-ca-picker label {
+    font-weight: 600;
+    color: var(--text-color);
+}
+
+.rpki-ca-picker select {
+    min-height: 2rem;
+    padding: 0.25rem 0.5rem;
+    font-size: 16px;
+    font-family: monospace;
+    border: 1px solid var(--input-border-color);
+    border-radius: 4px;
+    background: var(--surface-color);
+    color: var(--text-color);
+}
+
+.rpki-ca-picker[hidden],
+.rpki-ca-section[hidden],
+.rpki-table[hidden] {
+    display: none;
+}
+
+.rpki-hint {
+    margin: 0.4rem 0 0;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.rpki-ca-heading {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text-color);
+    margin: 0 0 0.2rem;
+}
+
+.rpki-ca-resources {
+    font-family: monospace;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin: 0 0 0.6rem;
+}
+
+.rpki-subheading {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-color);
+    margin: 0.6rem 0 0.4rem;
+}
+
+.rpki-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+    margin-bottom: 0.5rem;
+}
+
+.rpki-table th,
+.rpki-table td {
+    padding: 0.4rem 0.5rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border-color);
+    color: var(--text-color);
+    font-family: monospace;
+}
+
+.rpki-table th {
+    color: var(--text-muted);
+    font-family: inherit;
+    font-weight: 500;
+}
+
+.rpki-empty {
+    margin: 0 0 0.5rem;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.rpki-empty[hidden] {
+    display: none;
+}
+
+.rpki-form {
+    margin: 0.5rem 0 0;
+}
+
+.rpki-fieldset {
+    margin: 0;
+    padding: 0.5rem 0.75rem 0.75rem;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+}
+
+.rpki-legend {
+    padding: 0 0.25rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-color);
+}
+
+.rpki-form-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 0.6rem;
+}
+
+.rpki-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    flex: 1 1 140px;
+}
+
+.rpki-form-group label {
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--text-color);
+}
+
+.rpki-form-group input {
+    box-sizing: border-box;
+    min-height: 2rem;
+    padding: 0.35rem 0.5rem;
+    font-size: 0.85rem;
+    font-family: monospace;
+    border: 1px solid var(--input-border-color);
+    border-radius: 4px;
+    background: var(--surface-color);
+    color: var(--text-color);
+}
+
+.rpki-form-group input[aria-invalid="true"] {
+    border-width: 2px;
+    border-color: var(--error-color);
+}
+
+.rpki-form-group input:focus-visible {
+    outline: 2px solid var(--focus-color);
+    outline-offset: 1px;
+}
+
+.rpki-form-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.6rem;
+}
+
+.rpki-submit-btn {
+    padding: 0.35rem 0.75rem;
+    font-size: 0.85rem;
+    font-weight: 500;
+    border-radius: 4px;
+    background: var(--primary-button-bg);
+    color: #ffffff;
+    border: none;
+    cursor: pointer;
+}
+
+.rpki-submit-btn:hover:not(:disabled) {
+    background: var(--primary-hover);
+}
+
+.rpki-submit-btn:focus-visible,
+.rpki-cancel-btn:focus-visible,
+.rpki-action-btn:focus-visible {
+    outline: 2px solid var(--focus-color);
+    outline-offset: 2px;
+}
+
+.rpki-submit-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.rpki-cancel-btn {
+    padding: 0.35rem 0.6rem;
+    font-size: 0.8rem;
+    border-radius: 4px;
+    background: var(--surface-color);
+    color: var(--text-color);
+    border: 1px solid var(--input-border-color);
+    cursor: pointer;
+}
+
+.rpki-cancel-btn:hover {
+    background: var(--primary-hover);
+    color: #ffffff;
+}
+
+.rpki-cancel-btn[hidden] {
+    display: none;
+}
+
+.rpki-row-actions {
+    display: flex;
+    gap: 0.4rem;
+}
+
+.rpki-action-btn {
+    padding: 0.15rem 0.5rem;
+    font-size: 0.75rem;
+    border-radius: 4px;
+    background: var(--surface-color);
+    color: var(--text-color);
+    border: 1px solid var(--input-border-color);
+    cursor: pointer;
+}
+
+.rpki-action-btn:hover {
+    background: var(--primary-hover);
+    color: #ffffff;
+}
+
+.rpki-remove-btn:hover {
+    background: var(--error-color);
+    border-color: var(--error-color);
+}
+
+.rpki-form-error {
+    margin: 0.5rem 0 0;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.8rem;
+    line-height: 1.3;
+    color: var(--error-color);
+    font-weight: 500;
+    border: 1px solid var(--error-color);
+    border-radius: 4px;
+    background: var(--surface-hover);
+}
+
+.rpki-form-error:focus-visible {
+    outline: 2px solid var(--focus-color);
+    outline-offset: 2px;
+}
+
+.rpki-form-error[hidden] {
+    display: none;
+}
+
+/* ── Validator (VRPs, ASPAs, refresh times and connected Routers) panel ─── */
+
+.modal-content.validator-modal {
+    max-width: 680px;
+}
+
+.validator-status {
+    margin: 0 0 0.75rem;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+}
+
+/* Kept rendered when empty: a live region that is display:none is not announced. */
+.validator-status:empty {
+    margin: 0;
+}
+
+.validator-status.validator-status-error {
+    color: var(--error-color);
+}
+
+.validator-section {
+    margin-bottom: 1.25rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.validator-section:last-child {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: none;
+}
+
+.validator-heading {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text-color);
+    margin: 0 0 0.5rem;
+}
+
+.validator-filter input:focus-visible {
+    outline: 2px solid var(--focus-color);
+    outline-offset: 1px;
+}
+
+.validator-facts {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    gap: 0.35rem 1rem;
+    margin: 0;
+    font-size: 0.85rem;
+}
+
+.validator-facts dt {
+    color: var(--text-muted);
+}
+
+.validator-facts dd {
+    margin: 0;
+    color: var(--text-color);
+    font-family: monospace;
+}
+
+/* Connected Routers read as tags on one line. */
+.validator-routers {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.validator-routers li {
+    padding: 0 0.4rem;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+}
+
+.validator-filter {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.validator-filter label {
+    font-size: 0.85rem;
+    color: var(--text-color);
+}
+
+.validator-filter input {
+    box-sizing: border-box;
+    min-height: 2rem;
+    padding: 0.35rem 0.5rem;
+    font-size: 0.85rem;
+    font-family: monospace;
+    border: 1px solid var(--input-border-color);
+    border-radius: 4px;
+    background: var(--surface-color);
+    color: var(--text-color);
+}
+
+.validator-muted {
+    margin: 0.4rem 0;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.validator-muted[hidden],
+.validator-filter[hidden],
+.validator-table-scroll[hidden] {
+    display: none;
+}
+
+.validator-table-scroll {
+    max-height: 320px;
+    overflow-y: auto;
+}
+
+.validator-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+}
+
+.validator-table caption {
+    caption-side: bottom;
+    text-align: left;
+    padding-top: 0.4rem;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.validator-table th,
+.validator-table td {
+    padding: 0.4rem 0.5rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border-color);
+    color: var(--text-color);
+    font-family: monospace;
+}
+
+.validator-table th {
+    color: var(--text-muted);
+    font-family: inherit;
+    font-weight: 500;
+}
+
+.dns-stats-controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-bottom: 0.6rem;
+}
+
+.dns-stats-toggle {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.85rem;
+    color: var(--text-color);
+    cursor: pointer;
+}
+
+.dns-stats-toggle input:focus-visible {
+    outline: 2px solid var(--focus-color);
+    outline-offset: 1px;
+}
+
+.dns-stats-cards {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
+.dns-stat-card {
+    flex: 1 1 160px;
+    background: var(--surface-hover);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    padding: 0.75rem;
+}
+
+.dns-stat-label {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
+    margin-bottom: 0.4rem;
+}
+
+.dns-stat-value {
+    font-size: 1.5rem;
+    font-weight: 600;
+    font-family: monospace;
+    color: var(--text-color);
+}
+
+.dns-stat-breakdown {
+    margin: 0;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.15rem 0.75rem;
+    font-size: 0.8rem;
+}
+
+.dns-stat-breakdown dt {
+    color: var(--text-muted);
+    font-family: monospace;
+}
+
+.dns-stat-breakdown dd {
+    margin: 0;
+    text-align: right;
+    font-family: monospace;
+    color: var(--text-color);
+}
+
+.dns-zone-status {
+    margin: 0;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.3rem 1rem;
+    font-size: 0.85rem;
+}
+
+.dns-zone-status dt {
+    font-weight: 500;
+    color: var(--text-muted);
+}
+
+.dns-zone-status dd {
+    margin: 0;
+    font-family: monospace;
+    color: var(--text-color);
+}
+
+/* Secondary Zone Replication & Transfer Log */
+.dns-secondary-section {
+    margin-bottom: 1rem;
+}
+
+.dns-secondary-header {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    padding: 0.75rem;
+    border-radius: 6px;
+    background: var(--surface-hover);
+    border: 1px solid var(--border-color);
+    margin-bottom: 0.75rem;
+}
+
+.dns-secondary-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.25rem;
+    align-items: center;
+}
+
+.dns-secondary-meta-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+}
+
+.dns-secondary-meta-value {
+    font-family: monospace;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-color);
+}
+
+.dns-secondary-state {
+    padding: 0.4rem 0.6rem;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    line-height: 1.35;
+    background: var(--surface-color);
+    border-left: 3px solid var(--primary-color);
+    color: var(--text-color);
+}
+
+.dns-secondary-state:empty {
+    display: none;
+}
+
+.dns-secondary-state.state-warning,
+.dns-secondary-state.state-error {
+    border-left-color: var(--error-color);
+}
+
+.dns-secondary-actions {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.dns-subheading {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin: 0.4rem 0 0.3rem;
+}
+
+.dns-table-scroll {
+    max-height: 180px;
+    overflow-y: auto;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    margin-bottom: 0.75rem;
+}
+
+.dns-secondary-notice {
+    padding: 0.6rem 0.75rem;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    background: var(--surface-hover);
+    border-radius: 4px;
+    border: 1px dashed var(--border-color);
+    margin: 0.5rem 0 0.75rem;
+}
+
+/* DNSSEC Details. The Signed badge names its state in a word, so a signed
+   Zone is distinguishable without colour.
+   Signed light: #14532d on #dcfce7 → 8.30:1  (WCAG AA ✓)
+   Signed dark:  #86efac on #052e16 → 10.62:1 (WCAG AA ✓) */
+.dns-signed-badge {
+    display: inline-block;
+    padding: 0.1rem 0.45rem;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    font-family: monospace;
+    background: #dcfce7;
+    color: #14532d;
+}
+
+[data-theme="dark"] .dns-signed-badge {
+    background: #052e16;
+    color: #86efac;
+}
+
+.dns-signed-badge[hidden] {
+    display: none;
+}
+
+.dns-records-toggle {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-bottom: 0.5rem;
+}
+
+.dns-records-toggle[hidden] {
+    display: none;
+}
+
+.dns-dnssec-hint {
+    margin: 0 0 0.5rem;
+    font-size: 0.8rem;
+    line-height: 1.4;
+    color: var(--text-muted);
+}
+
+.dns-dnssec-ds-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.dns-dnssec-ds-item {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.4rem 0.6rem;
+    border-radius: 4px;
+    background: var(--surface-hover);
+    border: 1px solid var(--border-color);
+}
+
+.dns-dnssec-ds-rdata {
+    flex: 1 1 20rem;
+    font-family: monospace;
+    font-size: 0.75rem;
+    word-break: break-all;
+    color: var(--text-color);
+}
+
+.dns-dnssec-ds-empty {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.dns-link-btn {
+    background: none;
+    border: none;
+    padding: 0;
+    color: var(--primary-color);
+    text-decoration: underline;
+    cursor: pointer;
+    font-size: inherit;
+    font-family: inherit;
+    font-weight: 600;
+    display: inline;
+}
+
+.dns-link-btn:hover {
+    color: var(--primary-hover);
+}
+
+.dns-link-btn:focus-visible {
+    outline: 2px solid var(--focus-color);
+    outline-offset: 2px;
+}
+
+/* ── Recursive Caching Resolver (Cache Inspector, Access Control) panel ─── */
+
+.modal-content.resolver-modal {
+    max-width: 760px;
+}
+
+.resolver-tabs {
+    display: flex;
+    border-bottom: 1px solid var(--border-color);
+    margin-bottom: 0.9rem;
+    gap: 0.25rem;
+}
+
+.resolver-tab {
+    min-height: 2rem;
+    padding: 0.25rem 0.75rem;
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    border-radius: var(--radius) var(--radius) 0 0;
+}
+
+.resolver-tab:hover {
+    color: var(--text-color);
+    background: var(--surface-hover);
+}
+
+.resolver-tab.active {
+    color: var(--primary-color);
+    border-bottom-color: var(--primary-color);
+    background: var(--surface-hover);
+}
+
+.resolver-tab:focus-visible {
+    outline: 2px solid var(--focus-color);
+    outline-offset: -2px;
+}
+
+.resolver-panel:focus-visible {
+    outline: 2px solid var(--focus-color);
+    outline-offset: 2px;
+}
+
+.resolver-hint {
+    margin: 0 0 0.75rem;
+    font-size: 0.8rem;
+    line-height: 1.45;
+    color: var(--text-muted);
+}
+
+.resolver-status {
+    margin: 0 0 0.75rem;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+}
+
+.resolver-status:empty {
+    display: none;
+}
+
+.resolver-status.resolver-status-error {
+    color: var(--error-color);
+}
+
+.resolver-error {
+    margin: 0.5rem 0;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.8rem;
+    line-height: 1.3;
+    color: var(--error-color);
+    font-weight: 500;
+    border: 1px solid var(--error-color);
+    border-radius: 4px;
+    background: var(--surface-hover);
+}
+
+.resolver-error[hidden] {
+    display: none;
+}
+
+.resolver-stats-cards {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-bottom: 0.9rem;
+}
+
+.resolver-stat-card {
+    flex: 1 1 130px;
+    background: var(--surface-hover);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    padding: 0.75rem;
+}
+
+.resolver-stat-label {
+    display: block;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
+    margin-bottom: 0.4rem;
+}
+
+.resolver-stat-value {
+    font-size: 1.35rem;
+    font-weight: 600;
+    font-family: monospace;
+    color: var(--text-color);
+}
+
+.resolver-cache-controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-bottom: 0.6rem;
+}
+
+.resolver-toggle {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.85rem;
+    color: var(--text-color);
+    cursor: pointer;
+}
+
+.resolver-toggle input:focus-visible {
+    outline: 2px solid var(--focus-color);
+    outline-offset: 1px;
+}
+
+/* A cache with a hundred entries must not push the Access Control tab off the
+   bottom of the modal, so the table scrolls inside the panel instead. */
+.resolver-table-scroll {
+    max-height: 320px;
+    overflow-y: auto;
+}
+
+.resolver-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+    margin-bottom: 0.75rem;
+}
+
+.resolver-table th,
+.resolver-table td {
+    padding: 0.4rem 0.5rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border-color);
+    color: var(--text-color);
+}
+
+.resolver-table td {
+    font-family: monospace;
+    /* A long RRset (a chain of glue addresses) must wrap rather than widen the
+       table past the modal. */
+    overflow-wrap: anywhere;
+}
+
+.resolver-table th {
+    color: var(--text-muted);
+    font-weight: 500;
+    position: sticky;
+    top: 0;
+    background: var(--surface-color);
+}
+
+/* Cache entry status. The badge carries its own word — HIT, NXDOMAIN, NODATA
+   — so the positive/negative distinction never rests on colour alone.
+   HIT      light: #14532d on #dcfce7 → 8.30:1  (WCAG AA ✓)
+   HIT      dark:  #86efac on #052e16 → 10.62:1 (WCAG AA ✓)
+   Negative light: #713f12 on #fef9c3 → 8.07:1  (WCAG AA ✓)
+   Negative dark:  #fde047 on #422006 → 11.06:1 (WCAG AA ✓) */
+.resolver-status-badge {
+    display: inline-block;
+    padding: 0.1rem 0.4rem;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    font-family: monospace;
+}
+
+.resolver-status-hit {
+    background: #dcfce7;
+    color: #14532d;
+}
+
+.resolver-status-negative {
+    background: #fef9c3;
+    color: #713f12;
+}
+
+[data-theme="dark"] .resolver-status-hit {
+    background: #052e16;
+    color: #86efac;
+}
+
+[data-theme="dark"] .resolver-status-negative {
+    background: #422006;
+    color: #fde047;
+}
+
+/* DNSSEC validation verdict. Kept visually distinct from the HIT/NXDOMAIN
+   badge beside it, and each badge carries its own word, so the verdict never
+   rests on colour alone.
+   SECURE   light: #14532d on #dcfce7 → 8.30:1  (WCAG AA ✓)
+   SECURE   dark:  #86efac on #052e16 → 10.62:1 (WCAG AA ✓)
+   BOGUS    light: #7f1d1d on #fee2e2 → 8.20:1  (WCAG AA ✓)
+   BOGUS    dark:  #fca5a5 on #450a0a → 8.51:1  (WCAG AA ✓)
+   INSECURE light: #374151 on #f3f4f6 → 9.37:1  (WCAG AA ✓)
+   INSECURE dark:  #d1d5db on #1f2937 → 9.96:1  (WCAG AA ✓)
+   AD       light: #1e3a8a on #dbeafe → 8.49:1  (WCAG AA ✓)
+   AD       dark:  #93c5fd on #172554 → 8.15:1  (WCAG AA ✓) */
+.resolver-validation-cell {
+    display: inline-flex;
+    gap: 0.3rem;
+    align-items: center;
+}
+
+.resolver-validation-badge,
+.resolver-ad-flag {
+    display: inline-block;
+    padding: 0.1rem 0.4rem;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    font-family: monospace;
+}
+
+.resolver-validation-secure {
+    background: #dcfce7;
+    color: #14532d;
+}
+
+.resolver-validation-bogus {
+    background: #fee2e2;
+    color: #7f1d1d;
+}
+
+.resolver-validation-insecure {
+    background: #f3f4f6;
+    color: #374151;
+}
+
+.resolver-ad-flag {
+    background: #dbeafe;
+    color: #1e3a8a;
+}
+
+[data-theme="dark"] .resolver-validation-secure {
+    background: #052e16;
+    color: #86efac;
+}
+
+[data-theme="dark"] .resolver-validation-bogus {
+    background: #450a0a;
+    color: #fca5a5;
+}
+
+[data-theme="dark"] .resolver-validation-insecure {
+    background: #1f2937;
+    color: #d1d5db;
+}
+
+[data-theme="dark"] .resolver-ad-flag {
+    background: #172554;
+    color: #93c5fd;
+}
+
+.resolver-row-btn {
+    padding: 0.15rem 0.5rem;
+    font-size: 0.75rem;
+    font-family: inherit;
+    border-radius: 4px;
+    background: var(--surface-color);
+    color: var(--text-color);
+    border: 1px solid var(--input-border-color);
+    cursor: pointer;
+}
+
+.resolver-row-btn:hover {
+    background: var(--primary-hover);
+    color: #ffffff;
+}
+
+.resolver-row-btn:focus-visible {
+    outline: 2px solid var(--focus-color);
+    outline-offset: 2px;
+}
+
+.resolver-row-delete-btn:hover {
+    background: var(--error-color);
+    color: #ffffff;
+    border-color: var(--error-color);
+}
+
+.resolver-rule-actions {
+    display: flex;
+    gap: 0.4rem;
+}
+
+.resolver-danger-btn {
+    padding: 0.35rem 0.6rem;
+    font-size: 0.8rem;
+    border-radius: 4px;
+    background: var(--surface-color);
+    color: var(--error-color);
+    border: 1px solid var(--error-color);
+    cursor: pointer;
+}
+
+.resolver-danger-btn:hover {
+    background: var(--error-color);
+    color: #ffffff;
+}
+
+.resolver-danger-btn:focus-visible {
+    outline: 2px solid var(--focus-color);
+    outline-offset: 2px;
+}
+
+.resolver-access-form {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 0.75rem;
+}
+
+.resolver-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    flex: 1 1 120px;
+}
+
+.resolver-form-group-wide {
+    flex: 2 1 200px;
+}
+
+.resolver-form-group label {
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--text-color);
+}
+
+.resolver-form-group input,
+.resolver-form-group select {
+    padding: 0.35rem 0.5rem;
+    font-size: 0.85rem;
+    font-family: monospace;
+    border: 1px solid var(--input-border-color);
+    border-radius: 4px;
+    background: var(--surface-color);
+    color: var(--text-color);
+}
+
+.resolver-form-group input:focus-visible,
+.resolver-form-group select:focus-visible {
+    outline: 2px solid var(--focus-color);
+    outline-offset: 1px;
+}
+
+.resolver-form-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.resolver-submit-btn {
+    padding: 0.35rem 0.75rem;
+    font-size: 0.85rem;
+    font-weight: 500;
+    border-radius: 4px;
+    background: var(--primary-button-bg);
+    color: #ffffff;
+    border: none;
+    cursor: pointer;
+}
+
+.resolver-submit-btn:hover:not(:disabled) {
+    background: var(--primary-hover);
+}
+
+.resolver-submit-btn:focus-visible {
+    outline: 2px solid var(--focus-color);
+    outline-offset: 2px;
+}
+
+.resolver-submit-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.resolver-cancel-btn {
+    padding: 0.35rem 0.6rem;
+    font-size: 0.8rem;
+    border-radius: 4px;
+    background: var(--surface-color);
+    color: var(--text-color);
+    border: 1px solid var(--input-border-color);
+    cursor: pointer;
+}
+
+.resolver-cancel-btn:hover {
+    background: var(--primary-hover);
+    color: #ffffff;
+}
+
+.resolver-cancel-btn:focus-visible {
+    outline: 2px solid var(--focus-color);
+    outline-offset: 2px;
+}
+
+.resolver-cancel-btn[hidden] {
+    display: none;
+}
+
+/* ── DHCP Service (Pool & Leases) panel ─────────────────────────────────── */
+
+.modal-content.dhcp-leases-modal {
+    max-width: 640px;
+}
+
+.dhcp-section-heading {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text-color);
+    margin: 0 0 0.6rem;
+}
+
+.dhcp-pools-section {
+    margin-bottom: 1.25rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.dhcp-pool-card {
+    background: var(--surface-hover);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    padding: 0.75rem;
+    margin-bottom: 0.75rem;
+}
+
+.dhcp-pool-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.6rem;
+    font-size: 0.85rem;
+}
+
+.dhcp-pool-subnet-label,
+.dhcp-pool-interface-label {
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+.dhcp-pool-subnet-value,
+.dhcp-pool-interface-value {
+    font-family: monospace;
+    font-weight: 600;
+    color: var(--text-color);
+}
+
+.dhcp-pool-readonly-badge {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    font-style: italic;
+}
+
+.dhcp-pool-fields {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 0.75rem;
+}
+
+.dhcp-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    flex: 1 1 130px;
+}
+
+.dhcp-form-group label {
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--text-color);
+}
+
+.dhcp-form-group input,
+.dhcp-form-group select {
+    padding: 0.35rem 0.5rem;
+    font-size: 0.85rem;
+    font-family: monospace;
+    border: 1px solid var(--input-border-color);
+    border-radius: 4px;
+    background: var(--surface-color);
+    color: var(--text-color);
+}
+
+.dhcp-form-group input:focus-visible,
+.dhcp-form-group select:focus-visible {
+    outline: 2px solid var(--focus-color);
+    outline-offset: 1px;
+}
+
+.dhcp-form-group input[aria-invalid="true"] {
+    border-color: var(--error-color);
+    outline: 1px solid var(--error-color);
+}
+
+.dhcp-pool-actions {
+    margin-top: auto;
+}
+
+.dhcp-pool-submit-btn {
+    padding: 0.35rem 0.75rem;
+    font-size: 0.85rem;
+    font-weight: 500;
+    border-radius: 4px;
+    background: var(--primary-button-bg);
+    color: #ffffff;
+    border: none;
+    cursor: pointer;
+}
+
+.dhcp-pool-submit-btn:hover:not(:disabled) {
+    background: var(--primary-hover);
+}
+
+.dhcp-pool-submit-btn:focus-visible {
+    outline: 2px solid var(--focus-color);
+    outline-offset: 2px;
+}
+
+.dhcp-pool-submit-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.dhcp-pool-feedback {
+    margin-top: 0.5rem;
+    font-size: 0.8rem;
+    line-height: 1.3;
+}
+
+.dhcp-pool-feedback:empty {
+    display: none;
+}
+
+.dhcp-pool-feedback.dhcp-pool-error {
+    color: var(--error-color);
+    font-weight: 500;
+}
+
+.dhcp-pool-feedback.dhcp-pool-success {
+    color: var(--success-color);
+    font-weight: 500;
+}
+
+.dhcp-reservations-fieldset {
+    margin: 0.75rem 0 0;
+    padding: 0.5rem 0.75rem 0.75rem;
+    border: 1px solid var(--input-border-color);
+    border-radius: 4px;
+}
+
+.dhcp-reservations-fieldset legend {
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--text-color);
+    padding: 0 0.25rem;
+}
+
+.dhcp-reservation-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.dhcp-reservation-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 0.75rem;
+}
+
+.dhcp-reservation-remove-btn {
+    padding: 0.35rem 0.6rem;
+    font-size: 0.8rem;
+    border-radius: 4px;
+    background: var(--surface-color);
+    color: var(--text-color);
+    border: 1px solid var(--input-border-color);
+    cursor: pointer;
+}
+
+.dhcp-reservation-remove-btn:hover {
+    background: var(--error-color);
+    color: #ffffff;
+}
+
+.dhcp-reservation-remove-btn:focus-visible {
+    outline: 2px solid var(--focus-color);
+    outline-offset: 2px;
+}
+
+.dhcp-reservation-add-btn {
+    margin-top: 0.5rem;
+    padding: 0.35rem 0.6rem;
+    font-size: 0.8rem;
+    font-weight: 500;
+    border-radius: 4px;
+    background: var(--surface-color);
+    color: var(--text-color);
+    border: 1px dashed var(--input-border-color);
+    cursor: pointer;
+}
+
+.dhcp-reservation-add-btn:hover {
+    background: var(--primary-hover);
+    color: #ffffff;
+}
+
+.dhcp-reservation-add-btn:focus-visible {
+    outline: 2px solid var(--focus-color);
+    outline-offset: 2px;
+}
+
+.dhcp-leases-status {
+    margin: 0 0 0.75rem;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+}
+
+.dhcp-leases-status:empty {
+    display: none;
+}
+
+.dhcp-leases-status.dhcp-leases-status-error {
+    color: var(--error-color);
+}
+
+.dhcp-leases-family-container {
+    margin-bottom: 1.25rem;
+}
+
+.dhcp-leases-family-heading {
+    font-size: 0.95rem;
+    font-weight: 600;
+    margin: 0.75rem 0 0.5rem;
+    color: var(--text-color);
+}
+
+.dhcp-leases-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+}
+
+.dhcp-leases-table th,
+.dhcp-leases-table td {
+    padding: 0.4rem 0.5rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border-color);
+    color: var(--text-color);
+}
+
+.dhcp-leases-table th {
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+/* ── Speaker panel ──────────────────────────────────────────────────────── */
+
+.modal-content.speaker-modal {
+    max-width: 760px;
+}
+
+.speaker-summary {
+    margin: 0 0 0.5rem;
+    color: var(--text-color);
+    font-size: 0.85rem;
+}
+
+.speaker-summary:empty {
+    display: none;
+}
+
+.speaker-status {
+    margin: 0 0 0.75rem;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+}
+
+.speaker-status:empty {
+    display: none;
+}
+
+.speaker-status.speaker-status-error {
+    color: var(--error-color);
+}
+
+.speaker-neighbor {
+    margin-bottom: 1.25rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.speaker-neighbor:last-child {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: none;
+}
+
+.speaker-neighbor-heading {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text-color);
+    margin: 0 0 0.35rem;
+}
+
+/* Up/down is stated in words ("Established, up 35 s" / "Down (idle)") —
+   the weight here is a secondary cue for a sighted skim, never the only
+   signal. */
+.speaker-neighbor-meta {
+    margin: 0 0 0.6rem;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+}
+
+.speaker-neighbor-meta.speaker-state-down {
+    font-weight: 600;
+    color: var(--text-color);
+}
+
+.speaker-queued-note {
+    margin: 0 0 0.6rem;
+    color: var(--text-color);
+    font-size: 0.8rem;
+}
+
+/* Summary first: each table opens from its count. */
+.speaker-routes {
+    margin: 0 0 0.5rem;
+}
+
+.speaker-route-summary {
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-color);
+    padding: 0.25rem 0;
+}
+
+.speaker-route-summary:focus-visible {
+    outline: 2px solid var(--focus-color);
+    outline-offset: 2px;
+}
+
+.speaker-routes-empty {
+    margin: 0.25rem 0 0.5rem;
+    color: var(--text-muted);
+    font-size: 0.8rem;
+}
+
+.speaker-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+    margin-top: 0.35rem;
+}
+
+.speaker-table th,
+.speaker-table td {
+    padding: 0.4rem 0.5rem;
+    text-align: left;
+    vertical-align: top;
+    border-bottom: 1px solid var(--border-color);
+    color: var(--text-color);
+    font-variant-numeric: tabular-nums;
+}
+
+.speaker-table th {
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+/* AS-PATH is the column a Learner reads across, so it takes half the
+   table; the prefix, next hop and attributes columns share the rest. */
+.speaker-table th:nth-child(3),
+.speaker-table td:nth-child(3) {
+    width: 50%;
+    word-break: break-word;
+}
+
+.speaker-table td:nth-child(1),
+.speaker-table td:nth-child(2) {
+    white-space: nowrap;
+}
+
+.speaker-route-toggle {
+    background: none;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    color: var(--text-color);
+    cursor: pointer;
+    font-size: 0.8rem;
+    padding: 0.15rem 0.5rem;
+}
+
+.speaker-route-toggle:hover {
+    background: var(--surface-hover);
+}
+
+.speaker-route-toggle:focus-visible {
+    outline: 2px solid var(--focus-color);
+    outline-offset: 2px;
+}
+
+.speaker-route-toggle[aria-expanded="true"] {
+    background: var(--surface-hover);
+}
+
+.speaker-route-attrs td {
+    background: var(--surface-hover);
+    white-space: normal;
+}
+
+.speaker-route-attr-list {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    gap: 0.2rem 1rem;
+    margin: 0;
+    font-size: 0.8rem;
+}
+
+.speaker-route-attr-list dt {
+    color: var(--text-muted);
+}
+
+.speaker-route-attr-list dd {
+    margin: 0;
+}
+
+.speaker-note {
+    margin: 1rem 0 0;
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    line-height: 1.4;
+}
+
+/* The announce form sits above the Neighbor sections; the field set is
+   the CLI's, one row for the route and one for its attributes. */
+.speaker-form {
+    margin: 0 0 1rem;
+    padding: 0.75rem;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+}
+
+.speaker-form-heading {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-color);
+    margin: 0 0 0.5rem;
+}
+
+.speaker-form-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 0.6rem;
+    margin-bottom: 0.6rem;
+}
+
+.speaker-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    flex: 1 1 130px;
+}
+
+.speaker-form-group-wide {
+    flex: 2 1 180px;
+}
+
+.speaker-form-group-narrow {
+    flex: 0 1 90px;
+}
+
+.speaker-form-group label {
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--text-color);
+}
+
+/* The required mark: a glyph the form's note explains, coloured as a
+   secondary cue; the input's own `required` is what assistive technology
+   reads. */
+.speaker-required {
+    color: var(--error-color);
+    font-weight: 600;
+}
+
+.speaker-form-group input,
+.speaker-form-group select {
+    padding: 0.35rem 0.5rem;
+    font-size: 0.85rem;
+    font-family: monospace;
+    border: 1px solid var(--input-border-color);
+    border-radius: 4px;
+    background: var(--surface-color);
+    color: var(--text-color);
+}
+
+.speaker-form-group input:focus-visible,
+.speaker-form-group select:focus-visible {
+    outline: 2px solid var(--focus-color);
+    outline-offset: 1px;
+}
+
+.speaker-form-actions {
+    display: flex;
+    align-items: flex-end;
+}
+
+.speaker-form-hint {
+    margin: 0;
+    color: var(--text-muted);
+    font-size: 0.78rem;
+    line-height: 1.4;
+}
+
+.speaker-submit-btn {
+    padding: 0.4rem 0.9rem;
+    font-size: 0.85rem;
+    font-weight: 500;
+    border-radius: 4px;
+    background: var(--primary-button-bg);
+    color: #ffffff;
+    border: none;
+    cursor: pointer;
+}
+
+.speaker-submit-btn:hover:not(:disabled) {
+    background: var(--primary-hover);
+}
+
+.speaker-submit-btn:focus-visible {
+    outline: 2px solid var(--focus-color);
+    outline-offset: 2px;
+}
+
+.speaker-submit-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* What a burst announced, listed under the generate form. */
+.speaker-generate-result {
+    margin-top: 0.5rem;
+}
+
+.speaker-generate-result[hidden] {
+    display: none;
+}
+
+.speaker-generate-prefixes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem 0.75rem;
+    margin: 0.25rem 0 0;
+    padding: 0;
+    list-style: none;
+    font-family: monospace;
+    font-size: 0.8rem;
+    color: var(--text-color);
+}
+
+/* A refused or rejected write: the service's reason, beside the form. */
+.speaker-modal-error {
+    margin: 0 0 0.75rem;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.8rem;
+    line-height: 1.3;
+    color: var(--error-color);
+    font-weight: 500;
+    border: 1px solid var(--error-color);
+    border-radius: 4px;
+    background: var(--surface-hover);
+}
+
+.speaker-modal-error[hidden] {
+    display: none;
+}
+
+/* Per-row withdraw, and the Neighbor's withdraw-all beneath its tables.
+   The minimum height keeps a row's button at WCAG 2.5.8's 24 px target. */
+.speaker-withdraw-btn,
+.speaker-withdraw-all-btn {
+    background: none;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    color: var(--text-color);
+    cursor: pointer;
+    font-size: 0.8rem;
+    min-height: 24px;
+    padding: 0.2rem 0.6rem;
+}
+
+.speaker-withdraw-all-btn {
+    margin-top: 0.25rem;
+    padding: 0.3rem 0.7rem;
+}
+
+.speaker-withdraw-btn:hover:not(:disabled),
+.speaker-withdraw-all-btn:hover:not(:disabled) {
+    background: var(--surface-hover);
+}
+
+.speaker-withdraw-btn:focus-visible,
+.speaker-withdraw-all-btn:focus-visible {
+    outline: 2px solid var(--focus-color);
+    outline-offset: 2px;
+}
+
+.speaker-withdraw-btn:disabled,
+.speaker-withdraw-all-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* ── DHCP Relay panel ───────────────────────────────────────────────────── */
+
+.dhcp-relay-subnets {
+    margin: 0 0 0.75rem;
+    color: var(--text-color);
+    font-size: 0.85rem;
+}
+
+.dhcp-relay-subnets:empty {
+    display: none;
+}
+
+.dhcp-relay-note {
+    margin: 1rem 0 0.75rem;
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    line-height: 1.4;
+}
+
+/* Applied/not-applied is stated in words ("Applied" / "Not applied (server
+   record only)"), not by colour alone — the italic here is a secondary,
+   redundant cue for a sighted skim, never the only signal. */
+.dhcp-lease-not-applied {
+    font-style: italic;
+    color: var(--text-muted);
+}
+
+/* A Lease's DUID is what a Learner copies into a Reservation, so it needs
+   more than a narrow column: it takes a line of its own, wraps anywhere,
+   and selects as one unit. */
+.dhcp-lease-client {
+    min-width: 12rem;
+}
+
+.dhcp-lease-hostname {
+    display: block;
+    font-weight: 500;
+}
+
+.dhcp-lease-duid {
+    display: block;
+    font-family: monospace;
+    font-size: 0.8rem;
+    word-break: break-all;
+    user-select: all;
+    margin: 0.15rem 0;
+}
+
+.dhcp-lease-hw-container {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-top: 0.25rem;
+}
+
+.dhcp-lease-hw-label {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+.dhcp-lease-hw {
+    font-family: monospace;
+    font-size: 0.8rem;
+    user-select: all;
+}
+
+.dhcp-lease-copy-btn {
+    padding: 0.15rem 0.5rem;
+    font-size: 0.75rem;
+    border-radius: 4px;
+    background: var(--surface-color);
+    color: var(--text-color);
+    border: 1px solid var(--input-border-color);
+    cursor: pointer;
+}
+
+.dhcp-lease-copy-btn:hover {
+    background: var(--primary-hover);
+    color: #ffffff;
+}
+
+.dhcp-lease-copy-btn:focus-visible {
+    outline: 2px solid var(--focus-color);
+    outline-offset: 2px;
+}
+
+/* Visually hidden but available to assistive technology — the copy
+   feedback for a Lease's DUID is announced through this region. */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* ── Account menu (header) ───────────────────────────────────────────────────
+   One button, "teacher | INSTRUCTOR ▾", opens the menu with the Session's
+   less frequent actions. The role is plain text in its role's ink, so the
+   button holds no box inside a box; contrast is against the header surface —
+   see test_badge_and_role_badge_literal_colors_meet_text_contrast.
+
+   Instructor on surface: 7.09:1 (light), 11.56:1 (dark).
+   Learner on surface:    8.72:1 (light),  9.24:1 (dark). */
+
+.account-menu-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.header-username {
+    max-width: 10rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.account-role-divider {
+    color: var(--text-muted);
+    opacity: 0.6;
+}
+
+.account-role {
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    color: var(--text-muted);
+}
+
+.account-role[data-role="instructor"] { color: #92400e; }
+.account-role[data-role="learner"] { color: #1e40af; }
+[data-theme="dark"] .account-role[data-role="instructor"] { color: #fcd34d; }
+[data-theme="dark"] .account-role[data-role="learner"] { color: #93c5fd; }
+
+.account-menu-caret {
+    opacity: 0.7;
+}
+
+.account-menu-list {
+    min-width: 15rem;
+}
+
+.instructor-panel-empty {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    padding: 0.4rem 0;
+    margin: 0;
+}
+
+/* Instructor Overview: compact Group summaries and selected details. */
+
+/* The Overview is a flex child of #app (a 100vh, overflow:hidden column), a
+   sibling of #main. It must claim the space between the tab strip and the
+   footer and scroll its own content: without flex sizing the long Catalog and
+   Sessions panels overflow and get clipped, and the empty #main (flex:1 1 0)
+   steals the free space. */
+#instructor-dashboard {
+    flex: 1 1 0;
+    min-height: 0;
+    display: block;
+    overflow: hidden;
+    padding: .75rem;
+}
+
+.overview-workspace {
+    min-width: 0;
+    min-height: 0;
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    background: var(--surface-color);
+    box-shadow: var(--shadow);
+    display: flex;
+    flex-direction: column;
+}
+
+.overview-workspace > .instructor-panel-header {
+    flex-wrap: wrap;
+    padding: .75rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.overview-workspace .group-card {
+    max-width: none;
+}
+.group-card[hidden] {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    #instructor-dashboard {
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-rows: auto minmax(0, 1fr);
+    }
+
+}
+
+
+#instructor-dashboard .instructor-panel-header{
+    flex-shrink: 0;
+}
+
+/* The header is one row: the cap count on the left, the Browse Labs… button
+   (which opens the catalog modal) on the right. There is no title here — the
+   pinned Overview tab already names the panel. */
+#instructor-dashboard .instructor-panel-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0.75rem;
+}
+
+.instructor-dashboard-cap {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    margin: 0.5rem 0 0.6rem;
+}
+
+/* The card column is capped in width, so cap the list to the same measure
+   and center it in the panel instead of leaving all the slack on the right. */
+#instructor-dashboard-list {
+    max-width: none;
+    margin: 0;
+}
+
+.group-card {
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background: var(--surface-color);
+    padding: 0.75rem 1rem;
+    /* Cap the card column: the full-width Overview left the controls
+       sprawling with a big empty gap on the right. */
+    max-width: 42rem;
+    margin-bottom: 0.5rem;
+    /* Same body size as the rest of the app (header status, tables) so the
+       Overview cards don't read as a smaller, separate theme. */
+    font-size: 0.85rem;
+    color: var(--text-color);
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.group-card:hover {
+    border-color: var(--text-muted);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.group-card-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.group-card-name {
+    font-weight: 600;
+}
+
+.group-card-role {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.group-card-summary {
+    margin-left: auto;
+    color: var(--text-muted);
+    font-variant-numeric: tabular-nums;
+}
+
+.group-card-key {
+    color: var(--text-muted);
+    font-size: 0.75rem;
+}
+
+.group-card-key code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+.activity-dot {
+    width: 10px;
+    height: 10px;
+    flex: 0 0 auto;
+    border-radius: 50%;
+    background: var(--text-muted);
+}
+
+.activity-dot-active {
+    background: var(--success-color);
+}
+
+.activity-dot-idle {
+    background: var(--switch-color);
+}
+
+.activity-dot-stopped {
+    background: var(--error-color);
+}
+
+.activity-dot-absent {
+    background: var(--text-muted);
+}
+
+.group-card-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.4rem;
+    margin-top: 0.6rem;
+}
+
+.group-card-actions select {
+    flex: 1 1 8rem;
+    min-width: 0;
+    /* Same size as the buttons it sits beside, in every engine: a floor
+       alone lets Safari draw its native select taller. */
+    height: 32px;
+    box-sizing: border-box;
+    font-size: 0.85rem;
+    font-family: inherit;
+    padding: 0 0.5rem;
+    color: var(--text-color);
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+}
+
+/* The Persistent Config copy row: set off from the controls above with a
+   hairline so the card reads as identity / actions / config, not one flat
+   pile of buttons. */
+.group-card-footer {
+    margin-top: 0.6rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.dashboard-action {
+    /* One size for every control in a Group card, filled or outlined, so the
+       rows read as a single set. */
+    min-height: 32px;
+    padding: 0.35rem 0.6rem;
+    font-size: 0.85rem;
+    font-family: inherit;
+    color: var(--text-color);
+    background: transparent;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.dashboard-action:hover:not(:disabled),
+.dashboard-action:focus-visible {
+    border-color: var(--primary-color);
+    /* Outlined: keep the surface, not the global button hover's blue fill,
+       which would put Stop's red ink on blue. Start sets its own below. */
+    background: transparent;
+}
+
+/* The primary Start action: filled like the global button and the Learner's
+   Start, but at the same size as its outlined neighbours.  Pushed to the
+   right edge so it and Stop (running cards) sit in the same position. */
+.dashboard-action-start {
+    font-weight: 500;
+    color: #fff;
+    background: var(--primary-button-bg);
+    border: none;
+    border-radius: var(--radius);
+    margin-left: auto;
+}
+
+.dashboard-action-start:hover:not(:disabled) {
+    background: var(--primary-hover);
+    transform: translateY(-1px);
+}
+
+.dashboard-action-start:active:not(:disabled) {
+    transform: scale(0.97);
+}
+
+.dashboard-action-stop {
+    color: var(--error-color);
+    /* Same right-edge position as Start on stopped cards. */
+    margin-left: auto;
+}
+
+.dashboard-action-stop:hover:not(:disabled) {
+    border-color: var(--error-color);
+}
+
+/* The running Lab Example links to its Guide, styled with the same surface
+   and outline as the neighbouring Group controls. */
+.group-card-lab {
+    display: inline-block;
+    min-height: 32px;
+    padding: 0.35rem 0.6rem;
+    font-size: 0.85rem;
+    font-weight: 500;
+    font-family: inherit;
+    line-height: 1.2;
+    color: var(--primary-color);
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 14rem;
+}
+
+span.group-card-lab {
+    color: var(--text-color);
+    background: transparent;
+    border-color: transparent;
+}
+
+a.group-card-lab:hover,
+.group-card-lab:focus-visible {
+    border-color: var(--primary-color);
+}
+
+.group-card-lab:focus-visible {
+    outline: 2px solid var(--focus-color);
+    outline-offset: 2px;
+}
+
+.group-card-switch {
+    color: var(--primary-color);
+    font-weight: 600;
+}
+
+.dashboard-action:disabled {
+    opacity: 0.5;
+    cursor: default;
+}
+
+/* Assignment editor */
+
+.modal-content.assignment-modal {
+    max-width: 30rem;
+}
+
+/* Server settings: two tabs (Limits, logins); one row per Limit with its
+   number box on the right; logins added here first, the .env ones folded. */
+
+.modal-content.server-settings-modal {
+    max-width: 34rem;
+}
+
+.server-settings-tabs {
+    display: flex;
+    gap: 1rem;
+    padding: 0 1rem;
+    border-bottom: 1px solid var(--border-color);
+    flex-shrink: 0;
+}
+
+/* Underlined text tabs: no fill, square ends, and a hover that only
+   darkens the text, never the page-wide button hover's blue fill. */
+.server-settings-tab,
+.server-settings-tab:hover:not(:disabled) {
+    padding: 0.45rem 0.1rem;
+    margin-bottom: -1px;
+    border: 0;
+    border-bottom: 2px solid transparent;
+    border-radius: 0;
+    background: none;
+    color: var(--text-muted);
+    font: inherit;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transform: none;
+    cursor: pointer;
+}
+
+.server-settings-tab:hover:not(:disabled) {
+    color: var(--text-color);
+    border-bottom-color: var(--border-color);
+}
+
+.server-settings-tab[aria-selected="true"],
+.server-settings-tab[aria-selected="true"]:hover:not(:disabled) {
+    color: var(--text-color);
+    border-bottom-color: var(--primary-color);
+}
+
+.server-settings-tab:focus-visible,
+.server-settings-fold:focus-visible {
+    outline: 2px solid var(--focus-color);
+    outline-offset: -2px;
+}
+
+.server-settings-body [role="tabpanel"]:focus-visible {
+    outline: 2px solid var(--focus-color);
+    outline-offset: 2px;
+}
+
+.server-settings-help,
+.server-settings-bounds {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    font-weight: 400;
+}
+
+.server-settings-help {
+    margin: 0 0 0.75rem;
+}
+
+.server-settings-intro {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+}
+
+.server-settings-intro .server-settings-help {
+    flex: 1;
+}
+
+.server-settings-modal .info-toggle {
+    flex: none;
+    width: 1.75rem;
+    height: 1.75rem;
+    padding: 0;
+}
+
+.server-settings-modal .info-note {
+    margin: 0 0 0.5rem;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+}
+
+/* label and hint on the left, the number box (and its unit) on the right */
+.limit-row {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    column-gap: 1rem;
+    row-gap: 0.1rem;
+    align-items: center;
+    margin: 0;
+    padding: 0.55rem 0;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.limit-row[hidden] {
+    display: none;
+}
+
+.modal-body .limit-row {
+    margin: 0;
+}
+
+.limit-label {
+    grid-column: 1;
+    grid-row: 1;
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+.limit-row .limit-label label {
+    margin: 0;
+    font-weight: 600;
+}
+
+.limit-row .server-settings-bounds {
+    grid-column: 1;
+    grid-row: 2;
+    margin: 0;
+}
+
+.server-settings-bounds.server-settings-pinned {
+    color: var(--text-color);
+    font-style: italic;
+}
+
+.limit-field {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    display: grid;
+    justify-items: end;
+    row-gap: 0.15rem;
+}
+
+.limit-row .limit-field input.form-control {
+    width: 7rem;
+    text-align: right;
+}
+
+.limit-unit {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    white-space: nowrap;
+}
+
+.limit-row .field-error:not([hidden]) {
+    grid-column: 1 / -1;
+    grid-row: 3;
+}
+
+.limit-row .limit-note {
+    grid-column: 1 / -1;
+    grid-row: 4;
+    margin: 0.35rem 0 0;
+}
+
+.server-settings-add-login {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    column-gap: 0.75rem;
+    align-items: start;
+}
+
+.server-settings-add-login .form-group {
+    margin: 0;
+}
+
+.server-settings-add-login .modal-actions {
+    margin: 0;
+    padding-top: 1.6rem;
+}
+
+.server-settings-logins-filter {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin: 1rem 0 0.25rem;
+}
+
+.server-settings-logins-filter[hidden] {
+    display: none;
+}
+
+.server-settings-logins-filter input {
+    flex: 1;
+}
+
+.server-settings-filter-count {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    white-space: nowrap;
+}
+
+.server-settings-filter-count:empty {
+    display: none;
+}
+
+.server-settings-subhead {
+    margin: 0.75rem 0 0.1rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-muted);
+}
+
+.server-settings-subhead[hidden] {
+    display: none;
+}
+
+.server-settings-fold,
+.server-settings-fold:hover:not(:disabled) {
+    padding: 0.2rem 0;
+    border: 0;
+    background: none;
+    color: inherit;
+    font: inherit;
+    transform: none;
+    cursor: pointer;
+}
+
+.server-settings-fold:hover:not(:disabled) {
+    color: var(--text-color);
+}
+
+/* The arrow is decoration: its empty alt text keeps it out of the name. */
+.server-settings-fold::before {
+    content: '▸';
+    content: '▸' / '';
+    display: inline-block;
+    width: 1.1em;
+}
+
+.server-settings-fold[aria-expanded="true"]::before {
+    content: '▾';
+    content: '▾' / '';
+}
+
+.server-settings-logins-list {
+    list-style: none;
+    margin: 0 0 0.25rem;
+    padding: 0;
+}
+
+.server-settings-logins-list[hidden] {
+    display: none;
+}
+
+.server-settings-logins-list li {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: 2.6rem;
+    padding: 0.25rem 0;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.server-settings-logins-list li[hidden] {
+    display: none;
+}
+
+.server-settings-login-name {
+    font-weight: 600;
+    margin-right: auto;
+    overflow-wrap: anywhere;
+}
+
+.server-settings-login-source {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+}
+
+.server-settings-login-mask {
+    color: var(--text-muted);
+    letter-spacing: 0.15em;
+}
+
+.server-settings-login-password {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+    font-size: 0.95rem;
+}
+
+.server-settings-eye {
+    width: 2rem;
+    height: 2rem;
+    padding: 0;
+}
+
+.server-settings-eye[aria-pressed="true"] {
+    background: var(--surface-hover);
+    color: var(--primary-color);
+}
+
+.server-settings-modal .field-error:not([hidden]) {
+    margin: 0.125rem 0 0;
+    color: var(--error-color);
+    font-weight: 600;
+    font-size: 0.85rem;
+}
+
+.server-settings-modal [aria-invalid="true"] {
+    border: 2px solid var(--error-color);
+}
+
+.server-settings-status {
+    margin: 0.5rem 0 0;
+}
+
+/* Empty, it takes no room; never display:none, or its announcement is lost. */
+.server-settings-status:empty {
+    margin: 0;
+}
+
+.assignment-hint {
+    margin: 0 0 0.75rem;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+.assignment-fieldset {
+    border: 0;
+    padding: 0;
+    margin: 0 0 1rem;
+}
+
+.assignment-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    max-height: 50vh;
+    overflow-y: auto;
+}
+
+.assignment-list li {
+    padding: 0.2rem 0;
+}
+
+.assignment-list label {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    cursor: pointer;
+}
+
+.assignment-list .assignment-example-desc {
+    display: block;
+    font-size: 0.78rem;
+    color: var(--text-muted);
+}
+
+.assignment-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+}
+
+/* ── Switch Management Panel & VLAN Badges ──────────────────────────────── */
+
+.modal-content.switch-modal {
+    max-width: 820px;
+}
+
+.switch-title-group {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.switch-node-pill {
+    display: inline-block;
+    padding: 0.15rem 0.5rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    border-radius: 4px;
+    background: var(--surface-hover);
+    color: var(--switch-color);
+    border: 1px solid var(--border-color);
+}
+
+.switch-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.switch-summary {
+    margin: 0 0 0.5rem;
+    color: var(--text-color);
+    font-size: 0.875rem;
+}
+
+.switch-status {
+    margin: 0 0 0.75rem;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+.switch-status.switch-status-error {
+    color: var(--error-color);
+    font-weight: 500;
+}
+
+.switch-status.switch-status-success {
+    color: var(--success-color);
+    font-weight: 500;
+}
+
+.switch-table-container {
+    overflow-x: auto;
+    margin-bottom: 1.25rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+}
+
+.switch-ports-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.875rem;
+    text-align: left;
+}
+
+.switch-ports-table th,
+.switch-ports-table td {
+    padding: 0.5rem 0.75rem;
+    border-bottom: 1px solid var(--border-color);
+    color: var(--text-color);
+    vertical-align: middle;
+}
+
+.switch-ports-table th {
+    background: var(--surface-hover);
+    color: var(--text-muted);
+    font-weight: 600;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+.switch-ports-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.switch-ports-table tbody tr:hover {
+    background: var(--surface-hover);
+}
+
+.switch-tree-detail {
+    margin: 0 0 0.5rem;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.switch-hint-wrap {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.switch-hint-btn {
+    min-width: 24px;
+    min-height: 24px;
+    padding: 0;
+    border-radius: 50%;
+    background: transparent;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    line-height: 1;
+}
+
+button.switch-hint-btn:hover:not(:disabled) {
+    background: var(--surface-hover);
+    color: var(--primary-color);
+    transform: none;
+}
+
+.switch-hint {
+    display: none;
+    position: fixed;
+    z-index: 1100;
+    max-width: 20rem;
+    padding: 0.5rem 0.75rem;
+    background: var(--surface-color);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+    font-size: 0.8rem;
+    font-weight: 400;
+    letter-spacing: normal;
+    text-transform: none;
+    text-align: left;
+    white-space: normal;
+}
+
+.switch-hint > span {
+    display: block;
+}
+
+.switch-hint-wrap[data-open] .switch-hint {
+    display: block;
+}
+
+.switch-port-name-cell {
+    font-family: monospace;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.switch-peer-cell {
+    font-family: monospace;
+    color: var(--text-muted);
+    white-space: nowrap;
+}
+
+.switch-mode-select {
+    padding: 0.3rem 0.5rem;
+    border-radius: 4px;
+    border: 1px solid var(--input-border-color);
+    background: var(--surface-color);
+    color: var(--text-color);
+    font-size: 0.85rem;
+}
+
+.switch-vlan-input {
+    padding: 0.3rem 0.5rem;
+    border-radius: 4px;
+    border: 1px solid var(--input-border-color);
+    background: var(--surface-color);
+    color: var(--text-color);
+    font-size: 0.85rem;
+    width: 130px;
+}
+
+.switch-vlan-input:disabled {
+    background: var(--bg-color);
+    color: var(--text-muted);
+    cursor: not-allowed;
+    border-color: var(--border-color);
+}
+
+.switch-apply-btn {
+    padding: 0.25rem 0.6rem;
+    font-size: 0.8rem;
+}
+
+.switch-empty-cell {
+    text-align: center;
+    color: var(--text-muted);
+    padding: 1.5rem;
+}
+
+/* Export Configuration Drawer */
+.switch-export-section {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.switch-export-btn {
+    font-size: 0.85rem;
+}
+
+.switch-export-drawer {
+    margin-top: 0.75rem;
+    padding: 0.75rem;
+    background: var(--bg-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+}
+
+.switch-export-heading {
+    margin: 0.5rem 0 0.25rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-color);
+}
+
+.switch-export-heading:first-child {
+    margin-top: 0;
+}
+
+.switch-export-code {
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    padding: 0.5rem 0.75rem;
+    margin: 0 0 0.75rem;
+    font-family: monospace;
+    font-size: 0.8rem;
+    color: var(--text-color);
+    overflow-x: auto;
+    white-space: pre-wrap;
+}
+
+.switch-export-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-top: 0.5rem;
+}
+
+.switch-copy-status {
+    font-size: 0.8rem;
+    color: var(--success-color);
+    font-weight: 500;
+}
+
+/* Topology VLAN Badges on Links */
+.vlan-badge {
+    pointer-events: none;
+    user-select: none;
+}
+
+.vlan-badge rect {
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.25));
+}
+
+.vlan-badge text,
+.vlan-badge-text {
+    fill: #ffffff !important;
+    stroke: none !important;
+    font-size: 10px;
+    font-weight: 600;
+    text-anchor: middle;
+    paint-order: normal;
+}
+
+/* Utility: hidden (pages start hidden until JS determines state) */
+.hidden {
+    display: none !important;
+}
+
+/* Lab tab strip (Multi-Lab Mode) */
+.lab-tabstrip {
+    display: flex;
+    flex-shrink: 0;
+    gap: 0.25rem;
+    padding: 0.5rem 1rem;
+    border-bottom: 1px solid var(--border-color);
+    overflow-x: auto;
+}
+
+.lab-tab {
+    flex-shrink: 0;
+    font: inherit;
+    font-size: 0.9rem;
+    padding: .375rem .75rem;
+    gap: .375rem;
+    border: none;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--primary-color);
+    cursor: pointer;
+}
+
+.lab-tab[aria-selected="true"] {
+    background: var(--primary-button-bg);
+    color: #fff;
+}
+
+.lab-tab:focus-visible {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
+}
+
+/* Catalog cards: one per Lab Example in the Overview's Catalog subtab. */
+.catalog-card {
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background: var(--surface-color);
+    padding: 0.6rem 0.85rem;
+    margin-bottom: 0.5rem;
+    /* Same body size as .group-card so both card families share one scale. */
+    font-size: 0.85rem;
+    color: var(--text-color);
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.catalog-card:hover {
+    border-color: var(--text-muted);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+.catalog-card-header {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+.catalog-card-name {
+    margin: 0;
+    font-weight: 600;
+}
+.catalog-card-meta {
+    margin-left: auto;
+    color: var(--text-muted);
+    font-variant-numeric: tabular-nums;
+}
+.catalog-card-desc {
+    margin: 0.3rem 0 0;
+    color: var(--text-muted);
+    font-size: 0.78rem;
+}
+.catalog-card-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+    margin-top: 0.4rem;
+}
+.catalog-card-guide {
+    display: inline-flex;
+    align-items: center;
+    min-height: 24px;
+    padding: 0.15rem 0.5rem;
+    font-size: 0.78rem;
+    font-family: inherit;
+    color: var(--primary-color);
+    background: transparent;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    text-decoration: none;
+}
+.catalog-card-guide:hover,
+.catalog-card-guide:focus-visible {
+    border-color: var(--primary-color);
+}
+
+/* The Router Config Reset dialog: one row per Config Copy in scope. A list
+   for the semantics, without the markers — each row is a control, not prose. */
+.config-reset-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+/* The control and its refusal sit on one line, the reason trailing the
+   button it explains. */
+.config-reset-row {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+}
+
+/* Every row is full width, so the targets line up and no row is easier to
+   hit than another — the Lab Example name does the distinguishing. */
+.config-reset-row .dashboard-action {
+    justify-content: flex-start;
+    flex: 1 1 auto;
+}
+
+/* An action that discards saved work carries Stop's ink, so it never reads
+   as benign beside the controls it sits among. */
+.dashboard-action-destructive {
+    color: var(--error-color);
+}
+
+/* Destructive text also appears against the Overview's pale background. */
+:root:not([data-theme="dark"]) .dashboard-action-destructive {
+    color: #b42333;
+}
+
+.dashboard-action-destructive:hover:not(:disabled) {
+    border-color: var(--error-color);
+}
+
+/* Why the row above is refused: shown beside it rather than after a
+   confirmation, so the Instructor is never asked to confirm an act that
+   cannot happen. */
+.config-reset-reason {
+    font-size: 0.8125rem;
+    color: var(--text-muted);
+    flex: 0 1 auto;
+}
+
+/* What the last reset did, reported inside the dialog because the
+   dashboard's own status line sits behind this overlay. */
+.config-reset-status:empty {
+    display: none;
+}
+
+.config-reset-status {
+    margin: 0.75rem 0 0;
+    font-size: 0.8125rem;
+    color: var(--text-muted);
+}
+
+/* The Router Config Reset dialog keeps the class legible behind it: a reset
+   changes the cards there — a Group loses its opener with its last Config
+   Copy — and that change is the confirmation the act happened. A lighter
+   scrim and no blur, so the dialog still reads as modal without hiding
+   what it is acting on. */
+#config-reset-modal {
+    background: rgba(0, 0, 0, 0.18);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+}
+
+/* The Assignment editor is the one listing of Lab Examples, so each row
+   carries what the Instructor compares on: the facts under the name, and
+   the Guide as a quiet trailing link rather than a headline. */
+.assignment-example-meta {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    letter-spacing: 0.01em;
+}
+
+/* A quiet text control, not a filled button: it opens the reading pane
+   beside the list, and must not outrank the Lab Example's own name. The
+   global button fill is cleared explicitly. */
+.assignment-example-guide {
+    display: inline-block;
+    margin: 0.15rem 0 0 1.85rem;
+    padding: 0;
+    min-height: 24px;
+    font-size: 0.75rem;
+    font-family: inherit;
+    color: var(--primary-color);
+    background: none;
+    border: none;
+    box-shadow: none;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.assignment-example-guide:hover,
+.assignment-example-guide:focus-visible {
+    text-decoration: underline;
+}
+
+/* The Assignment editor is a chooser with a reading pane: the Lab Examples
+   on the left, the Guide for one of them on the right. The modal widens
+   only while the pane is open, so choosing alone keeps the narrow column
+   and its readable measure. */
+.assignment-columns {
+    display: flex;
+    gap: 1.25rem;
+    align-items: flex-start;
+    min-height: 0;
+}
+
+.assignment-columns .assignment-fieldset {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.assignment-guide {
+    /* The larger share: the chooser is a list of short names, the pane is
+       prose and topology diagrams that wrap badly when squeezed. The
+       fieldset keeps flex:1 so it spans the modal alone when the pane is
+       closed. */
+    flex: 0 0 58%;
+    min-width: 0;
+    max-height: 60vh;
+    overflow-y: auto;
+    padding-left: 1.25rem;
+    border-left: 1px solid var(--border-color);
+}
+
+.assignment-guide[hidden] {
+    display: none;
+}
+
+.assignment-guide-title {
+    margin: 0 0 0.5rem;
+    font-size: 0.9375rem;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+}
+
+.assignment-guide-body {
+    font-size: 0.8125rem;
+    line-height: 1.55;
+}
+
+.assignment-guide-body h1,
+.assignment-guide-body h2,
+.assignment-guide-body h3 {
+    font-size: 0.9375rem;
+    margin: 0.9rem 0 0.4rem;
+}
+
+.assignment-guide-body pre {
+    overflow-x: auto;
+    font-size: 0.75rem;
+}
+
+/* The search field sits above the list it filters. */
+.assignment-search {
+    width: 100%;
+    margin-bottom: 0.6rem;
+}
+
+.modal-content.assignment-modal-wide {
+    max-width: min(1040px, 94vw);
+    width: min(1040px, 94vw);
+}
+
+/* The pane's own header: its Lab Example, and the way back to the full-width
+   chooser without leaving the editor. */
+.assignment-guide-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+}
+
+.assignment-guide-header .assignment-guide-title {
+    margin: 0;
+}
+
+/* Pane title bars: a grip and the Pane actions menu, shown only while a Lab
+   runs and not at phone width, where Panes cannot be moved. */
+.pane-grip {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+    width: 20px;
+    min-height: 28px;
+    color: var(--text-muted);
+    cursor: grab;
+    touch-action: none;
+}
+.pane-menu {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    flex: none;
+    margin-left: auto;
+}
+.controls-spacer ~ .pane-menu,
+.packet-analysis-header-slot ~ .pane-menu {
+    margin-left: 0;
+}
+#lab-tabpanel:not([data-panes]) :is(.pane-grip, .pane-menu) {
+    display: none;
+}
+@media (max-width: 768px) {
+    .pane-grip {
+        display: none;
+    }
+}
+.pane-menu-list {
+    position: fixed;
+    inset: auto;
+    margin: 0;
+    min-width: 220px;
+    max-width: calc(100vw - 16px);
+    overflow-y: auto;
+    padding: 0.25rem;
+    background: var(--surface-color);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+}
+.pane-menu-list[hidden] {
+    display: none;
+}
+.pane-menu-list :is([role="menuitem"], [role="menuitemcheckbox"]) {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    width: 100%;
+    min-height: 32px;
+    padding: 0 0.75rem;
+    background: none;
+    border: 0;
+    border-radius: 4px;
+    color: inherit;
+    font: inherit;
+    text-align: left;
+    white-space: nowrap;
+    cursor: pointer;
+}
+.pane-menu-list :is([role="menuitem"], [role="menuitemcheckbox"]):is(:hover, :focus-visible) {
+    background: color-mix(in srgb, var(--primary-color) 15%, transparent);
+    outline: 2px solid var(--focus-color);
+    outline-offset: -2px;
+}
+.pane-menu-list [role="menuitem"][aria-disabled="true"] {
+    color: var(--text-muted);
+    cursor: default;
+}
+.pane-menu-list [role="menuitem"][hidden],
+.pane-menu-list [role="menuitemcheckbox"][hidden] {
+    display: none;
+}
+/* A checkbox item shows its state as a small switch. */
+.pane-menu-list [role="menuitemcheckbox"]::after {
+    content: '';
+    flex: none;
+    width: 1.9rem;
+    height: 1.05rem;
+    border-radius: 999px;
+    background: radial-gradient(circle at 0.55rem 50%, var(--text-muted) 0.32rem, transparent 0.36rem),
+        var(--surface-hover);
+    box-shadow: inset 0 0 0 1px var(--input-border-color);
+}
+.pane-menu-list [role="menuitemcheckbox"][aria-checked="true"]::after {
+    background: radial-gradient(circle at 1.35rem 50%, #ffffff 0.32rem, transparent 0.36rem),
+        var(--primary-color);
+    box-shadow: none;
+}
+.menu-item-hint {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+    font-size: 0.85em;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+}
+.menu-separator {
+    height: 1px;
+    margin: 0.25rem;
+    background: var(--border-color);
+}
+.pane-menu-list .menu-item-danger {
+    color: var(--error-color);
+}
+
+/* Dragging a Pane: every Slot it can go to as a labelled target over the
+   workspace, the hovered one highlighted, the landing rectangle shaded, and
+   a label with the Pane's name at the pointer. The overlay ignores the
+   pointer; js/ui/pane-drag.js tests the targets by coordinates. */
+.pane-drag-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 60;
+    pointer-events: none;
+}
+body.pane-dragging,
+body.pane-dragging * {
+    cursor: grabbing !important;
+    user-select: none;
+}
+.pane-drop-target {
+    position: absolute;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    border: 2px dashed color-mix(in srgb, var(--primary-color) 70%, transparent);
+    border-radius: var(--radius);
+    background: color-mix(in srgb, var(--primary-color) 8%, transparent);
+    color: var(--text-color);
+    font-size: 0.85rem;
+}
+.pane-drop-target > div {
+    display: flex;
+    flex-direction: column;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    background: var(--surface-color);
+}
+.pane-drop-target[data-slot="centre"] {
+    border-color: var(--border-color);
+    background: repeating-linear-gradient(45deg, transparent 0 8px,
+        color-mix(in srgb, var(--border-color) 40%, transparent) 8px 10px);
+    color: var(--text-muted);
+}
+.pane-drop-target.pane-drop-hot {
+    border-style: solid;
+    background: color-mix(in srgb, var(--primary-color) 35%, transparent);
+}
+.pane-drop-shade {
+    position: absolute;
+    box-sizing: border-box;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    padding: 0.5rem;
+    border: 2px solid var(--primary-color);
+    border-radius: var(--radius);
+    background: color-mix(in srgb, var(--primary-color) 25%, transparent);
+    font-weight: 600;
+}
+.pane-drop-shade[hidden] {
+    display: none;
+}
+.pane-drag-label {
+    position: absolute;
+    left: 0;
+    top: 0;
+    padding: 0.25rem 0.6rem;
+    border-radius: 999px;
+    background: var(--primary-color);
+    color: #fff;
+    font-size: 0.8rem;
+    font-weight: 600;
+    white-space: nowrap;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}

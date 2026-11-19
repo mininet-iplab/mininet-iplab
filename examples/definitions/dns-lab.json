@@ -1,0 +1,516 @@
+{
+  "schema_version": 3,
+  "address_family": "dual",
+  "persistent_config": false,
+  "example": "dns-lab",
+  "topology": {
+    "nodes": [
+      {
+        "id": "r1",
+        "name": "r1",
+        "type": "router",
+        "protocols": [],
+        "frr_config": "",
+        "fast_timers": false,
+        "subinterfaces": [],
+        "startup": []
+      },
+      {
+        "id": "root1",
+        "name": "root1",
+        "type": "host",
+        "ipv4_gateway": "10.0.1.1",
+        "ipv6_gateway": "2001:db8:1::1",
+        "startup": [],
+        "dns": {
+          "zones": [
+            {
+              "kind": "primary",
+              "name": ".",
+              "default_ttl": 300,
+              "records": [
+                {
+                  "name": "@",
+                  "type": "NS",
+                  "rdata": "root1.",
+                  "ttl": 300
+                },
+                {
+                  "name": "root1",
+                  "type": "A",
+                  "rdata": "10.0.1.2",
+                  "ttl": 300
+                },
+                {
+                  "name": "root1",
+                  "type": "AAAA",
+                  "rdata": "2001:db8:1::2",
+                  "ttl": 300
+                },
+                {
+                  "name": "com",
+                  "type": "NS",
+                  "rdata": "ns.com.",
+                  "ttl": 300
+                },
+                {
+                  "name": "ns.com.",
+                  "type": "A",
+                  "rdata": "10.0.2.2",
+                  "ttl": 300
+                },
+                {
+                  "name": "ns.com.",
+                  "type": "AAAA",
+                  "rdata": "2001:db8:2::2",
+                  "ttl": 300
+                },
+                {
+                  "name": "10.in-addr.arpa.",
+                  "type": "NS",
+                  "rdata": "ns1.example.com.",
+                  "ttl": 300
+                },
+                {
+                  "name": "10.in-addr.arpa.",
+                  "type": "NS",
+                  "rdata": "ns2.example.com.",
+                  "ttl": 300
+                },
+                {
+                  "name": "ns1.example.com.",
+                  "type": "A",
+                  "rdata": "10.0.3.2",
+                  "ttl": 300
+                },
+                {
+                  "name": "ns2.example.com.",
+                  "type": "A",
+                  "rdata": "10.0.4.2",
+                  "ttl": 300
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "id": "tld1",
+        "name": "tld1",
+        "type": "host",
+        "ipv4_gateway": "10.0.2.1",
+        "ipv6_gateway": "2001:db8:2::1",
+        "startup": [],
+        "dns": {
+          "zones": [
+            {
+              "kind": "primary",
+              "name": "com.",
+              "default_ttl": 300,
+              "records": [
+                {
+                  "name": "@",
+                  "type": "NS",
+                  "rdata": "ns.com.",
+                  "ttl": 300
+                },
+                {
+                  "name": "ns",
+                  "type": "A",
+                  "rdata": "10.0.2.2",
+                  "ttl": 300
+                },
+                {
+                  "name": "ns",
+                  "type": "AAAA",
+                  "rdata": "2001:db8:2::2",
+                  "ttl": 300
+                },
+                {
+                  "name": "example",
+                  "type": "NS",
+                  "rdata": "ns1.example.com.",
+                  "ttl": 300
+                },
+                {
+                  "name": "example",
+                  "type": "NS",
+                  "rdata": "ns2.example.com.",
+                  "ttl": 300
+                },
+                {
+                  "name": "ns1.example.com.",
+                  "type": "A",
+                  "rdata": "10.0.3.2",
+                  "ttl": 300
+                },
+                {
+                  "name": "ns1.example.com.",
+                  "type": "AAAA",
+                  "rdata": "2001:db8:3::2",
+                  "ttl": 300
+                },
+                {
+                  "name": "ns2.example.com.",
+                  "type": "A",
+                  "rdata": "10.0.4.2",
+                  "ttl": 300
+                },
+                {
+                  "name": "ns2.example.com.",
+                  "type": "AAAA",
+                  "rdata": "2001:db8:4::2",
+                  "ttl": 300
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "id": "auth1",
+        "name": "auth1",
+        "type": "host",
+        "ipv4_gateway": "10.0.3.1",
+        "ipv6_gateway": "2001:db8:3::1",
+        "startup": [],
+        "dns": {
+          "zones": [
+            {
+              "kind": "primary",
+              "name": "example.com.",
+              "default_ttl": 300,
+              "records": [
+                {
+                  "name": "@",
+                  "type": "NS",
+                  "rdata": "ns1.example.com.",
+                  "ttl": 300
+                },
+                {
+                  "name": "@",
+                  "type": "NS",
+                  "rdata": "ns2.example.com.",
+                  "ttl": 300
+                },
+                {
+                  "name": "ns1",
+                  "type": "A",
+                  "rdata": "10.0.3.2",
+                  "ttl": 300
+                },
+                {
+                  "name": "ns1",
+                  "type": "AAAA",
+                  "rdata": "2001:db8:3::2",
+                  "ttl": 300
+                },
+                {
+                  "name": "ns2",
+                  "type": "A",
+                  "rdata": "10.0.4.2",
+                  "ttl": 300
+                },
+                {
+                  "name": "ns2",
+                  "type": "AAAA",
+                  "rdata": "2001:db8:4::2",
+                  "ttl": 300
+                },
+                {
+                  "name": "res1",
+                  "type": "A",
+                  "rdata": "10.0.5.2",
+                  "ttl": 300
+                },
+                {
+                  "name": "client1",
+                  "type": "A",
+                  "rdata": "10.0.6.2",
+                  "ttl": 300
+                },
+                {
+                  "name": "web",
+                  "type": "A",
+                  "rdata": "10.0.3.2",
+                  "ttl": 300
+                },
+                {
+                  "name": "web",
+                  "type": "AAAA",
+                  "rdata": "2001:db8:3::2",
+                  "ttl": 300
+                },
+                {
+                  "name": "mail",
+                  "type": "A",
+                  "rdata": "10.0.3.2",
+                  "ttl": 300
+                },
+                {
+                  "name": "alias",
+                  "type": "CNAME",
+                  "rdata": "web.example.com.",
+                  "ttl": 300
+                },
+                {
+                  "name": "info",
+                  "type": "TXT",
+                  "rdata": "\"Mininet-IPLab DNS Lab\"",
+                  "ttl": 300
+                }
+              ]
+            },
+            {
+              "kind": "primary",
+              "name": "10.in-addr.arpa.",
+              "default_ttl": 300,
+              "records": [
+                {
+                  "name": "@",
+                  "type": "NS",
+                  "rdata": "ns1.example.com.",
+                  "ttl": 300
+                },
+                {
+                  "name": "@",
+                  "type": "NS",
+                  "rdata": "ns2.example.com.",
+                  "ttl": 300
+                },
+                {
+                  "name": "2.1.0",
+                  "type": "PTR",
+                  "rdata": "root1.",
+                  "ttl": 300
+                },
+                {
+                  "name": "2.2.0",
+                  "type": "PTR",
+                  "rdata": "ns.com.",
+                  "ttl": 300
+                },
+                {
+                  "name": "2.3.0",
+                  "type": "PTR",
+                  "rdata": "ns1.example.com.",
+                  "ttl": 300
+                },
+                {
+                  "name": "2.3.0",
+                  "type": "PTR",
+                  "rdata": "web.example.com.",
+                  "ttl": 300
+                },
+                {
+                  "name": "2.3.0",
+                  "type": "PTR",
+                  "rdata": "mail.example.com.",
+                  "ttl": 300
+                },
+                {
+                  "name": "2.4.0",
+                  "type": "PTR",
+                  "rdata": "ns2.example.com.",
+                  "ttl": 300
+                },
+                {
+                  "name": "2.5.0",
+                  "type": "PTR",
+                  "rdata": "res1.example.com.",
+                  "ttl": 300
+                },
+                {
+                  "name": "2.6.0",
+                  "type": "PTR",
+                  "rdata": "client1.example.com.",
+                  "ttl": 300
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "id": "auth2",
+        "name": "auth2",
+        "type": "host",
+        "ipv4_gateway": "10.0.4.1",
+        "ipv6_gateway": "2001:db8:4::1",
+        "startup": [],
+        "dns": {
+          "zones": [
+            {
+              "kind": "secondary",
+              "name": "example.com.",
+              "primary_node_id": "auth1"
+            },
+            {
+              "kind": "secondary",
+              "name": "10.in-addr.arpa.",
+              "primary_node_id": "auth1"
+            }
+          ]
+        }
+      },
+      {
+        "id": "res1",
+        "name": "res1",
+        "type": "host",
+        "ipv4_gateway": "10.0.5.1",
+        "ipv6_gateway": "2001:db8:5::1",
+        "startup": [],
+        "resolver": {
+          "root_hints": [
+            {
+              "node_id": "root1"
+            }
+          ],
+          "forwarders": [],
+          "max_ttl": 120,
+          "max_negative_ttl": 30,
+          "access_control": [
+            {
+              "subnet": "0.0.0.0/0",
+              "action": "allow"
+            },
+            {
+              "subnet": "::/0",
+              "action": "allow"
+            }
+          ],
+          "trust_anchors": []
+        }
+      },
+      {
+        "id": "client1",
+        "name": "client1",
+        "type": "host",
+        "ipv4_gateway": "10.0.6.1",
+        "ipv6_gateway": "2001:db8:6::1",
+        "startup": [],
+        "nameservers": [
+          {
+            "node_id": "res1"
+          }
+        ]
+      }
+    ],
+    "links": [
+      {
+        "id": "dns-lab-1",
+        "ends": [
+          {
+            "node_id": "root1",
+            "interface_id": "if-000000000001",
+            "port": 0,
+            "ipv4": "10.0.1.2/24",
+            "ipv6": "2001:db8:1::2/64"
+          },
+          {
+            "node_id": "r1",
+            "interface_id": "if-000000000002",
+            "port": 0,
+            "ipv4": "10.0.1.1/24",
+            "ipv6": "2001:db8:1::1/64"
+          }
+        ]
+      },
+      {
+        "id": "dns-lab-2",
+        "ends": [
+          {
+            "node_id": "tld1",
+            "interface_id": "if-000000000003",
+            "port": 0,
+            "ipv4": "10.0.2.2/24",
+            "ipv6": "2001:db8:2::2/64"
+          },
+          {
+            "node_id": "r1",
+            "interface_id": "if-000000000004",
+            "port": 1,
+            "ipv4": "10.0.2.1/24",
+            "ipv6": "2001:db8:2::1/64"
+          }
+        ]
+      },
+      {
+        "id": "dns-lab-3",
+        "ends": [
+          {
+            "node_id": "auth1",
+            "interface_id": "if-000000000005",
+            "port": 0,
+            "ipv4": "10.0.3.2/24",
+            "ipv6": "2001:db8:3::2/64"
+          },
+          {
+            "node_id": "r1",
+            "interface_id": "if-000000000006",
+            "port": 2,
+            "ipv4": "10.0.3.1/24",
+            "ipv6": "2001:db8:3::1/64"
+          }
+        ]
+      },
+      {
+        "id": "dns-lab-4",
+        "ends": [
+          {
+            "node_id": "auth2",
+            "interface_id": "if-000000000007",
+            "port": 0,
+            "ipv4": "10.0.4.2/24",
+            "ipv6": "2001:db8:4::2/64"
+          },
+          {
+            "node_id": "r1",
+            "interface_id": "if-000000000008",
+            "port": 3,
+            "ipv4": "10.0.4.1/24",
+            "ipv6": "2001:db8:4::1/64"
+          }
+        ]
+      },
+      {
+        "id": "dns-lab-5",
+        "ends": [
+          {
+            "node_id": "res1",
+            "interface_id": "if-000000000009",
+            "port": 0,
+            "ipv4": "10.0.5.2/24",
+            "ipv6": "2001:db8:5::2/64"
+          },
+          {
+            "node_id": "r1",
+            "interface_id": "if-00000000000a",
+            "port": 4,
+            "ipv4": "10.0.5.1/24",
+            "ipv6": "2001:db8:5::1/64"
+          }
+        ]
+      },
+      {
+        "id": "dns-lab-6",
+        "ends": [
+          {
+            "node_id": "client1",
+            "interface_id": "if-00000000000b",
+            "port": 0,
+            "ipv4": "10.0.6.2/24",
+            "ipv6": "2001:db8:6::2/64"
+          },
+          {
+            "node_id": "r1",
+            "interface_id": "if-00000000000c",
+            "port": 5,
+            "ipv4": "10.0.6.1/24",
+            "ipv6": "2001:db8:6::1/64"
+          }
+        ]
+      }
+    ]
+  }
+}

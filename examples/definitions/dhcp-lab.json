@@ -1,0 +1,376 @@
+{
+  "schema_version": 3,
+  "address_family": "dual",
+  "persistent_config": false,
+  "topology": {
+    "nodes": [
+      {
+        "id": "r1",
+        "name": "r1",
+        "type": "router",
+        "protocols": [],
+        "frr_config": "interface r1-eth0\n ipv6 nd prefix 2001:db8:10::/64 no-autoconfig\n ipv6 nd managed-config-flag\n no ipv6 nd suppress-ra\nexit\ninterface r1-eth3\n ipv6 nd prefix 2001:db8:61::/64 no-autoconfig\n ipv6 nd managed-config-flag\n no ipv6 nd suppress-ra\nexit\ninterface r1-eth4\n ipv6 nd other-config-flag\n no ipv6 nd suppress-ra\nexit\ninterface r1-eth5\n no ipv6 nd suppress-ra\nexit\nip route 10.20.0.0/24 10.0.0.2\nipv6 route 2001:db8:20::/64 2001:db8:0::2\n",
+        "fast_timers": false,
+        "startup": [],
+        "dhcp": {
+          "pools": [
+            {
+              "cidr": "10.10.0.0/24",
+              "start": "10.10.0.100",
+              "end": "10.10.0.200",
+              "lease_time": 120,
+              "preferred_lifetime": null,
+              "router": "10.10.0.1",
+              "dns_server": "8.8.8.8",
+              "reservations": [
+                {
+                  "ip": "10.10.0.50",
+                  "mac": "00:00:00:00:00:03",
+                  "duid": "",
+                  "hostname": "h1"
+                }
+              ]
+            },
+            {
+              "cidr": "2001:db8:10::/64",
+              "start": "2001:db8:10::100",
+              "end": "2001:db8:10::200",
+              "lease_time": 600,
+              "preferred_lifetime": 300,
+              "router": "",
+              "dns_server": "2001:db8:10::1",
+              "reservations": []
+            },
+            {
+              "cidr": "10.20.0.0/24",
+              "start": "10.20.0.100",
+              "end": "10.20.0.200",
+              "lease_time": 600,
+              "preferred_lifetime": null,
+              "router": "10.20.0.1",
+              "dns_server": "8.8.8.8",
+              "reservations": [
+                {
+                  "ip": "10.20.0.50",
+                  "mac": "00:00:00:00:00:05",
+                  "duid": "",
+                  "hostname": "h2"
+                }
+              ]
+            },
+            {
+              "cidr": "2001:db8:20::/64",
+              "start": "2001:db8:20::100",
+              "end": "2001:db8:20::200",
+              "lease_time": 600,
+              "preferred_lifetime": 300,
+              "router": "",
+              "dns_server": "2001:db8:20::1",
+              "reservations": [
+                {
+                  "ip": "2001:db8:20::50",
+                  "mac": "00:00:00:00:00:05",
+                  "duid": "",
+                  "hostname": "h2"
+                }
+              ]
+            },
+            {
+              "cidr": "10.51.0.0/24",
+              "start": "10.51.0.100",
+              "end": "10.51.0.200",
+              "lease_time": null,
+              "preferred_lifetime": null,
+              "router": "",
+              "dns_server": "",
+              "reservations": []
+            },
+            {
+              "cidr": "2001:db8:61::/64",
+              "start": "2001:db8:61::100",
+              "end": "2001:db8:61::200",
+              "lease_time": 600,
+              "preferred_lifetime": 120,
+              "router": "",
+              "dns_server": "",
+              "reservations": []
+            },
+            {
+              "cidr": "2001:db8:62::/64",
+              "start": "2001:db8:62::100",
+              "end": "2001:db8:62::200",
+              "lease_time": null,
+              "preferred_lifetime": null,
+              "router": "",
+              "dns_server": "2001:db8:62::1",
+              "reservations": []
+            }
+          ]
+        }
+      },
+      {
+        "id": "r2",
+        "name": "r2",
+        "type": "router",
+        "protocols": [],
+        "frr_config": "interface r2-eth1\n ipv6 nd prefix 2001:db8:20::/64 no-autoconfig\n ipv6 nd managed-config-flag\n no ipv6 nd suppress-ra\n",
+        "fast_timers": false,
+        "startup": [],
+        "relay": {
+          "subnets": [
+            "10.20.0.0/24",
+            "2001:db8:20::/64"
+          ],
+          "servers": [
+            "10.0.0.1",
+            "2001:db8:0::1"
+          ]
+        }
+      },
+      {
+        "id": "sw1",
+        "name": "sw1",
+        "type": "switch"
+      },
+      {
+        "id": "h1",
+        "name": "h1",
+        "type": "host",
+        "ipv4_gateway": "",
+        "ipv6_gateway": "",
+        "startup": []
+      },
+      {
+        "id": "rogue",
+        "name": "rogue",
+        "type": "host",
+        "ipv4_gateway": "",
+        "ipv6_gateway": "",
+        "startup": []
+      },
+      {
+        "id": "h2",
+        "name": "h2",
+        "type": "host",
+        "ipv4_gateway": "",
+        "ipv6_gateway": "",
+        "startup": []
+      },
+      {
+        "id": "h3",
+        "name": "h3",
+        "type": "host",
+        "ipv4_gateway": "",
+        "ipv6_gateway": "",
+        "startup": []
+      },
+      {
+        "id": "h4",
+        "name": "h4",
+        "type": "host",
+        "ipv4_gateway": "",
+        "ipv6_gateway": "",
+        "startup": []
+      },
+      {
+        "id": "h5",
+        "name": "h5",
+        "type": "host",
+        "ipv4_gateway": "",
+        "ipv6_gateway": "",
+        "startup": []
+      },
+      {
+        "id": "h6",
+        "name": "h6",
+        "type": "host",
+        "ipv4_gateway": "",
+        "ipv6_gateway": "",
+        "startup": []
+      }
+    ],
+    "links": [
+      {
+        "id": "dhcp-lab-0",
+        "ends": [
+          {
+            "node_id": "sw1",
+            "interface_id": "if-000000000101",
+            "port": 1,
+            "ipv4": "",
+            "ipv6": ""
+          },
+          {
+            "node_id": "r1",
+            "interface_id": "if-000000000102",
+            "port": 0,
+            "ipv4": "10.10.0.1/24",
+            "ipv6": "2001:db8:10::1/64"
+          }
+        ]
+      },
+      {
+        "id": "dhcp-lab-1",
+        "ends": [
+          {
+            "node_id": "sw1",
+            "interface_id": "if-000000000103",
+            "port": 2,
+            "ipv4": "",
+            "ipv6": ""
+          },
+          {
+            "node_id": "h1",
+            "interface_id": "if-000000000104",
+            "port": 0,
+            "ipv4": "",
+            "ipv6": "",
+            "dhcp4": true,
+            "dhcp6": true,
+            "mac": "00:00:00:00:00:03"
+          }
+        ]
+      },
+      {
+        "id": "dhcp-lab-2",
+        "ends": [
+          {
+            "node_id": "sw1",
+            "interface_id": "if-000000000105",
+            "port": 3,
+            "ipv4": "",
+            "ipv6": ""
+          },
+          {
+            "node_id": "rogue",
+            "interface_id": "if-000000000106",
+            "port": 0,
+            "ipv4": "10.10.0.254/24",
+            "ipv6": ""
+          }
+        ]
+      },
+      {
+        "id": "dhcp-lab-3",
+        "ends": [
+          {
+            "node_id": "r1",
+            "interface_id": "if-000000000107",
+            "port": 1,
+            "ipv4": "10.0.0.1/30",
+            "ipv6": "2001:db8:0::1/64"
+          },
+          {
+            "node_id": "r2",
+            "interface_id": "if-000000000108",
+            "port": 0,
+            "ipv4": "10.0.0.2/30",
+            "ipv6": "2001:db8:0::2/64"
+          }
+        ]
+      },
+      {
+        "id": "dhcp-lab-4",
+        "ends": [
+          {
+            "node_id": "r2",
+            "interface_id": "if-000000000109",
+            "port": 1,
+            "ipv4": "10.20.0.1/24",
+            "ipv6": "2001:db8:20::1/64"
+          },
+          {
+            "node_id": "h2",
+            "interface_id": "if-000000000110",
+            "port": 0,
+            "ipv4": "",
+            "ipv6": "",
+            "dhcp4": true,
+            "dhcp6": true,
+            "mac": "00:00:00:00:00:05"
+          }
+        ]
+      },
+      {
+        "id": "dhcp-lab-5",
+        "ends": [
+          {
+            "node_id": "r1",
+            "interface_id": "if-000000000111",
+            "port": 2,
+            "ipv4": "10.51.0.1/24",
+            "ipv6": ""
+          },
+          {
+            "node_id": "h3",
+            "interface_id": "if-000000000112",
+            "port": 0,
+            "ipv4": "",
+            "ipv6": "",
+            "dhcp4": true
+          }
+        ]
+      },
+      {
+        "id": "dhcp-lab-6",
+        "ends": [
+          {
+            "node_id": "r1",
+            "interface_id": "if-000000000113",
+            "port": 3,
+            "ipv4": "",
+            "ipv6": "2001:db8:61::1/64"
+          },
+          {
+            "node_id": "h4",
+            "interface_id": "if-000000000114",
+            "port": 0,
+            "ipv4": "",
+            "ipv6": "",
+            "dhcp6": true
+          }
+        ]
+      },
+      {
+        "id": "dhcp-lab-7",
+        "ends": [
+          {
+            "node_id": "r1",
+            "interface_id": "if-000000000115",
+            "port": 4,
+            "ipv4": "",
+            "ipv6": "2001:db8:62::1/64"
+          },
+          {
+            "node_id": "h5",
+            "interface_id": "if-000000000116",
+            "port": 0,
+            "ipv4": "",
+            "ipv6": "",
+            "dhcp6": true
+          }
+        ]
+      },
+      {
+        "id": "dhcp-lab-8",
+        "ends": [
+          {
+            "node_id": "r1",
+            "interface_id": "if-000000000117",
+            "port": 5,
+            "ipv4": "",
+            "ipv6": "2001:db8:63::1/64"
+          },
+          {
+            "node_id": "h6",
+            "interface_id": "if-000000000118",
+            "port": 0,
+            "ipv4": "",
+            "ipv6": "",
+            "dhcp6": true
+          }
+        ]
+      }
+    ]
+  }
+}

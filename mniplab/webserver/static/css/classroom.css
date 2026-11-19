@@ -1,0 +1,259 @@
+/* Classroom summaries and connection details share the workspace theme. */
+#instructor-dashboard .overview-workspace {
+    height: 100%;
+}
+
+.classroom-filters,
+.group-navigation-controls {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: .5rem;
+}
+
+.lab-navigation-tabs { display: flex; gap: .4rem; }
+
+.classroom-filters {
+    padding: .6rem 1rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.classroom-filters input,
+.classroom-filters select,
+.group-navigation-controls input,
+#connection-search {
+    color: var(--text-color);
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    /* 32px like the buttons around them, Safari's native select included. */
+    height: 32px;
+    box-sizing: border-box;
+    padding: 0 .6rem;
+    min-width: 0;
+}
+
+.group-navigation-controls {
+    margin-left: auto;
+    font-size: .85rem;
+}
+
+
+.classroom-body {
+    flex: 1;
+    min-height: 0;
+    overflow: auto;
+    padding: .75rem;
+}
+
+.classroom-input-help { margin: 0; padding: .5rem 1rem; color: var(--text-muted); font-size: .85rem; }
+.classroom-total { white-space: nowrap; }
+.group-summaries { min-width: 0; container-type: inline-size; }
+.group-summary-table {
+    width: 100%;
+    table-layout: fixed;
+    border-collapse: collapse;
+    font-size: .85rem;
+}
+.group-summary-table caption {
+    padding: 0 .5rem .6rem;
+    text-align: left;
+    color: var(--text-muted);
+}
+.group-summary-table th,
+.group-summary-table td {
+    min-width: 0;
+    padding: .6rem .5rem;
+    text-align: left;
+    overflow-wrap: anywhere;
+    border-bottom: 1px solid var(--border-color);
+}
+.group-summary-table th {
+    background: var(--surface-color);
+}
+.group-summary-table th:nth-child(2) { width: 23%; }
+.group-summary-table th:last-child { width: 20%; }
+.group-inspect {
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: .5rem;
+    width: 100%;
+    min-height: 2.5rem;
+    padding: .4rem .6rem;
+    max-width: 100%;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    font-weight: 600;
+    text-align: left;
+    color: var(--text-color);
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+}
+.group-inspect:hover:not(:disabled),
+.group-inspect:active:not(:disabled),
+.group-inspect[aria-expanded="true"] {
+    color: var(--text-color);
+    background: var(--surface-hover);
+    border-color: var(--primary-color);
+}
+.group-inspect-indicator {
+    flex-shrink: 0;
+    font-size: 1.2rem;
+    line-height: 1;
+}
+.group-summary { cursor: pointer; }
+.group-summary[data-selected="true"] .summary-group {
+    box-shadow: inset 3px 0 var(--primary-color);
+}
+.group-summary:hover,
+.group-summary:focus-within,
+.group-summary[data-selected="true"] {
+    background: var(--surface-hover);
+}
+.lab-status-badge {
+    display: inline-block;
+    border: 1px solid currentColor;
+    border-radius: var(--radius);
+    padding: .15rem .4rem;
+    font-weight: 600;
+}
+.lab-status-badge[data-status="running"] { color: var(--text-color); border-left: .3rem solid var(--success-color); }
+.lab-status-badge[data-status="stopped"] { color: var(--text-muted); border-style: dashed; }
+.summary-input { color: var(--text-muted); }
+
+@container (max-width: 720px) {
+    .group-summary-table thead {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip-path: inset(50%);
+    }
+    .group-summary {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        padding: .5rem 0;
+        border-bottom: 1px solid var(--border-color);
+    }
+    .group-summary td { display: block; border: 0; padding: .3rem .5rem; }
+    .group-summary td::before {
+        content: attr(data-label);
+        display: block;
+        color: var(--text-muted);
+        font-size: .8rem;
+        margin-bottom: .2rem;
+    }
+}
+
+#overview-group-details {
+    min-width: 0;
+    border-top: 2px solid var(--border-color);
+    margin-top: 1rem;
+    padding-top: .5rem;
+}
+#overview-group-details > .instructor-panel-header {
+    padding: .5rem .25rem;
+    background: var(--surface-color);
+    border-bottom: 1px solid var(--border-color);
+}
+.overview-group-identity { min-width: 0; overflow-wrap: anywhere; }
+#overview-group-heading { margin: 0; }
+#overview-group-summary { margin: .25rem 0 0; color: var(--text-muted); font-size: .85rem; }
+.lab-capacity-notice { margin: .5rem 0 0; color: var(--text-muted); line-height: 1.5; }
+#overview-group-details-body { padding: .5rem .25rem .25rem; }
+#overview-group-details-body:focus-visible { outline: 2px solid var(--focus-color); outline-offset: -2px; }
+
+.connection-session {
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    margin: .5rem 0;
+}
+
+.connection-session > summary {
+    padding: .7rem;
+    cursor: pointer;
+    overflow-wrap: anywhere;
+}
+
+.connection-session > summary:focus-visible {
+    outline: 2px solid var(--focus-color);
+    outline-offset: 2px;
+}
+
+.connection-code { margin: 0 .5rem; }
+.connection-meta { color: var(--text-muted); font-size: .9rem; }
+.connection-body { padding: 0 .75rem .75rem; overflow-x: auto; }
+.connection-terminals { width: 100%; border-collapse: collapse; margin-top: .75rem; }
+.connection-terminals caption { text-align: left; padding-bottom: .5rem; }
+.connection-terminals th,
+.connection-terminals td { text-align: left; padding: .5rem; border-bottom: 1px solid var(--border-color); }
+#session-details { margin-bottom: .5rem; }
+#session-nickname-form { margin-top: 1rem; }
+
+@media (min-width: 1100px) {
+    .classroom-body:has(#overview-group-details:not([hidden])) {
+        display: grid;
+        grid-template-columns: minmax(20rem, 1fr) minmax(24rem, 1fr);
+        gap: 1rem;
+        overflow: hidden;
+    }
+    .classroom-body:has(#overview-group-details:not([hidden])) > .group-summaries { overflow-y: auto; min-height: 0; }
+    #overview-group-details {
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        min-height: 0;
+        border-top: 0;
+        margin-top: 0;
+        padding-top: 0;
+    }
+    #overview-group-details-body { flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior-y: contain; }
+}
+
+@media (max-width: 768px) {
+    #lab-tabstrip { flex-wrap: wrap; overflow: visible; }
+    .group-navigation-controls { width: 100%; margin-left: 0; }
+    .connection-meta { display: block; margin-top: .4rem; }
+    .classroom-filters input { flex: 1; width: 8rem; }
+}
+
+/* Fixed popups stay visible outside the scrolling Lab navigation strip. */
+.group-picker { display: flex; align-items: center; gap: .5rem; min-width: 0; }
+.group-picker-field { position: relative; min-width: 0; }
+.group-picker-field input { width: 16rem; max-width: 100%; padding-right: 2rem; box-sizing: border-box; }
+.group-picker-toggle {
+    position: absolute; right: 0; top: 0; bottom: 0;
+    padding: 0 .6rem; border: 0; background: transparent; color: var(--text-color);
+}
+.group-picker-popup {
+    position: fixed; z-index: 1000; overflow-y: auto;
+    color: var(--text-color); background: var(--surface-color);
+    border: 1px solid var(--border-color); border-radius: var(--radius);
+    box-shadow: var(--shadow); box-sizing: border-box;
+}
+.group-picker-popup[hidden] { display: none; }
+.group-picker-popup ul { list-style: none; padding: .25rem; margin: 0; }
+.group-picker-popup [role="option"] { padding: .5rem .75rem; cursor: pointer; border-radius: var(--radius); }
+.group-picker-popup [role="option"] small { display: block; color: var(--text-muted); }
+.group-picker-popup [role="option"]:hover,
+.group-picker-popup .highlighted { background: var(--bg-color); outline: 2px solid var(--primary-color); outline-offset: -2px; }
+.group-picker-popup [aria-selected="true"] { font-weight: 600; }
+.group-picker-popup p { margin: .75rem; }
+@media (max-width: 768px) {
+    .group-navigation-controls .group-picker { width: 100%; }
+    .group-picker-field { flex: 1; }
+    .group-picker-field input { width: 100%; }
+}
+
+.overview-class-actions,
+.overview-stop-all-feedback {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: .5rem;
+}
+.overview-stop-all-feedback { padding: .5rem 1rem; border-bottom: 1px solid var(--border-color); }
+.overview-stop-all-feedback[hidden] { display: none; }
+.overview-stop-all-feedback p { margin: 0; overflow-wrap: anywhere; }

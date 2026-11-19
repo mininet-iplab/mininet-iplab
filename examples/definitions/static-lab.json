@@ -1,0 +1,102 @@
+{
+  "schema_version": 3,
+  "address_family": "dual",
+  "persistent_config": true,
+  "example": "static-lab",
+  "seeds": "frr-config/static-lab",
+  "topology": {
+    "nodes": [
+      {
+        "id": "r1",
+        "name": "r1",
+        "type": "router",
+        "protocols": [],
+        "fast_timers": false,
+        "startup": []
+      },
+      {
+        "id": "r2",
+        "name": "r2",
+        "type": "router",
+        "protocols": [],
+        "fast_timers": false,
+        "startup": []
+      },
+      {
+        "id": "h1",
+        "name": "h1",
+        "type": "host",
+        "ipv4_gateway": "192.168.1.1",
+        "ipv6_gateway": "2001:db8:1::1",
+        "startup": []
+      },
+      {
+        "id": "h2",
+        "name": "h2",
+        "type": "host",
+        "ipv4_gateway": "192.168.2.1",
+        "ipv6_gateway": "2001:db8:2::1",
+        "startup": []
+      }
+    ],
+    "links": [
+      {
+        "id": "h1-r1",
+        "ends": [
+          {
+            "node_id": "h1",
+            "interface_id": "if-000000000001",
+            "port": 0,
+            "ipv4": "192.168.1.2/24",
+            "ipv6": "2001:db8:1::2/64"
+          },
+          {
+            "node_id": "r1",
+            "interface_id": "if-000000000002",
+            "port": 0,
+            "ipv4": "192.168.1.1/24",
+            "ipv6": "2001:db8:1::1/64"
+          }
+        ]
+      },
+      {
+        "id": "h2-r2",
+        "ends": [
+          {
+            "node_id": "h2",
+            "interface_id": "if-000000000003",
+            "port": 0,
+            "ipv4": "192.168.2.2/24",
+            "ipv6": "2001:db8:2::2/64"
+          },
+          {
+            "node_id": "r2",
+            "interface_id": "if-000000000004",
+            "port": 0,
+            "ipv4": "192.168.2.1/24",
+            "ipv6": "2001:db8:2::1/64"
+          }
+        ]
+      },
+      {
+        "id": "r1-r2",
+        "ends": [
+          {
+            "node_id": "r1",
+            "interface_id": "if-000000000005",
+            "port": 1,
+            "ipv4": "10.10.1.1/30",
+            "ipv6": "2001:db8:10::1/64"
+          },
+          {
+            "node_id": "r2",
+            "interface_id": "if-000000000006",
+            "port": 1,
+            "ipv4": "10.10.1.2/30",
+            "ipv6": "2001:db8:10::2/64"
+          }
+        ]
+      }
+    ]
+  }
+}

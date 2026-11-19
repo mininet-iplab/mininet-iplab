@@ -1,0 +1,313 @@
+{
+  "schema_version": 3,
+  "address_family": "ipv4",
+  "persistent_config": false,
+  "example": "vlan-lab",
+  "seeds": "frr-config/vlan-lab",
+  "topology": {
+    "nodes": [
+      {
+        "id": "s1",
+        "name": "s1",
+        "type": "switch",
+        "stp": "rstp",
+        "priority": 4096
+      },
+      {
+        "id": "s2",
+        "name": "s2",
+        "type": "switch",
+        "stp": "rstp"
+      },
+      {
+        "id": "s3",
+        "name": "s3",
+        "type": "switch",
+        "stp": "rstp"
+      },
+      {
+        "id": "r1",
+        "name": "r1",
+        "type": "router",
+        "protocols": [],
+        "frr_config": "",
+        "fast_timers": false,
+        "startup": [],
+        "subinterfaces": [
+          {
+            "id": "r1-vlan10",
+            "parent_interface_id": "if-000000000015",
+            "vlan": 10,
+            "ipv4": "192.168.10.1/24",
+            "ipv6": ""
+          },
+          {
+            "id": "r1-vlan20",
+            "parent_interface_id": "if-000000000015",
+            "vlan": 20,
+            "ipv4": "192.168.20.1/24",
+            "ipv6": ""
+          }
+        ]
+      },
+      {
+        "id": "h1",
+        "name": "h1",
+        "type": "host",
+        "ipv4_gateway": "192.168.10.1",
+        "ipv6_gateway": "",
+        "startup": []
+      },
+      {
+        "id": "h2",
+        "name": "h2",
+        "type": "host",
+        "ipv4_gateway": "192.168.20.1",
+        "ipv6_gateway": "",
+        "startup": []
+      },
+      {
+        "id": "h3",
+        "name": "h3",
+        "type": "host",
+        "ipv4_gateway": "192.168.10.1",
+        "ipv6_gateway": "",
+        "startup": []
+      },
+      {
+        "id": "h4",
+        "name": "h4",
+        "type": "host",
+        "ipv4_gateway": "192.168.20.1",
+        "ipv6_gateway": "",
+        "startup": []
+      }
+    ],
+    "links": [
+      {
+        "id": "h1-s2",
+        "ends": [
+          {
+            "node_id": "h1",
+            "interface_id": "if-000000000001",
+            "port": 0,
+            "ipv4": "192.168.10.2/24",
+            "ipv6": ""
+          },
+          {
+            "node_id": "s2",
+            "interface_id": "if-000000000002",
+            "port": 1,
+            "ipv4": "",
+            "ipv6": "",
+            "vlan": {
+              "mode": "access",
+              "vlan": 10
+            }
+          }
+        ]
+      },
+      {
+        "id": "h2-s2",
+        "ends": [
+          {
+            "node_id": "h2",
+            "interface_id": "if-000000000003",
+            "port": 0,
+            "ipv4": "192.168.20.2/24",
+            "ipv6": ""
+          },
+          {
+            "node_id": "s2",
+            "interface_id": "if-000000000004",
+            "port": 2,
+            "ipv4": "",
+            "ipv6": "",
+            "vlan": {
+              "mode": "access",
+              "vlan": 20
+            }
+          }
+        ]
+      },
+      {
+        "id": "h3-s3",
+        "ends": [
+          {
+            "node_id": "h3",
+            "interface_id": "if-000000000005",
+            "port": 0,
+            "ipv4": "192.168.10.3/24",
+            "ipv6": ""
+          },
+          {
+            "node_id": "s3",
+            "interface_id": "if-000000000006",
+            "port": 1,
+            "ipv4": "",
+            "ipv6": "",
+            "vlan": {
+              "mode": "access",
+              "vlan": 10
+            }
+          }
+        ]
+      },
+      {
+        "id": "h4-s3",
+        "ends": [
+          {
+            "node_id": "h4",
+            "interface_id": "if-000000000007",
+            "port": 0,
+            "ipv4": "192.168.20.3/24",
+            "ipv6": ""
+          },
+          {
+            "node_id": "s3",
+            "interface_id": "if-000000000008",
+            "port": 2,
+            "ipv4": "",
+            "ipv6": "",
+            "vlan": {
+              "mode": "access",
+              "vlan": 20
+            }
+          }
+        ]
+      },
+      {
+        "id": "s1-s2",
+        "ends": [
+          {
+            "node_id": "s1",
+            "interface_id": "if-000000000009",
+            "port": 1,
+            "ipv4": "",
+            "ipv6": "",
+            "vlan": {
+              "mode": "trunk",
+              "trunks": [
+                10,
+                20
+              ],
+              "native": null
+            }
+          },
+          {
+            "node_id": "s2",
+            "interface_id": "if-000000000010",
+            "port": 3,
+            "ipv4": "",
+            "ipv6": "",
+            "vlan": {
+              "mode": "trunk",
+              "trunks": [
+                10,
+                20
+              ],
+              "native": null
+            }
+          }
+        ]
+      },
+      {
+        "id": "s1-s3",
+        "ends": [
+          {
+            "node_id": "s1",
+            "interface_id": "if-000000000011",
+            "port": 2,
+            "ipv4": "",
+            "ipv6": "",
+            "vlan": {
+              "mode": "trunk",
+              "trunks": [
+                10,
+                20
+              ],
+              "native": null
+            }
+          },
+          {
+            "node_id": "s3",
+            "interface_id": "if-000000000012",
+            "port": 3,
+            "ipv4": "",
+            "ipv6": "",
+            "vlan": {
+              "mode": "trunk",
+              "trunks": [
+                10,
+                20
+              ],
+              "native": null
+            }
+          }
+        ]
+      },
+      {
+        "id": "s2-s3",
+        "ends": [
+          {
+            "node_id": "s2",
+            "interface_id": "if-000000000013",
+            "port": 4,
+            "ipv4": "",
+            "ipv6": "",
+            "vlan": {
+              "mode": "trunk",
+              "trunks": [
+                10,
+                20
+              ],
+              "native": null
+            }
+          },
+          {
+            "node_id": "s3",
+            "interface_id": "if-000000000014",
+            "port": 4,
+            "ipv4": "",
+            "ipv6": "",
+            "vlan": {
+              "mode": "trunk",
+              "trunks": [
+                10,
+                20
+              ],
+              "native": null
+            }
+          }
+        ]
+      },
+      {
+        "id": "r1-s1",
+        "ends": [
+          {
+            "node_id": "r1",
+            "interface_id": "if-000000000015",
+            "port": 0,
+            "ipv4": "",
+            "ipv6": ""
+          },
+          {
+            "node_id": "s1",
+            "interface_id": "if-000000000016",
+            "port": 3,
+            "ipv4": "",
+            "ipv6": "",
+            "vlan": {
+              "mode": "trunk",
+              "trunks": [
+                10,
+                20
+              ],
+              "native": null
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

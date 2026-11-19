@@ -1,0 +1,2309 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light dark">
+    <title>Mininet-IPLab</title>
+    <link rel="icon" type="image/svg+xml" href="/static/img/favicon.svg">
+    <link rel="stylesheet" href="/static/css/main.css?v=7">
+    <link rel="stylesheet" href="/static/css/classroom.css">
+    <link rel="stylesheet" href="/static/css/lib/xterm.css">
+    <link rel="stylesheet" href="/static/css/console.css">
+    <script>
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+    </script>
+</head>
+
+<body>
+    <a href="#main" class="skip-link">Skip to main content</a>
+
+    <!-- Login Page -->
+    <main id="login-page" class="login-container hidden" role="main" tabindex="-1">
+        <div class="login-box">
+            <div class="login-header">
+                <svg width="64" height="64" viewBox="0 0 64 64" class="login-logo" role="img" aria-label="Mininet-IPLab Logo">
+                    <!-- Terminal Prompt -->
+                    <g stroke="currentColor" stroke-width="4" stroke-linecap="round" fill="none">
+                        <path d="M10 12 L16 18 L10 24" />
+                        <line x1="20" y1="24" x2="26" y2="24" />
+                    </g>
+                    <!-- Links -->
+                    <g stroke="currentColor" stroke-width="3.5" stroke-linecap="round" opacity="0.8">
+                        <line x1="48" y1="18" x2="32" y2="34" stroke-dasharray="4,3" />
+                        <line x1="32" y1="34" x2="16" y2="50" />
+                        <line x1="32" y1="34" x2="48" y2="50" />
+                    </g>
+                    <!-- Nodes -->
+                    <g stroke="currentColor" stroke-width="3.5" fill="var(--surface-color)">
+                        <rect x="42" y="12" width="12" height="9" rx="2" />
+                        <rect x="26" y="30" width="12" height="9" rx="2" />
+                        <rect x="10" y="46" width="12" height="9" rx="2" />
+                        <rect x="42" y="46" width="12" height="9" rx="2" />
+                    </g>
+                </svg>
+                <h1>Mininet-IPLab</h1>
+            </div>
+            <p class="login-description">
+                Mininet-IPLab is a network emulation framework for teaching and testing IP routing
+                protocols. It extends Mininet with FRR routing daemons, ExaBGP speakers, and a web UI
+                for topology visualization and in-browser terminals.
+            </p>
+            <form id="login-form">
+                <div id="login-error" class="error-message hidden" role="alert" aria-live="assertive"></div>
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" required autocomplete="username"
+                        placeholder="Enter username">
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required autocomplete="current-password"
+                        placeholder="Enter password">
+                </div>
+                <button type="submit" id="login-btn">Login</button>
+            </form>
+        </div>
+    </main>
+
+    <!-- Main App -->
+    <div id="app" class="hidden">
+        <header role="banner">
+            <div class="header-left">
+                <nav class="header-breadcrumb" aria-label="Breadcrumb">
+                    <ol class="breadcrumb-list">
+                        <li>
+                            <span class="header-brand-link">
+                                <svg width="24" height="24" viewBox="0 0 64 64" aria-hidden="true">
+                                    <!-- Terminal Prompt -->
+                                    <g stroke="currentColor" stroke-width="4" stroke-linecap="round" fill="none">
+                                        <path d="M10 12 L16 18 L10 24" />
+                                        <line x1="20" y1="24" x2="26" y2="24" />
+                                    </g>
+                                    <!-- Links -->
+                                    <g stroke="currentColor" stroke-width="3.5" stroke-linecap="round" opacity="0.8">
+                                        <line x1="48" y1="18" x2="32" y2="34" stroke-dasharray="4,3" />
+                                        <line x1="32" y1="34" x2="16" y2="50" />
+                                        <line x1="32" y1="34" x2="48" y2="50" />
+                                    </g>
+                                    <!-- Nodes -->
+                                    <g stroke="currentColor" stroke-width="3.5" fill="var(--surface-color)">
+                                        <rect x="42" y="12" width="12" height="9" rx="2" />
+                                        <rect x="26" y="30" width="12" height="9" rx="2" />
+                                        <rect x="10" y="46" width="12" height="9" rx="2" />
+                                        <rect x="42" y="46" width="12" height="9" rx="2" />
+                                    </g>
+                                </svg>
+                                Mininet-IPLab
+                            </span>
+                        </li>
+                        <li class="breadcrumb-separator" aria-hidden="true">/</li>
+                        <li aria-current="page"><h1 id="workspace-title" class="header-page-title">Labs</h1></li>
+                        <li id="lab-crumb-separator" class="breadcrumb-separator" aria-hidden="true" hidden>/</li>
+                        <li id="lab-crumb" class="header-lab-step" hidden><span id="lab-name">-</span></li>
+                    </ol>
+                </nav>
+            </div>
+            <div class="header-right">
+                <a id="authoring-link" class="btn-secondary" href="/authoring" hidden>Lab Authoring</a>
+                <button id="help-btn" class="btn-icon" aria-label="Help" title="Help (?)">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+                        <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                    </svg>
+                </button>
+                <!-- Account menu: who is signed in, and everything about the
+                     Session that is not used all the time. -->
+                <div class="account-menu">
+                    <button id="account-menu-btn" class="btn-secondary account-menu-button" type="button">
+                        <span id="header-username" class="header-username"></span>
+                        <span class="account-role-divider" aria-hidden="true">|</span>
+                        <span id="role-badge" class="account-role"></span>
+                        <svg class="account-menu-caret" width="12" height="12" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
+                            aria-hidden="true" focusable="false">
+                            <polyline points="6 9 12 15 18 9"></polyline>
+                        </svg>
+                    </button>
+                    <div id="account-menu" class="pane-menu-list account-menu-list" role="menu"
+                        aria-labelledby="account-menu-btn" hidden>
+                        <button id="workspace-monitor-btn" type="button" role="menuitemcheckbox"
+                            aria-checked="false" aria-controls="workspace-monitor" hidden>Sessions &amp; Terminals</button>
+                        <button id="your-session-btn" type="button" role="menuitem"
+                            aria-haspopup="dialog" aria-controls="session-identity-modal">Your Session
+                            <span id="your-session-code" class="menu-item-hint"></span></button>
+                        <button id="server-settings-btn" type="button" role="menuitem"
+                            aria-haspopup="dialog" aria-controls="server-settings-modal" hidden>Server settings</button>
+                        <button id="theme-toggle" type="button" role="menuitemcheckbox" aria-checked="false"
+                            data-menu-keep-open>Dark mode</button>
+                        <div class="menu-separator" role="separator"></div>
+                        <button id="logout-btn" type="button" role="menuitem" class="menu-item-danger">Log out</button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <nav id="lab-tabstrip" class="lab-tabstrip hidden" aria-label="Lab navigation"></nav>
+
+        <section id="instructor-dashboard" role="tabpanel" style="display:none;" aria-labelledby="lab-tab-overview">
+            <div class="overview-workspace">
+                <div class="instructor-panel-header">
+                    <h2>Class Overview</h2>
+                    <p id="instructor-dashboard-cap" class="instructor-dashboard-cap" aria-live="polite"></p>
+                    <div class="overview-class-actions">
+                        <button type="button" id="overview-stop-all" class="dashboard-action dashboard-action-destructive"
+                            aria-haspopup="dialog" aria-controls="confirm-modal" disabled>Stop all Labs…</button>
+                        <button type="button" id="overview-config-reset" class="dashboard-action dashboard-action-destructive"
+                            aria-haspopup="dialog" aria-controls="config-reset-modal">Reset every Group's Router Config…</button>
+                    </div>
+                </div>
+                <div id="overview-stop-all-feedback" class="overview-stop-all-feedback" hidden>
+                    <p id="overview-stop-all-status" role="status" aria-atomic="true"></p>
+                    <button type="button" id="overview-stop-all-retry" class="dashboard-action"
+                        aria-haspopup="dialog" aria-controls="confirm-modal" hidden>Retry failed stops…</button>
+                </div>
+                <div class="classroom-filters">
+                    <div id="overview-group-filter"></div>
+                    <label for="overview-lab-status-filter">Lab status</label>
+                    <select id="overview-lab-status-filter">
+                        <option value="">All Labs</option><option value="running">Running</option>
+                        <option value="stopped">Stopped</option>
+                    </select>
+                    <label for="overview-presence-filter">Presence</label>
+                    <select id="overview-presence-filter">
+                        <option value="">Any presence</option><option value="signed-in">Signed in</option>
+                        <option value="no-sessions">No sessions</option>
+                    </select>
+                </div>
+                <p class="classroom-input-help" id="overview-input-help">Last learner input records Terminal typing or pasted text from currently signed-in learners. Output and keepalives do not count.</p>
+                <div class="classroom-body">
+                    <div class="group-summaries">
+                        <table class="group-summary-table" role="table" aria-describedby="overview-input-help">
+                            <caption>Groups — select a Group to view its Lab, Sessions &amp; Terminals.</caption>
+                            <thead><tr>
+                                <th scope="col">Group</th><th scope="col">Lab</th>
+                                <th scope="col">Lab status</th><th scope="col">Sessions</th>
+                                <th scope="col">Terminals</th><th scope="col">Last learner input</th>
+                            </tr></thead>
+                            <tbody id="overview-group-list"></tbody>
+                        </table>
+                    </div>
+                    <p id="overview-no-matches" hidden>No Groups match these filters.</p>
+                    <section id="overview-group-details" aria-labelledby="overview-group-heading" hidden>
+                        <div class="instructor-panel-header">
+                            <div class="overview-group-identity">
+                                <h3 id="overview-group-heading">Group details</h3>
+                                <p id="overview-group-summary"></p>
+                            </div>
+                            <button id="overview-details-close" class="dashboard-action" type="button">Close Group details</button>
+                        </div>
+                        <div id="overview-group-details-body" role="region" aria-labelledby="overview-group-heading" tabindex="0">
+                            <div id="instructor-dashboard-list" aria-label="Selected Group and its Lab"></div>
+                            <h4>Sessions &amp; Terminals</h4>
+                            <div id="overview-connection-details"></div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </section>
+
+        <main id="main" role="main" tabindex="-1">
+            <div class="layout-wrapper" id="lab-tabpanel" role="tabpanel">
+                <!-- Collapsible Sidebar: the Labs list, only while no Lab runs -->
+                <aside class="sidebar" role="complementary" aria-label="Lab list" data-sidebar-view="labs">
+                    <div class="sidebar-header">
+                        <h2 id="sidebar-title">Labs</h2>
+                    </div>
+                    <!-- Labs view: shown when no lab is running -->
+                    <div id="sidebar-labs-container" class="sidebar-labs">
+                        <div class="sidebar-labs-controls">
+                            <input type="search" id="sidebar-lab-search" class="sidebar-lab-search"
+                                placeholder="Search labs…" autocomplete="off" aria-label="Search labs">
+                            <p id="sidebar-lab-count" class="sidebar-lab-count" aria-live="polite"
+                                aria-atomic="true"></p>
+                        </div>
+                        <ul id="sidebar-lab-list" class="sidebar-lab-list" role="list"
+                            aria-label="Available labs">
+                            <!-- Lab rows rendered by JS -->
+                        </ul>
+                        <div id="sidebar-lab-status" class="sidebar-lab-status hidden" role="status"
+                            aria-live="polite">
+                            <div class="sidebar-lab-spinner" aria-hidden="true"></div>
+                            <span id="sidebar-lab-status-text">Starting lab…</span>
+                        </div>
+                    </div>
+                    <div id="sidebar-resize-handle" class="sidebar-resize-handle" role="separator"
+                        aria-orientation="vertical" aria-label="Resize sidebar"
+                        aria-valuenow="260" aria-valuemin="180" aria-valuemax="560" tabindex="0"></div>
+                </aside>
+
+                <!-- The Instructor's Overview: covers every Pane while shown -->
+                <section id="workspace-monitor" class="workspace-monitor" aria-labelledby="workspace-monitor-title" hidden>
+                    <div class="monitor-toolbar">
+                        <h2 id="workspace-monitor-title">Sessions &amp; Terminals</h2>
+                        <button id="back-to-topology" class="btn-secondary" type="button">Back to topology</button>
+                    </div>
+                    <p id="monitor-scope" class="monitor-scope"></p>
+                    <p id="monitor-status" role="status" aria-live="polite"></p>
+                    <div id="monitor-content" class="monitor-content">
+                        <label for="connection-search">Find a Session</label>
+                        <input id="connection-search" type="search" placeholder="Nickname, connection code or account">
+                        <p id="connection-counts"></p>
+                        <div id="instructor-connection-list"></div>
+                    </div>
+                </section>
+
+                <!-- The Guide pane: the running Lab's Guide; only its text scrolls -->
+                <section id="lab-guide-container" class="lab-guide-container" data-pane="guide" data-pane-shown="false"
+                    aria-labelledby="lab-guide-heading">
+                    <div class="lab-guide-toolbar">
+                        <h2 id="lab-guide-heading" class="lab-guide-heading">Guide</h2>
+                        <button id="lab-guide-open-btn" class="btn-secondary" type="button" aria-label="Open in New Tab (lab guide)" style="display:none;">
+                            Open in New Tab
+                        </button>
+                    </div>
+                    <p id="lab-guide-status" class="lab-guide-status" aria-live="polite">No guide loaded.</p>
+                    <article id="lab-guide-content" class="lab-guide-content" aria-label="Lab guide content"></article>
+                </section>
+
+                <!-- The Topology pane -->
+                <div class="main-content" data-pane="topology" data-pane-shown="true" role="region" aria-label="Topology">
+                    <!-- Topology Container with Controls -->
+                    <div class="topology-container">
+                        <div class="controls" role="toolbar" aria-label="Topology controls">
+                            <button id="toggle-sidebar" class="btn-icon" aria-label="Toggle the Labs list (Ctrl+B)"
+                                title="Toggle the Labs list (Ctrl+B)">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                    <line x1="9" y1="3" x2="9" y2="21"></line>
+                                </svg>
+                            </button>
+                            <button id="toggle-terminal-pane" class="btn-icon" disabled
+                                aria-label="Show or hide the Terminal pane (Ctrl+T)" title="Show or hide the Terminal pane (Ctrl+T)">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                                    <polyline points="4 17 10 11 4 5"></polyline>
+                                    <line x1="12" y1="19" x2="20" y2="19"></line>
+                                </svg>
+                            </button>
+                            <div class="separator-vertical"></div>
+                            <div class="toolbar-dropdown">
+                                <button id="view-options-btn" class="btn-secondary" type="button"
+                                    aria-label="Open view and layout options" aria-haspopup="true"
+                                    aria-expanded="false" aria-controls="view-options-menu">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                        <path d="M3 12h18"></path>
+                                        <path d="M3 6h18"></path>
+                                        <path d="M3 18h18"></path>
+                                    </svg>
+                                    <span class="btn-label">View</span>
+                                </button>
+                                <div id="view-options-menu" class="toolbar-dropdown-menu hidden"
+                                    aria-label="View and layout options">
+                                    <div class="toolbar-dropdown-group" aria-label="View toggles">
+                                        <label for="toggle-grid" class="toolbar-dropdown-label">
+                                            <input type="checkbox" id="toggle-grid" checked aria-label="Toggle grid lines">
+                                            Grid
+                                        </label>
+                                        <label for="toggle-labels" class="toolbar-dropdown-label">
+                                            <input type="checkbox" id="toggle-labels" checked aria-label="Toggle node labels">
+                                            Node Labels
+                                        </label>
+                                        <label for="toggle-interfaces" class="toolbar-dropdown-label">
+                                            <input type="checkbox" id="toggle-interfaces" aria-label="Toggle node interfaces">
+                                            Node Interfaces
+                                        </label>
+                                        <label id="vlan-labels-option" for="toggle-vlan-labels" class="toolbar-dropdown-label hidden">
+                                            <input type="checkbox" id="toggle-vlan-labels" checked aria-label="Toggle VLAN labels">
+                                            VLAN Labels
+                                        </label>
+                                    </div>
+                                    <div class="toolbar-dropdown-divider" aria-hidden="true"></div>
+                                    <div class="toolbar-dropdown-group" role="group" aria-label="Panes">
+                                        <label for="pane-open-guide" class="toolbar-dropdown-label">
+                                            <input type="checkbox" id="pane-open-guide" checked>
+                                            Guide
+                                        </label>
+                                        <label for="pane-open-terminal" class="toolbar-dropdown-label">
+                                            <input type="checkbox" id="pane-open-terminal" checked>
+                                            Terminal
+                                        </label>
+                                        <label for="pane-open-packet" class="toolbar-dropdown-label">
+                                            <input type="checkbox" id="pane-open-packet" checked>
+                                            Packet Analysis
+                                        </label>
+                                        <button id="reset-pane-arrangement-btn" class="btn-secondary toolbar-dropdown-action" type="button">
+                                            Reset pane arrangement
+                                        </button>
+                                    </div>
+                                    <div class="toolbar-dropdown-divider" aria-hidden="true"></div>
+                                    <div class="toolbar-dropdown-group" aria-label="Layout actions">
+                                        <button id="restore-layout-btn" class="btn-secondary toolbar-dropdown-action" type="button"
+                                            aria-label="Reset to Authored Layout" title="Reset to Authored Layout">
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                                <polyline points="7 10 12 15 17 10"></polyline>
+                                                <line x1="12" y1="5" x2="12" y2="17"></line>
+                                            </svg>
+                                            Reset to Authored Layout
+                                        </button>
+                                        <button id="save-layout-btn" class="btn-secondary toolbar-dropdown-action" type="button"
+                                            aria-label="Save as Authored Layout (instructor only, for this lab example)"
+                                            title="Save as Authored Layout" style="display:none;">
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                                <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2Z"></path>
+                                                <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                                                <polyline points="7 3 7 8 15 8"></polyline>
+                                            </svg>
+                                            Save as Authored Layout
+                                        </button>
+                                        <button id="create-group-btn" class="btn-secondary toolbar-dropdown-action" type="button"
+                                            aria-label="Create a group from selected nodes"
+                                            title="Create Group (select nodes first)">
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                                <line x1="12" y1="8" x2="12" y2="16"></line>
+                                                <line x1="8" y1="12" x2="16" y2="12"></line>
+                                            </svg>
+                                            Group
+                                        </button>
+                                        <button id="delete-group-btn" class="btn-danger toolbar-dropdown-action" type="button"
+                                            aria-label="Ungroup (delete the selected group)"
+                                            title="Ungroup" disabled style="display: none;">
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                                <line x1="9" y1="9" x2="15" y2="15"></line>
+                                                <line x1="15" y1="9" x2="9" y2="15"></line>
+                                            </svg>
+                                            Ungroup
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="controls-spacer" aria-hidden="true"></div>
+                            <button id="lab-prompt-btn" class="btn-lab-prompt" type="button" aria-label="Open Lab Prompt" style="display:none;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg><span class="btn-label">Lab Prompt</span></button>
+
+                            <button id="tools-btn" class="btn-secondary">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                                    <path
+                                        d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z">
+                                    </path>
+                                </svg>
+                                <span class="btn-label">Tools</span>
+                            </button>
+                            <button id="stop-lab-btn" class="btn-danger" aria-label="Stop Lab" style="display:none;">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                    stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                </svg>
+                                Stop Lab
+                            </button>
+                        </div>
+                        <div class="topology-viewport">
+                            <div id="topology-empty-state" class="topology-empty-state" aria-live="polite">
+                                <div class="topology-empty-inner">
+                                    <svg width="48" height="48" viewBox="0 0 64 64" aria-hidden="true">
+                                        <g stroke="currentColor" stroke-width="4" stroke-linecap="round" fill="none">
+                                            <path d="M10 12 L16 18 L10 24" />
+                                            <line x1="20" y1="24" x2="26" y2="24" />
+                                        </g>
+                                        <g stroke="currentColor" stroke-width="3.5" stroke-linecap="round" opacity="0.8">
+                                            <line x1="48" y1="18" x2="32" y2="34" stroke-dasharray="4,3" />
+                                            <line x1="32" y1="34" x2="16" y2="50" />
+                                            <line x1="32" y1="34" x2="48" y2="50" />
+                                        </g>
+                                        <g stroke="currentColor" stroke-width="3.5" fill="var(--surface-color)">
+                                            <rect x="42" y="12" width="12" height="9" rx="2" />
+                                            <rect x="26" y="30" width="12" height="9" rx="2" />
+                                            <rect x="10" y="46" width="12" height="9" rx="2" />
+                                            <rect x="42" y="46" width="12" height="9" rx="2" />
+                                        </g>
+                                    </svg>
+                                    <h2>No lab running</h2>
+                                    <p id="empty-state-hint">Select a lab from the sidebar to get started.</p>
+                                </div>
+                            </div>
+                            <!-- The Learner's start screen (Multi-Lab Mode): with no Lab
+                                 running, the Group's Assignment as cards, one-click Start.
+                                 Shown in place of the empty state; the sidebar is closed. -->
+                            <div id="start-screen" class="start-screen" style="display:none;" role="region" aria-label="Your Assignment">
+                                <div class="start-screen-inner">
+                                    <h2>No Lab running</h2>
+                                    <p class="start-screen-sub">Your Group's Assignment</p>
+                                    <div id="start-screen-cards" class="start-screen-cards">
+                                        <p class="instructor-panel-empty">Loading…</p>
+                                    </div>
+                                    <div id="start-screen-status" class="sidebar-lab-status hidden" role="status" aria-live="polite">
+                                        <div class="sidebar-lab-spinner" aria-hidden="true"></div>
+                                        <span id="start-screen-status-text">Starting lab…</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <svg id="topology" aria-label="Network topology visualization"></svg>
+                            <div id="topology-live-region" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+                            <div id="link-context-menu" class="link-context-menu hidden" role="menu"
+                                aria-label="Link actions" aria-hidden="true">
+                                <button id="link-disconnect-btn" class="btn-danger toolbar-dropdown-action" type="button"
+                                    role="menuitem" title="Disconnect Link" aria-label="Disconnect link">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                        <path d="M16 3h5v5"></path>
+                                        <path d="M8 21H3v-5"></path>
+                                        <path d="M21 3l-7 7"></path>
+                                        <path d="M3 21l7-7"></path>
+                                        <line x1="8" y1="8" x2="16" y2="16" stroke="currentColor"></line>
+                                    </svg>
+                                    Disconnect Link
+                                </button>
+                                <button id="link-reconnect-btn" class="btn-secondary toolbar-dropdown-action" type="button"
+                                    role="menuitem" title="Reconnect Link" aria-label="Reconnect link">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                        <path d="M15 3h6v6"></path>
+                                        <path d="M9 21H3v-6"></path>
+                                        <path d="M21 3l-7 7"></path>
+                                        <path d="M3 21l7-7"></path>
+                                    </svg>
+                                    Reconnect Link
+                                </button>
+                                <button id="link-config-btn" class="btn-secondary toolbar-dropdown-action" type="button"
+                                    role="menuitem" title="Configure Link" aria-label="Configure link">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                        <circle cx="12" cy="12" r="3"></circle>
+                                        <path
+                                            d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z">
+                                        </path>
+                                    </svg>
+                                    Configure Link
+                                </button>
+                                <button id="link-capture-btn" class="btn-secondary toolbar-dropdown-action" type="button"
+                                    role="menuitem" title="Packet Capture" aria-label="Packet capture">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                        <circle cx="11" cy="11" r="7"></circle>
+                                        <line x1="21" y1="21" x2="16" y2="16"></line>
+                                        <polyline points="7 11 9 11 10 8 12 14 13 11 15 11"></polyline>
+                                    </svg>
+                                    Packet Capture
+                                </button>
+                            </div>
+                            <div id="node-context-menu" class="link-context-menu node-context-menu hidden" role="menu"
+                                aria-label="Node actions" aria-hidden="true">
+                                <button id="node-terminal-btn" class="btn-secondary toolbar-dropdown-action" type="button"
+                                    role="menuitem" title="Open Terminal" aria-label="Open node terminal">
+                                    Open Terminal
+                                </button>
+                                <button id="node-capture-btn" class="btn-secondary toolbar-dropdown-action hidden" type="button"
+                                    role="menuitem" title="Packet Capture" aria-label="Packet capture on one of this node's interfaces" aria-hidden="true">
+                                    Packet Capture
+                                </button>
+                                <button id="node-nat-table-btn" class="btn-secondary toolbar-dropdown-action hidden" type="button"
+                                    role="menuitem" title="NAT Table" aria-label="NAT Table" aria-hidden="true">
+                                    NAT Table
+                                </button>
+                                <button id="node-dns-btn" class="btn-secondary toolbar-dropdown-action hidden" type="button"
+                                    role="menuitem" title="Open DNS Service" aria-label="Open DNS Service" aria-hidden="true">
+                                    Open DNS Service
+                                </button>
+                                <button id="node-resolver-btn" class="btn-secondary toolbar-dropdown-action hidden" type="button"
+                                    role="menuitem" title="Open Resolver" aria-label="Open Recursive Caching Resolver" aria-hidden="true">
+                                    Open Resolver
+                                </button>
+                                <button id="node-speaker-btn" class="btn-secondary toolbar-dropdown-action hidden" type="button"
+                                    role="menuitem" title="Open Speaker" aria-label="Open Speaker panel" aria-hidden="true">
+                                    Open Speaker
+                                </button>
+                                <button id="node-switch-btn" class="btn-secondary toolbar-dropdown-action hidden" type="button"
+                                    role="menuitem" title="Manage Switch" aria-label="Open Switch Management" aria-hidden="true">
+                                    Manage Switch
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- The Terminal pane -->
+                <section class="terminal-pane" data-pane="terminal" data-pane-shown="false" aria-labelledby="terminal-pane-heading">
+                    <h2 id="terminal-pane-heading" class="sr-only">Terminal</h2>
+                    <div class="terminal-tab-bar">
+                        <div class="terminal-tabs">
+                            <!-- The tablist owns the tabs by id; each tab and its close
+                                 control are inserted here as siblings. -->
+                            <div class="terminal-tablist" role="tablist" aria-label="Open terminals"></div>
+                        </div>
+                        <div class="terminal-tab-actions" role="group" aria-label="Terminal controls">
+                            <button type="button" id="terminal-font-dec" class="btn-icon terminal-view-control"
+                                aria-label="A- Decrease terminal font size" title="Decrease font size">A-</button>
+                            <button type="button" id="terminal-font-inc" class="btn-icon terminal-view-control"
+                                aria-label="A+ Increase terminal font size" title="Increase font size">A+</button>
+                            <button type="button" id="terminal-copy" class="btn-icon terminal-touch-control"
+                                aria-label="Copy from terminal" title="Copy from terminal">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                                    <rect x="9" y="9" width="12" height="12" rx="2"></rect>
+                                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                                </svg>
+                            </button>
+                            <button type="button" id="terminal-paste" class="btn-icon terminal-touch-control"
+                                aria-label="Paste into terminal" title="Paste into terminal">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                                    <rect x="8" y="2" width="8" height="4" rx="1"></rect>
+                                    <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
+                                </svg>
+                            </button>
+                            <button type="button" id="terminal-clear" class="btn-icon terminal-view-control"
+                                aria-label="Clear terminal buffer" title="Clear terminal buffer">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                                    <path d="M4 6h16"></path>
+                                    <path d="M4 12h10"></path>
+                                    <path d="M4 18h6"></path>
+                                    <path d="M15 15l5 5"></path>
+                                    <path d="M20 15l-5 5"></path>
+                                </svg>
+                            </button>
+                            <button id="close-all-terminals" class="btn-icon" aria-label="Close all terminals"
+                                title="Close all terminals">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="terminal-content" role="tabpanel">
+                        <!-- Terminal instances will be inserted here -->
+                    </div>
+                </section>
+                <!-- The Packet Analysis pane -->
+                <section id="packet-analysis" class="packet-analysis" data-pane="packet" data-pane-shown="false" aria-labelledby="packet-analysis-heading" hidden>
+                    <div class="packet-analysis-tabbar">
+                        <h2 id="packet-analysis-heading" class="packet-analysis-heading">Packet Analysis</h2>
+                        <div class="capture-tabs" role="tablist" aria-labelledby="packet-analysis-heading"></div>
+                        <div class="packet-analysis-header-slot"></div>
+                    </div>
+                    <div class="capture-panes"></div>
+                    <template id="capture-pane-template">
+                        <div class="capture-pane" role="tabpanel">
+                            <div class="packet-analysis-header">
+                                <span class="packet-analysis-state"></span>
+                                <span class="packet-analysis-count"></span>
+                                <button type="button" class="btn-icon capture-info" aria-expanded="false"
+                                    aria-label="About this Capture" title="About this Capture">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2" stroke-linecap="round" aria-hidden="true">
+                                        <circle cx="12" cy="12" r="9"></circle>
+                                        <line x1="12" y1="11" x2="12" y2="16"></line>
+                                        <circle cx="12" cy="7.5" r="0.6" fill="currentColor"></circle>
+                                    </svg>
+                                </button>
+                                <button type="button" class="btn-icon capture-download" aria-label="Download pcap"
+                                    title="Download pcap">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                        <line x1="12" y1="4" x2="12" y2="15"></line>
+                                        <polyline points="7 10 12 15 17 10"></polyline>
+                                        <line x1="5" y1="20" x2="19" y2="20"></line>
+                                    </svg>
+                                </button>
+                                <button type="button" class="btn-icon packet-analysis-stop" aria-label="Stop capture"
+                                    title="Stop capture">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                                        <rect x="6" y="6" width="12" height="12" rx="1.5"></rect>
+                                    </svg>
+                                </button>
+                            </div>
+                            <div class="capture-note" hidden>
+                                <p>Packets appear as they cross the Interface. Select one to see its fields; the arrow keys move between packets, and Escape hides the fields.</p>
+                                <p>A capture filter is BPF, applied by the kernel as packets are captured, so it cannot reach packets already taken: changing it restarts the Capture and clears the list.</p>
+                                <p class="capture-pcap-note"><strong>Download pcap</strong> saves every packet this Capture kept, including those scrolled out of the list, to open in Wireshark. The copy on the server is deleted when the Lab stops.</p>
+                                <p>Up to two Captures run at once. <strong>Stop capture</strong> ends this one unless someone else is watching it.</p>
+                            </div>
+                            <form class="capture-filter" novalidate>
+                                <div class="capture-presets" role="group" aria-label="Protocol presets"></div>
+                                <div class="capture-filter-row">
+                                    <label class="capture-filter-label">Capture filter</label>
+                                    <input type="text" class="capture-filter-input" spellcheck="false" autocomplete="off"
+                                        placeholder="empty: every packet" maxlength="256">
+                                    <button type="submit" class="btn-secondary capture-filter-apply">Apply</button>
+                                </div>
+                            </form>
+                            <p class="packet-analysis-status sr-only" role="status" aria-live="polite"></p>
+                            <p class="packet-analysis-problem" hidden></p>
+                            <p class="capture-drop-notice" role="status" aria-live="polite" hidden></p>
+                            <div class="capture-packet-list" role="region" aria-label="Captured packets">
+                                <table class="capture-packet-table">
+                                    <caption class="sr-only">Captured packets, oldest first. Select a packet to show its fields below; use the arrow keys to move between packets and Escape to hide the fields.</caption>
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">No.</th>
+                                            <th scope="col">Time</th>
+                                            <th scope="col">Source</th>
+                                            <th scope="col">Destination</th>
+                                            <th scope="col">Protocol</th>
+                                            <th scope="col">Description</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="capture-packet-rows"></tbody>
+                                </table>
+                            </div>
+                            <div class="capture-packet-detail" role="region" aria-label="Packet fields" hidden></div>
+                        </div>
+                    </template>
+                    <template id="nat-table-pane-template">
+                        <div class="capture-pane nat-table-pane" role="tabpanel">
+                            <div class="packet-analysis-header nat-table-header">
+                                <span class="nat-table-state"></span>
+                                <button type="button" class="btn-icon nat-table-info" aria-expanded="false"
+                                    aria-label="About the NAT Table" title="About the NAT Table">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2" stroke-linecap="round" aria-hidden="true">
+                                        <circle cx="12" cy="12" r="9"></circle>
+                                        <line x1="12" y1="11" x2="12" y2="16"></line>
+                                        <circle cx="12" cy="7.5" r="0.6" fill="currentColor"></circle>
+                                    </svg>
+                                </button>
+                                <button type="button" class="btn-icon nat-table-pause" aria-pressed="false"
+                                    aria-label="Pause updates"></button>
+                                <button type="button" class="btn-icon nat-table-close" aria-label="Close NAT Table"
+                                    title="Close NAT Table">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2" stroke-linecap="round" aria-hidden="true">
+                                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                                    </svg>
+                                </button>
+                            </div>
+                            <p class="nat-table-note" hidden>Each translating Router remembers the connections it rewrote: <strong>Inside</strong> is the address and port a connection came from; <strong>Outside</strong> is the pair the Router substituted for them. <strong>Expires in</strong> counts down; at zero the Router forgets the entry, and the next packet of that connection is treated as new. For a port forward, or the inbound side of a static mapping, <strong>Inside</strong> is the server reached, <strong>Outside</strong> the address the client asked for, and <strong>Destination</strong> the client. The rules above each table are the ones the Router runs now, read again on every refresh, so a rule typed into its Terminal shows there too. Send traffic from a Host out through the Router to add an entry.</p>
+                            <p class="nat-table-status sr-only" role="status" aria-live="polite"></p>
+                            <p class="nat-table-error" role="status" aria-live="polite" hidden></p>
+                            <div class="nat-table-tables" role="region" aria-label="NAT Tables" tabindex="0"></div>
+                        </div>
+                    </template>
+                    <template id="nat-table-table-template">
+                        <section class="nat-table-table-section">
+                            <div class="nat-table-title">
+                                <h4 class="nat-table-heading"></h4>
+                                <span class="nat-table-empty" hidden>No entries yet</span>
+                            </div>
+                            <div class="nat-table-rules-block">
+                                <h5 class="nat-table-rules-heading">Rules running now</h5>
+                                <ul class="nat-table-rules" hidden></ul>
+                                <p class="nat-table-rules-empty" hidden>No rules</p>
+                            </div>
+                            <table class="capture-packet-table nat-table-table">
+                                <caption class="sr-only"></caption>
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Protocol</th>
+                                        <th scope="col">Inside</th>
+                                        <th scope="col">Outside</th>
+                                        <th scope="col">Expires in</th>
+                                        <th scope="col">State</th>
+                                        <th scope="col">Destination</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </section>
+                    </template>
+                </section>
+                <p id="pane-arrangement-status" class="sr-only" role="status" aria-live="polite"></p>
+
+                <!-- Network Tools Modal -->
+                <div id="tools-modal" class="modal-overlay" role="dialog" aria-modal="true"
+                    aria-labelledby="tools-modal-title" style="display: none;">
+                    <div class="modal-content tools-modal">
+                        <div class="modal-header">
+                            <h2 id="tools-modal-title">Network Tools</h2>
+                            <button id="tools-modal-close" class="btn-icon" aria-label="Close tools">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="tools-tabs" role="tablist">
+                                <button class="tools-tab active" data-tab="ping" role="tab" aria-selected="true"
+                                    id="tab-ping">Ping</button>
+                                <button class="tools-tab" data-tab="traceroute" role="tab" aria-selected="false"
+                                    id="tab-traceroute">Traceroute</button>
+                                <button class="tools-tab" data-tab="iperf3" role="tab" aria-selected="false"
+                                    id="tab-iperf3">Iperf3</button>
+                                <button class="tools-tab" data-tab="routing" role="tab" aria-selected="false"
+                                    id="tab-routing">Routing</button>
+                            </div>
+
+                            <!-- Content: Ping -->
+                            <div class="tools-content active" id="content-ping" role="tabpanel"
+                                aria-labelledby="tab-ping">
+                                <div class="form-group">
+                                    <div class="form-row">
+                                        <label for="ping-source">Source:</label>
+                                        <select id="ping-source" class="form-control">
+                                            <option value="">Select Node</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-row">
+                                        <label for="ping-destination">Destination:</label>
+                                        <select id="ping-destination" class="form-control">
+                                            <option value="">Select Node</option>
+                                            <option value="__custom__">Custom IP/Hostname…</option>
+                                        </select>
+                                        <input type="text" id="ping-destination-custom" class="form-control hidden"
+                                            placeholder="Enter IP/hostname" aria-label="Custom Ping destination">
+                                    </div>
+                                    <div class="form-row form-row-full">
+                                        <label for="ping-count">Packet Count:</label>
+                                        <div class="form-row-inline">
+                                            <input type="number" id="ping-count" class="form-control form-control-count" value="4" min="1" max="100">
+                                            <label class="form-row-checkbox">
+                                                <input type="checkbox" id="ping-ipv6">
+                                                <span>Use IPv6</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <button id="ping-btn" class="btn-primary btn-full">Run
+                                        Ping</button>
+                                </div>
+                                <div class="console-output" id="ping-output" role="log" aria-live="polite"></div>
+                            </div>
+
+                            <!-- Content: Traceroute -->
+                            <div class="tools-content" id="content-traceroute" role="tabpanel" aria-labelledby="tab-traceroute">
+                                <div class="form-group">
+                                    <div class="form-row">
+                                        <label for="traceroute-source">Source:</label>
+                                        <select id="traceroute-source" class="form-control">
+                                            <option value="">Select Node</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-row">
+                                        <label for="traceroute-destination">Destination:</label>
+                                        <select id="traceroute-destination" class="form-control">
+                                            <option value="">Select Node</option>
+                                            <option value="__custom__">Custom IP/Hostname…</option>
+                                        </select>
+                                        <input type="text" id="traceroute-destination-custom" class="form-control hidden"
+                                            placeholder="Enter IP/hostname" aria-label="Custom Traceroute destination">
+                                    </div>
+                                    <div class="form-row-full form-row-checkboxes">
+                                        <label class="form-row-checkbox">
+                                            <input type="checkbox" id="traceroute-ipv6">
+                                            <span>Use IPv6</span>
+                                        </label>
+                                        <label class="form-row-checkbox">
+                                            <input type="checkbox" id="traceroute-resolve">
+                                            <span>Resolve addresses</span>
+                                        </label>
+                                    </div>
+                                    <button id="traceroute-btn" class="btn-primary btn-full">Run
+                                        Traceroute</button>
+                                </div>
+                                <div class="console-output" id="traceroute-output" role="log" aria-live="polite"></div>
+                            </div>
+
+                            <!-- Content: Iperf3 -->
+                            <div class="tools-content" id="content-iperf3" role="tabpanel" aria-labelledby="tab-iperf3">
+                                <div class="form-group">
+                                    <div class="form-row">
+                                        <label for="iperf3-server">Server:</label>
+                                        <select id="iperf3-server" class="form-control">
+                                            <option value="">Select Node</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-row">
+                                        <label for="iperf3-client">Client:</label>
+                                        <select id="iperf3-client" class="form-control">
+                                            <option value="">Select Node</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-row">
+                                        <label for="iperf3-duration">Duration (seconds):</label>
+                                        <input type="number" id="iperf3-duration" class="form-control" value="10" min="1" max="60">
+                                    </div>
+                                    <div class="form-row">
+                                        <label for="iperf3-protocol">Protocol:</label>
+                                        <select id="iperf3-protocol" class="form-control">
+                                            <option value="tcp">TCP</option>
+                                            <option value="udp">UDP</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-row form-row-full">
+                                        <label for="iperf3-bandwidth">Bandwidth:</label>
+                                        <div class="form-row-inline">
+                                            <input type="number" id="iperf3-bandwidth" class="form-control form-control-count" min="0" step="any" aria-describedby="iperf3-bandwidth-help">
+                                            <select id="iperf3-bandwidth-unit" class="form-control" aria-label="Bandwidth unit">
+                                                <option value="K">Kbit/s</option>
+                                                <option value="M" selected>Mbit/s</option>
+                                                <option value="G">Gbit/s</option>
+                                            </select>
+                                        </div>
+                                        <p id="iperf3-bandwidth-help" class="form-row-help">Leave empty for the default: 1 Mbit/s for UDP, unlimited for TCP. At most 1 Gbit/s.</p>
+                                    </div>
+                                    <div class="form-row-full">
+                                        <label class="form-row-checkbox">
+                                            <input type="checkbox" id="iperf3-json" checked>
+                                            <span>JSON Output</span>
+                                        </label>
+                                    </div>
+                                    <button id="iperf3-btn" class="btn-primary btn-full">Run Iperf3</button>
+                                </div>
+                                <div class="console-output" id="iperf3-output" role="log" aria-live="polite"></div>
+                            </div>
+
+                            <!-- Content: Routing -->
+                            <div class="tools-content" id="content-routing" role="tabpanel"
+                                aria-labelledby="tab-routing">
+                                <div class="form-group">
+                                    <div class="form-row">
+                                        <label for="route-node">Node:</label>
+                                        <select id="route-node" class="form-control">
+                                            <option value="">Select Node</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-actions">
+                                        <button id="route-show-btn" class="btn-primary flex-1">Routes</button>
+                                        <button id="ospf-show-btn" class="btn-primary flex-1">OSPF</button>
+                                        <button id="bgp-show-btn" class="btn-primary flex-1">BGP</button>
+                                    </div>
+                                </div>
+                                <div class="console-output console-output-large" id="route-output" aria-live="polite"></div>
+                            </div>
+                        </div>
+                        <!-- The left and bottom edges resize the dialog, for long ping and traceroute lines. -->
+                        <div id="tools-resize-width" class="tools-resize tools-resize-width" role="separator"
+                            tabindex="0" aria-label="Resize Network Tools width"></div>
+                        <div id="tools-resize-height" class="tools-resize tools-resize-height" role="separator"
+                            tabindex="0" aria-label="Resize Network Tools height"></div>
+                    </div>
+                </div>
+
+                <!-- Link Config Modal -->
+<!-- Config Reset: one row per Config Copy in scope, each naming its
+                     Lab Example. One opener per surface, never one control per Copy. -->
+                <div id="config-reset-modal" class="modal-overlay" role="dialog" aria-modal="true"
+                    aria-labelledby="config-reset-modal-title" style="display: none;">
+                    <div class="modal-content config-reset-modal">
+                        <div class="modal-header">
+                            <h2 id="config-reset-modal-title">Reset Router Config</h2>
+                            <button id="config-reset-modal-close" class="btn-icon" type="button" aria-label="Close">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <ul id="config-reset-list" class="config-reset-list"></ul>
+                            <!-- The dashboard's own status line sits behind this
+                                 overlay, so a reset driven from here reports in
+                                 here. Outside the list, which the sync re-renders. -->
+                            <p id="config-reset-status" class="config-reset-status" role="status"></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Assignment editor: the Lab Examples one Group may start (Instructor, Multi-Lab Mode) -->
+                <div id="assignment-modal" class="modal-overlay" role="dialog" aria-modal="true"
+                    aria-labelledby="assignment-modal-title" style="display: none;">
+                    <div class="modal-content assignment-modal">
+                        <div class="modal-header">
+                            <h2 id="assignment-modal-title">Assignment</h2>
+                            <button id="assignment-modal-close" class="btn-icon" type="button" aria-label="Close">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                                </svg>
+                            </button>
+                        </div>
+                        <form id="assignment-form" class="modal-body" novalidate>
+                            <p id="assignment-modal-hint" class="assignment-hint">
+                                Tick the Lab Examples this Group may start. A Lab already running is never touched.
+                            </p>
+                            <div id="assignment-modal-error" class="error-message hidden" role="alert" aria-live="assertive"></div>
+                            <div class="assignment-columns">
+                                <fieldset class="assignment-fieldset">
+                                    <legend id="assignment-legend" class="sr-only">Lab Examples</legend>
+                                    <label class="sr-only" for="assignment-search">Search Lab Examples</label>
+                                    <input type="search" id="assignment-search" class="assignment-search"
+                                        placeholder="Search Lab Examples…" autocomplete="off">
+                                    <ul id="assignment-list" class="assignment-list" role="list"></ul>
+                                </fieldset>
+                                <!-- The Guide reads beside the chooser: the Instructor is
+                                     comparing Lab Examples, and a new window costs the
+                                     comparison. Hidden until one is asked for. -->
+                                <aside id="assignment-guide" class="assignment-guide" hidden
+                                    aria-labelledby="assignment-guide-title">
+                                    <div class="assignment-guide-header">
+                                        <h3 id="assignment-guide-title" class="assignment-guide-title"></h3>
+                                        <button type="button" id="assignment-guide-close" class="btn-icon"
+                                            aria-label="Close the Guide">
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                                <line x1="18" y1="6" x2="6" y2="18"></line>
+                                                <line x1="6" y1="6" x2="18" y2="18"></line>
+                                            </svg>
+                                        </button>
+                                    </div>
+                                    <div id="assignment-guide-body" class="assignment-guide-body"></div>
+                                </aside>
+                            </div>
+                            <div class="assignment-actions">
+                                <button type="button" id="assignment-cancel" class="btn-secondary">Cancel</button>
+                                <button type="submit" id="assignment-save" class="btn-primary">Save Assignment</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div id="link-modal" class="modal-overlay" role="dialog" aria-modal="true"
+                    aria-labelledby="link-modal-title" style="display: none;">
+                    <div class="modal-content link-modal">
+                        <div class="modal-header">
+                            <h2 id="link-modal-title">Configure Link</h2>
+                            <button id="link-modal-close" class="btn-icon" aria-label="Close">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div id="link-modal-error" class="error-message hidden" role="alert" aria-live="assertive"></div>
+                            <input type="hidden" id="link-node1">
+                            <input type="hidden" id="link-node2">
+                            <div class="form-group">
+                                <div class="form-row">
+                                    <label for="link-bandwidth">Bandwidth (Mbps):</label>
+                                    <input type="text" id="link-bandwidth" class="form-control" placeholder="e.g., 100">
+                                </div>
+                                <div class="form-row">
+                                    <label for="link-delay">Delay (ms):</label>
+                                    <input type="text" id="link-delay" class="form-control" placeholder="e.g., 10">
+                                </div>
+                                <div class="form-row">
+                                    <label for="link-jitter">Jitter (ms):</label>
+                                    <input type="text" id="link-jitter" class="form-control" placeholder="e.g., 2">
+                                </div>
+                                <div class="form-row">
+                                    <label for="link-loss">Loss (%):</label>
+                                    <input type="text" id="link-loss" class="form-control" placeholder="e.g., 5">
+                                </div>
+                                <div class="form-row">
+                                    <label for="link-scheduler">Scheduler:</label>
+                                    <select id="link-scheduler" class="form-control">
+                                        <option value="hfsc" selected>HFSC (default)</option>
+                                        <option value="htb">HTB</option>
+                                        <option value="tbf">TBF</option>
+                                    </select>
+                                </div>
+                                <button id="link-configure-btn" class="btn-primary btn-full mt-6">Apply Configuration</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="capture-modal" class="modal-overlay" role="dialog" aria-modal="true"
+                    aria-labelledby="capture-modal-title" aria-describedby="capture-modal-hint" style="display: none;">
+                    <div class="modal-content capture-modal">
+                        <div class="modal-header">
+                            <h2 id="capture-modal-title">Packet Capture</h2>
+                            <button id="capture-modal-close" class="btn-icon" aria-label="Close">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <p id="capture-modal-hint" class="link-capture-hint">Watch the packets crossing one end of this Link. A capture happens at a point, so choose the Interface to watch from.</p>
+                            <div id="link-capture-ends" class="link-capture-ends"></div>
+                            <p id="capture-modal-message" class="link-capture-message" role="alert"></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- DHCP Leases Modal -->
+                <div id="dhcp-leases-modal" class="modal-overlay" role="dialog" aria-modal="true"
+                    aria-labelledby="dhcp-leases-modal-title" style="display: none;">
+                    <div class="modal-content dhcp-leases-modal">
+                        <div class="modal-header">
+                            <h2 id="dhcp-leases-modal-title">DHCP Service</h2>
+                            <button id="dhcp-leases-modal-close" class="btn-icon" aria-label="Close">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <section id="dhcp-pools-section" class="dhcp-pools-section" aria-labelledby="dhcp-pools-heading">
+                                <h3 id="dhcp-pools-heading" class="dhcp-section-heading">Address Pool</h3>
+                                <div id="dhcp-pools-container" class="dhcp-pools-container"></div>
+                            </section>
+
+                            <section id="dhcp-leases-section" class="dhcp-leases-section" aria-labelledby="dhcp-leases-heading">
+                                <h3 id="dhcp-leases-heading" class="dhcp-section-heading">Active Leases</h3>
+                                <p id="dhcp-leases-status" class="dhcp-leases-status" aria-live="polite"></p>
+                                <p id="dhcp-lease-copy-status" class="sr-only" role="status"></p>
+
+                                <div id="dhcp-v4-leases-container" class="dhcp-leases-family-container">
+                                    <h4 id="dhcp-v4-leases-heading" class="dhcp-leases-family-heading">IPv4 Leases</h4>
+                                    <table id="dhcp-leases-table" class="dhcp-leases-table"
+                                        aria-label="IPv4 Leases held by this Node's DHCP Service">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">Address</th>
+                                                <th scope="col">Client</th>
+                                                <th scope="col">Expires</th>
+                                                <th scope="col">Applied</th>
+                                                <th scope="col" id="dhcp-v4-via-col" style="display: none;">Via</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="dhcp-leases-tbody"></tbody>
+                                    </table>
+                                </div>
+
+                                <div id="dhcp-v6-leases-container" class="dhcp-leases-family-container">
+                                    <h4 id="dhcp-v6-leases-heading" class="dhcp-leases-family-heading">IPv6 Leases</h4>
+                                    <table id="dhcp-v6-leases-table" class="dhcp-leases-table"
+                                        aria-label="IPv6 Leases held by this Node's DHCP Service">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">Address</th>
+                                                <th scope="col">Client (DUID)</th>
+                                                <th scope="col">Preferred Expires</th>
+                                                <th scope="col">Valid Expires</th>
+                                                <th scope="col">Applied</th>
+                                                <th scope="col" id="dhcp-v6-via-col" style="display: none;">Via</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="dhcp-v6-leases-tbody"></tbody>
+                                    </table>
+                                </div>
+                            </section>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- DHCP Relay Modal -->
+                <div id="dhcp-relay-modal" class="modal-overlay" role="dialog" aria-modal="true"
+                    aria-labelledby="dhcp-relay-modal-title" style="display: none;">
+                    <div class="modal-content dhcp-leases-modal">
+                        <div class="modal-header">
+                            <h2 id="dhcp-relay-modal-title">DHCP Relay</h2>
+                            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                <button id="dhcp-relay-view-canvas" class="btn-secondary btn-sm" type="button">View on Canvas</button>
+                                <button id="dhcp-relay-modal-close" class="btn-icon" aria-label="Close">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="modal-body">
+                            <p id="dhcp-relay-subnets" class="dhcp-relay-subnets"></p>
+
+                            <section id="dhcp-relay-activity-section" class="dhcp-leases-section"
+                                aria-labelledby="dhcp-relay-activity-heading">
+                                <h3 id="dhcp-relay-activity-heading" class="dhcp-section-heading">Forwarded requests</h3>
+                                <p id="dhcp-relay-status" class="dhcp-leases-status" aria-live="polite"></p>
+                                <table id="dhcp-relay-activity-table" class="dhcp-leases-table"
+                                    aria-label="DHCP requests this Node's Relay has forwarded">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">Source address used</th>
+                                            <th scope="col">Forwarded to</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="dhcp-relay-activity-tbody"></tbody>
+                                </table>
+                            </section>
+
+                            <p class="dhcp-relay-note">
+                                A Relay is part of the Lab's setup, not Exercise Configuration: it
+                                cannot be changed or removed here. This panel shows the requests the
+                                Relay forwarded; the relay's full log remains available in this
+                                Node's Terminal.
+                            </p>
+                            <button id="dhcp-relay-terminal-btn" class="btn-secondary" type="button">Open Terminal</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Speaker Modal -->
+                <div id="speaker-modal" class="modal-overlay" role="dialog" aria-modal="true"
+                    aria-labelledby="speaker-modal-title" style="display: none;">
+                    <div class="modal-content speaker-modal">
+                        <div class="modal-header">
+                            <h2 id="speaker-modal-title">BGP Speaker</h2>
+                            <button id="speaker-modal-close" class="btn-icon" aria-label="Close">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <p id="speaker-summary" class="speaker-summary"></p>
+                            <p id="speaker-status" class="speaker-status" aria-live="polite"></p>
+                            <p id="speaker-live" class="sr-only" role="status"></p>
+                            <form id="speaker-announce-form" class="speaker-form" novalidate
+                                aria-labelledby="speaker-announce-heading">
+                                <h3 id="speaker-announce-heading" class="speaker-form-heading">Announce a route</h3>
+                                <div class="speaker-form-row">
+                                    <div class="speaker-form-group">
+                                        <label for="speaker-announce-neighbor">Neighbor</label>
+                                        <select id="speaker-announce-neighbor" name="neighbor"></select>
+                                    </div>
+                                    <div class="speaker-form-group speaker-form-group-wide">
+                                        <label for="speaker-announce-prefix">Prefix <span class="speaker-required" aria-hidden="true">*</span></label>
+                                        <input type="text" id="speaker-announce-prefix" name="prefix" required
+                                            autocomplete="off" spellcheck="false" placeholder="e.g., 198.18.0.0/24">
+                                    </div>
+                                    <div class="speaker-form-group speaker-form-group-wide">
+                                        <label for="speaker-announce-next-hop">Next hop <span class="speaker-required" aria-hidden="true">*</span></label>
+                                        <input type="text" id="speaker-announce-next-hop" name="next_hop" required
+                                            autocomplete="off" spellcheck="false" placeholder="e.g., 10.0.1.2"
+                                            aria-describedby="speaker-announce-hint">
+                                    </div>
+                                </div>
+                                <div class="speaker-form-row">
+                                    <div class="speaker-form-group">
+                                        <label for="speaker-announce-as-path">AS-PATH</label>
+                                        <input type="text" id="speaker-announce-as-path" name="as_path"
+                                            autocomplete="off" spellcheck="false" placeholder="e.g., 65001 65002">
+                                    </div>
+                                    <div class="speaker-form-group">
+                                        <label for="speaker-announce-community">Communities</label>
+                                        <input type="text" id="speaker-announce-community" name="community"
+                                            autocomplete="off" spellcheck="false" placeholder="e.g., 65001:100 no-export">
+                                    </div>
+                                    <div class="speaker-form-group">
+                                        <label for="speaker-announce-large-community">Large communities</label>
+                                        <input type="text" id="speaker-announce-large-community" name="large_community"
+                                            autocomplete="off" spellcheck="false" placeholder="e.g., 65001:1:2">
+                                    </div>
+                                    <div class="speaker-form-group speaker-form-group-narrow">
+                                        <label for="speaker-announce-med">MED</label>
+                                        <input type="number" id="speaker-announce-med" name="med"
+                                            min="0" step="1" autocomplete="off" placeholder="e.g., 50">
+                                    </div>
+                                    <div class="speaker-form-actions">
+                                        <button type="submit" id="speaker-announce-submit"
+                                            class="speaker-submit-btn">Announce</button>
+                                    </div>
+                                </div>
+                                <p id="speaker-announce-hint" class="speaker-form-hint">
+                                    Fields marked * are required. The next hop is the chosen Neighbor's own
+                                    address unless you change it; announcing to all Neighbors needs one you
+                                    give. Attributes are optional, space-separated, in ExaBGP's words.
+                                </p>
+                            </form>
+                            <form id="speaker-generate-form" class="speaker-form" novalidate
+                                aria-labelledby="speaker-generate-heading">
+                                <h3 id="speaker-generate-heading" class="speaker-form-heading">Generate routes</h3>
+                                <div class="speaker-form-row">
+                                    <div class="speaker-form-group">
+                                        <label for="speaker-generate-neighbor">Neighbor</label>
+                                        <select id="speaker-generate-neighbor" name="neighbor"></select>
+                                    </div>
+                                    <div class="speaker-form-group speaker-form-group-narrow">
+                                        <label for="speaker-generate-count">Count <span class="speaker-required" aria-hidden="true">*</span></label>
+                                        <input type="number" id="speaker-generate-count" name="count" required
+                                            min="1" max="1000" step="1" value="20" autocomplete="off">
+                                    </div>
+                                    <div class="speaker-form-group speaker-form-group-narrow">
+                                        <label for="speaker-generate-sub-prefixes">Sub-prefixes</label>
+                                        <input type="number" id="speaker-generate-sub-prefixes" name="sub_prefixes"
+                                            min="1" step="1" autocomplete="off" placeholder="e.g., 3">
+                                    </div>
+                                    <div class="speaker-form-group speaker-form-group-narrow">
+                                        <label for="speaker-generate-prefix-seed">Prefix seed</label>
+                                        <input type="number" id="speaker-generate-prefix-seed" name="prefix_seed"
+                                            min="0" step="1" autocomplete="off" placeholder="e.g., 42">
+                                    </div>
+                                    <div class="speaker-form-group speaker-form-group-narrow">
+                                        <label for="speaker-generate-as-path-seed">AS-PATH seed</label>
+                                        <input type="number" id="speaker-generate-as-path-seed" name="as_path_seed"
+                                            min="0" step="1" autocomplete="off" placeholder="e.g., 7">
+                                    </div>
+                                    <div class="speaker-form-actions">
+                                        <button type="submit" id="speaker-generate-submit"
+                                            class="speaker-submit-btn">Generate</button>
+                                    </div>
+                                </div>
+                                <p class="speaker-form-hint">
+                                    Fields marked * are required. Random public prefixes of the Neighbor's
+                                    family, from its own address, each
+                                    with an AS-PATH starting at this Speaker's AS — the routes the Lab Examples
+                                    ship. Sub-prefixes adds longer prefixes inside each; seeds make a burst
+                                    repeatable. Nothing tracks a burst: <em>Withdraw all</em> is the clear.
+                                </p>
+                                <section id="speaker-generate-result" class="speaker-generate-result"
+                                    aria-labelledby="speaker-generate-result-heading" hidden>
+                                    <h4 id="speaker-generate-result-heading" class="speaker-form-heading"></h4>
+                                    <ul id="speaker-generate-prefixes" class="speaker-generate-prefixes"></ul>
+                                </section>
+                            </form>
+                            <div id="speaker-write-error" class="speaker-modal-error" role="alert"
+                                tabindex="-1" hidden></div>
+                            <div id="speaker-neighbors"></div>
+                            <p class="speaker-note">
+                                What this panel shows is what ExaBGP holds: the routes the Lab
+                                Example shipped and any announced since, in one list. The daemon's
+                                own log is in this Node's Terminal.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Switch Management Modal -->
+                <div id="switch-modal" class="modal-overlay" role="dialog" aria-modal="true"
+                    aria-labelledby="switch-modal-title" style="display: none;">
+                    <div class="modal-content switch-modal">
+                        <div class="modal-header">
+                            <div class="switch-title-group">
+                                <h2 id="switch-modal-title">Switch Management</h2>
+                                <span id="switch-modal-node" class="switch-node-pill"></span>
+                            </div>
+                            <div class="switch-header-actions">
+                                <button id="switch-refresh-btn" class="btn-secondary" type="button" aria-label="Refresh Switch tables">Refresh</button>
+                                <button id="switch-modal-close" class="btn-icon" aria-label="Close">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="modal-body">
+                            <p id="switch-summary" class="switch-summary"></p>
+                            <div id="switch-status" class="switch-status" aria-live="polite"></div>
+                            <div id="switch-live" class="sr-only" role="status"></div>
+
+                            <div class="switch-table-container">
+                                <table class="switch-ports-table" aria-label="Switch Ports and VLAN Configurations">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">Port</th>
+                                            <th scope="col">Connected To</th>
+                                            <th scope="col">Mode</th>
+                                            <th scope="col">VLAN ID(s)</th>
+                                            <th scope="col">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="switch-ports-tbody">
+                                        <!-- Dynamically generated rows -->
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <section aria-labelledby="switch-mac-heading">
+                                <h3 id="switch-mac-heading">MAC address table</h3>
+                                <button id="switch-flush-btn" class="btn-secondary" type="button" aria-label="Flush Switch MAC address table">Flush</button>
+                                <div class="switch-table-container">
+                                    <table class="switch-ports-table" aria-labelledby="switch-mac-heading">
+                                        <thead><tr><th scope="col">MAC</th><th scope="col">Port</th><th scope="col">VLAN</th><th scope="col">Age (seconds)</th></tr></thead>
+                                        <tbody id="switch-mac-tbody"></tbody>
+                                    </table>
+                                </div>
+                            </section>
+                            <section aria-labelledby="switch-tree-heading">
+                                <h3 id="switch-tree-heading">Spanning tree</h3>
+                                <p id="switch-tree-summary"></p>
+                                <p id="switch-tree-detail" class="switch-tree-detail"></p>
+                                <div class="switch-table-container">
+                                    <table class="switch-ports-table" aria-labelledby="switch-tree-heading">
+                                        <thead><tr>
+                                            <th scope="col">Port</th>
+                                            <th scope="col"><span class="switch-hint-wrap">Role
+                                                <button type="button" class="switch-hint-btn" aria-label="About port roles" aria-describedby="switch-role-hint">ⓘ</button>
+                                                <span id="switch-role-hint" class="switch-hint" role="tooltip">
+                                                    <span><strong>Root</strong>: best path towards the root.</span>
+                                                    <span><strong>Designated</strong>: forwards frames onto this segment.</span>
+                                                    <span><strong>Alternate</strong>: blocked backup path to the root.</span>
+                                                </span></span></th>
+                                            <th scope="col"><span class="switch-hint-wrap">State
+                                                <button type="button" class="switch-hint-btn" aria-label="About port states" aria-describedby="switch-state-hint">ⓘ</button>
+                                                <span id="switch-state-hint" class="switch-hint" role="tooltip">
+                                                    <span>Discarding means this port is not forwarding frames right now.</span>
+                                                </span></span></th>
+                                        </tr></thead>
+                                        <tbody id="switch-tree-tbody"></tbody>
+                                    </table>
+                                </div>
+                            </section>
+
+                            <div class="switch-export-section">
+                                <button id="switch-export-toggle-btn" class="btn-secondary switch-export-btn" type="button" aria-expanded="false" aria-controls="switch-export-drawer">
+                                    Export Configuration
+                                </button>
+                                <div id="switch-export-drawer" class="switch-export-drawer hidden" aria-hidden="true">
+                                    <h4 class="switch-export-heading">Python addLink Declarations</h4>
+                                    <pre class="switch-export-code"><code id="switch-export-python"></code></pre>
+                                    <h4 class="switch-export-heading">CLI vlan Commands</h4>
+                                    <pre class="switch-export-code"><code id="switch-export-cli"></code></pre>
+                                    <div class="switch-export-actions">
+                                        <button id="switch-copy-export-btn" class="btn-primary btn-sm" type="button">Copy to Clipboard</button>
+                                        <span id="switch-copy-status" class="switch-copy-status" aria-live="polite"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- DNS Service Modal -->
+                <div id="dns-modal" class="modal-overlay" role="dialog" aria-modal="true"
+                    aria-labelledby="dns-modal-title" style="display: none;">
+                    <div class="modal-content dns-modal">
+                        <div class="modal-header">
+                            <h2 id="dns-modal-title">DNS Service</h2>
+                            <button id="dns-modal-close" class="btn-icon" aria-label="Close">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <section id="dns-records-section" class="dns-modal-section"
+                                aria-labelledby="dns-records-heading">
+                                <h3 id="dns-records-heading" class="dns-section-heading">Zone &amp; Records</h3>
+                                <div class="dns-form-group">
+                                    <label for="dns-zone-select">Zone</label>
+                                    <select id="dns-zone-select"></select>
+                                    <span id="dns-zone-signed-badge" class="dns-signed-badge" hidden>Signed</span>
+                                </div>
+                                <div id="dns-secondary-section" class="dns-secondary-section" hidden>
+                                    <div class="dns-secondary-header">
+                                        <div class="dns-secondary-meta">
+                                            <div class="dns-secondary-meta-item">
+                                                <span class="dns-stat-label">Primary</span>
+                                                <span class="dns-secondary-meta-value" id="dns-secondary-primary">—</span>
+                                            </div>
+                                            <div class="dns-secondary-meta-item">
+                                                <span class="dns-stat-label">Current Serial</span>
+                                                <span class="dns-secondary-meta-value" id="dns-secondary-serial">—</span>
+                                            </div>
+                                            <div class="dns-secondary-meta-item">
+                                                <span class="dns-stat-label">Last Transfer</span>
+                                                <span class="dns-secondary-meta-value" id="dns-secondary-last-transfer">—</span>
+                                            </div>
+                                        </div>
+                                        <div id="dns-secondary-state" class="dns-secondary-state" role="status" aria-live="polite"></div>
+                                        <div class="dns-secondary-actions">
+                                            <button type="button" id="dns-btn-refresh" class="dns-record-submit-btn" aria-label="Refresh Zone from Primary">Refresh</button>
+                                            <button type="button" id="dns-btn-retransfer" class="dns-record-cancel-btn" aria-label="Full Transfer: force complete copy from Primary">Full Transfer</button>
+                                        </div>
+                                    </div>
+                                    <div class="dns-secondary-transfers">
+                                        <h4 class="dns-subheading">Transfer Log</h4>
+                                        <p id="dns-transfers-status" class="dns-modal-status" aria-live="polite"></p>
+                                        <div class="dns-table-scroll">
+                                            <table id="dns-transfers-table" class="dns-records-table" aria-label="Zone Transfer log for the selected Zone">
+                                                <thead>
+                                                    <tr>
+                                                        <th scope="col">Type</th>
+                                                        <th scope="col">Serial</th>
+                                                        <th scope="col">Bytes</th>
+                                                        <th scope="col">Duration</th>
+                                                        <th scope="col">Time</th>
+                                                        <th scope="col">Remote</th>
+                                                        <th scope="col">Outcome</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="dns-transfers-tbody"></tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                <label id="dns-dnssec-records-toggle" class="dns-records-toggle"
+                                    for="dns-show-dnssec-records" hidden>
+                                    <input type="checkbox" id="dns-show-dnssec-records">
+                                    Show signature Records (RRSIG, NSEC)
+                                </label>
+                                <p id="dns-records-status" class="dns-modal-status" aria-live="polite"></p>
+                                <table id="dns-records-table" class="dns-records-table"
+                                    aria-label="Resource records of the selected Zone">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">Owner</th>
+                                            <th scope="col">TTL</th>
+                                            <th scope="col">Type</th>
+                                            <th scope="col">Data</th>
+                                            <th scope="col" id="dns-records-actions-th">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="dns-records-tbody"></tbody>
+                                </table>
+                                <div id="dns-secondary-notice" class="dns-secondary-notice" hidden>
+                                    This Secondary Zone is replicated from <button type="button" id="dns-primary-link" class="dns-link-btn">—</button>. Records are read-only; manage them on the Primary.
+                                </div>
+                                <div id="dns-record-error" class="dns-modal-error" role="alert"
+                                    tabindex="-1" hidden></div>
+                                <form id="dns-record-form" class="dns-record-form" novalidate>
+                                    <div class="dns-form-group">
+                                        <label for="dns-record-owner">Owner</label>
+                                        <input type="text" id="dns-record-owner" name="owner"
+                                            autocomplete="off" spellcheck="false"
+                                            placeholder="web.example.com.">
+                                    </div>
+                                    <div class="dns-form-group">
+                                        <label for="dns-record-type">Type</label>
+                                        <select id="dns-record-type" name="type">
+                                            <option value="A" selected>A</option>
+                                            <option value="AAAA">AAAA</option>
+                                            <option value="CNAME">CNAME</option>
+                                            <option value="MX">MX</option>
+                                            <option value="TXT">TXT</option>
+                                            <option value="NS">NS</option>
+                                            <option value="PTR">PTR</option>
+                                            <option value="SOA">SOA</option>
+                                            <option value="DS">DS</option>
+                                        </select>
+                                    </div>
+                                    <div class="dns-form-group dns-form-group-wide">
+                                        <label for="dns-record-data">Data</label>
+                                        <input type="text" id="dns-record-data" name="data"
+                                            autocomplete="off" spellcheck="false">
+                                    </div>
+                                    <div class="dns-form-group">
+                                        <label for="dns-record-ttl">TTL (seconds)</label>
+                                        <input type="number" id="dns-record-ttl" name="ttl"
+                                            min="1" step="1" value="300">
+                                    </div>
+                                    <div class="dns-record-form-actions">
+                                        <button type="submit" id="dns-record-submit"
+                                            class="dns-record-submit-btn">Add Record</button>
+                                        <button type="button" id="dns-record-cancel"
+                                            class="dns-record-cancel-btn" hidden>Cancel</button>
+                                    </div>
+                                </form>
+                            </section>
+
+                            <section id="dns-dnssec-section" class="dns-modal-section"
+                                aria-labelledby="dns-dnssec-heading" hidden>
+                                <h3 id="dns-dnssec-heading" class="dns-section-heading">DNSSEC Details</h3>
+                                <p id="dns-dnssec-status" class="dns-modal-status" aria-live="polite"></p>
+                                <dl class="dns-zone-status">
+                                    <div class="dns-zone-status-row">
+                                        <dt>Signing</dt>
+                                        <dd id="dns-dnssec-signing">—</dd>
+                                    </div>
+                                    <div class="dns-zone-status-row">
+                                        <dt>Denial of Existence</dt>
+                                        <dd id="dns-dnssec-denial">—</dd>
+                                    </div>
+                                </dl>
+                                <h4 class="dns-subheading">Active Keys</h4>
+                                <table id="dns-dnssec-keys-table" class="dns-records-table"
+                                    aria-label="DNSSEC keys signing the selected Zone">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">Key Tag</th>
+                                            <th scope="col">Role</th>
+                                            <th scope="col">Algorithm</th>
+                                            <th scope="col">State</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="dns-dnssec-keys-tbody"></tbody>
+                                </table>
+                                <h4 class="dns-subheading">Delegation Signer (DS)</h4>
+                                <p class="dns-dnssec-hint">
+                                    A DS Record is the parent Zone's fingerprint of this Zone's
+                                    Key Signing Key. Copy it and add it to the parent Zone as a
+                                    <code>DS</code> Record to link this Zone into the chain of trust.
+                                </p>
+                                <ul id="dns-dnssec-ds-list" class="dns-dnssec-ds-list"></ul>
+                            </section>
+
+                            <section id="dns-stats-section" class="dns-modal-section"
+                                aria-labelledby="dns-stats-heading">
+                                <h3 id="dns-stats-heading" class="dns-section-heading">Live Query Activity</h3>
+                                <div class="dns-stats-controls">
+                                    <label class="dns-stats-toggle" for="dns-stats-autorefresh">
+                                        <input type="checkbox" id="dns-stats-autorefresh" checked>
+                                        Auto-refresh
+                                    </label>
+                                    <button type="button" id="dns-stats-reset"
+                                        class="dns-record-cancel-btn">Reset Statistics</button>
+                                </div>
+                                <p id="dns-stats-status" class="dns-modal-status" aria-live="polite"></p>
+                                <div class="dns-stats-cards">
+                                    <div class="dns-stat-card">
+                                        <span class="dns-stat-label">Query Volume</span>
+                                        <span class="dns-stat-value" id="dns-stat-query-volume">0</span>
+                                    </div>
+                                    <div class="dns-stat-card">
+                                        <span class="dns-stat-label">Query Types</span>
+                                        <dl class="dns-stat-breakdown" id="dns-stat-query-types"></dl>
+                                    </div>
+                                    <div class="dns-stat-card">
+                                        <span class="dns-stat-label">Response Codes</span>
+                                        <dl class="dns-stat-breakdown" id="dns-stat-response-codes"></dl>
+                                    </div>
+                                </div>
+                            </section>
+
+                            <section id="dns-status-section" class="dns-modal-section"
+                                aria-labelledby="dns-status-heading">
+                                <h3 id="dns-status-heading" class="dns-section-heading">Zone Status</h3>
+                                <p id="dns-status-status" class="dns-modal-status" aria-live="polite"></p>
+                                <dl class="dns-zone-status">
+                                    <div class="dns-zone-status-row">
+                                        <dt>Zone</dt>
+                                        <dd id="dns-status-zone">—</dd>
+                                    </div>
+                                    <div class="dns-zone-status-row">
+                                        <dt>Role</dt>
+                                        <dd id="dns-status-role">—</dd>
+                                    </div>
+                                    <div class="dns-zone-status-row">
+                                        <dt>SOA Serial</dt>
+                                        <dd id="dns-status-serial">—</dd>
+                                    </div>
+                                    <div class="dns-zone-status-row">
+                                        <dt>State</dt>
+                                        <dd id="dns-status-state">—</dd>
+                                    </div>
+                                    <div class="dns-zone-status-row">
+                                        <dt>Primary Nameserver</dt>
+                                        <dd id="dns-status-primary-ns">—</dd>
+                                    </div>
+                                </dl>
+                            </section>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- RPKI CA Modal: Hosted CAs' ROAs and ASPAs, filled in by js/rpki/ca-panel.js -->
+                <!-- Copy Modal: a finger cannot select the Terminal canvas's text, so it is shown here to select and copy -->
+                <div id="terminal-copy-modal" class="modal-overlay" role="dialog" aria-modal="true"
+                    aria-labelledby="terminal-copy-title" style="display: none;">
+                    <div class="modal-content terminal-text-modal">
+                        <div class="modal-header">
+                            <h2 id="terminal-copy-title">Copy from terminal</h2>
+                            <button id="terminal-copy-close" class="btn-icon" aria-label="Close">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="modal-body terminal-text-form">
+                            <label for="terminal-copy-text">Terminal text</label>
+                            <textarea id="terminal-copy-text" rows="12" readonly spellcheck="false"
+                                aria-describedby="terminal-copy-hint"></textarea>
+                            <p id="terminal-copy-hint" class="terminal-text-hint">Select the lines you want and copy them.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Paste Modal: on a touch screen the Terminal canvas offers no Paste, so text is pasted here and sent -->
+                <div id="terminal-paste-modal" class="modal-overlay" role="dialog" aria-modal="true"
+                    aria-labelledby="terminal-paste-title" style="display: none;">
+                    <div class="modal-content terminal-text-modal">
+                        <div class="modal-header">
+                            <h2 id="terminal-paste-title">Paste into terminal</h2>
+                            <button id="terminal-paste-close" class="btn-icon" aria-label="Close">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                                </svg>
+                            </button>
+                        </div>
+                        <form id="terminal-paste-form" class="modal-body terminal-text-form">
+                            <label for="terminal-paste-text">Text to send</label>
+                            <textarea id="terminal-paste-text" rows="8" autocomplete="off" autocapitalize="off"
+                                autocorrect="off" spellcheck="false" aria-describedby="terminal-paste-hint"></textarea>
+                            <p id="terminal-paste-hint" class="terminal-text-hint">Each line runs as if typed and followed by Return.</p>
+                            <div class="terminal-text-actions">
+                                <button type="button" id="terminal-paste-cancel" class="btn-secondary">Cancel</button>
+                                <button type="submit" id="terminal-paste-send">Send</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div id="rpki-modal" class="modal-overlay" role="dialog" aria-modal="true"
+                    aria-labelledby="rpki-modal-title" style="display: none;">
+                    <div class="modal-content rpki-modal">
+                        <div class="modal-header">
+                            <h2 id="rpki-modal-title">RPKI CA</h2>
+                            <button id="rpki-modal-close" class="btn-icon" aria-label="Close">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <p id="rpki-status" class="rpki-modal-status" aria-live="polite"></p>
+                            <div id="rpki-cas" class="rpki-cas"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Validator Modal: the VRPs and ASPAs a Validator serves, its fetch times and connected Routers, filled in by js/rpki/validator-panel.js -->
+                <div id="validator-modal" class="modal-overlay" role="dialog" aria-modal="true"
+                    aria-labelledby="validator-modal-title" style="display: none;">
+                    <div class="modal-content validator-modal">
+                        <div class="modal-header">
+                            <h2 id="validator-modal-title">Validator</h2>
+                            <button id="validator-modal-close" class="btn-icon" aria-label="Close">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <p id="validator-status" class="validator-status" aria-live="polite"></p>
+
+                            <section class="validator-section" aria-label="Status">
+                                <dl class="validator-facts">
+                                    <dt>Fetched from the RPKI CA</dt>
+                                    <dd id="validator-last-refresh"></dd>
+                                    <dt>Next fetch</dt>
+                                    <dd id="validator-next-refresh"></dd>
+                                    <dt>Connected Routers</dt>
+                                    <dd>
+                                        <ul id="validator-routers" class="validator-routers"></ul>
+                                        <p id="validator-routers-empty" class="validator-muted" hidden>none</p>
+                                    </dd>
+                                </dl>
+                            </section>
+
+                            <section class="validator-section" aria-labelledby="validator-vrp-heading">
+                                <h3 id="validator-vrp-heading" class="validator-heading">Validated ROA payloads (VRPs)</h3>
+                                <div id="validator-filter-group" class="validator-filter" hidden>
+                                    <label for="validator-filter">Filter by prefix or origin ASN</label>
+                                    <input type="search" id="validator-filter" autocomplete="off" spellcheck="false"
+                                        aria-describedby="validator-filter-hint">
+                                    <p id="validator-filter-hint" class="validator-muted">For example 10.1.0.0/24 or AS65002.</p>
+                                </div>
+                                <p id="validator-vrp-count" class="validator-muted" aria-live="polite"></p>
+                                <div id="validator-vrp-table" class="validator-table-scroll" hidden>
+                                    <table class="validator-table">
+                                        <caption>One row per ROA the Validator accepted.</caption>
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">Prefix</th>
+                                                <th scope="col">maxLength</th>
+                                                <th scope="col">Origin</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="validator-vrp-tbody"></tbody>
+                                    </table>
+                                </div>
+                                <p id="validator-vrp-empty" class="validator-muted" hidden></p>
+                            </section>
+
+                            <section class="validator-section" aria-labelledby="validator-aspa-heading">
+                                <h3 id="validator-aspa-heading" class="validator-heading">Validated ASPAs</h3>
+                                <div id="validator-aspa-table" class="validator-table-scroll" hidden>
+                                    <table class="validator-table">
+                                        <caption>One row per ASPA the Validator accepted.</caption>
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">Customer</th>
+                                                <th scope="col">Providers</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="validator-aspa-tbody"></tbody>
+                                    </table>
+                                </div>
+                                <p id="validator-aspa-empty" class="validator-muted" hidden>The Validator holds no ASPAs yet.</p>
+                            </section>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recursive Caching Resolver Modal -->
+                <div id="resolver-modal" class="modal-overlay" role="dialog" aria-modal="true"
+                    aria-labelledby="resolver-modal-title" style="display: none;">
+                    <div class="modal-content resolver-modal">
+                        <div class="modal-header">
+                            <h2 id="resolver-modal-title">Recursive Caching Resolver</h2>
+                            <button id="resolver-modal-close" class="btn-icon" aria-label="Close">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="resolver-tabs" role="tablist" aria-label="Resolver panels">
+                                <button id="resolver-tab-cache" class="resolver-tab active" type="button"
+                                    role="tab" aria-selected="true" aria-controls="resolver-panel-cache"
+                                    data-tab="cache">Cache Inspector</button>
+                                <button id="resolver-tab-access" class="resolver-tab" type="button"
+                                    role="tab" aria-selected="false" aria-controls="resolver-panel-access"
+                                    data-tab="access" tabindex="-1">Access Control</button>
+                            </div>
+
+                            <section id="resolver-panel-cache" class="resolver-panel active"
+                                role="tabpanel" aria-labelledby="resolver-tab-cache" tabindex="0">
+                                <div class="resolver-stats-cards">
+                                    <div class="resolver-stat-card">
+                                        <span class="resolver-stat-label">Queries</span>
+                                        <span class="resolver-stat-value" id="resolver-stat-queries">0</span>
+                                    </div>
+                                    <div class="resolver-stat-card">
+                                        <span class="resolver-stat-label">Cache Hits</span>
+                                        <span class="resolver-stat-value" id="resolver-stat-hits">0</span>
+                                    </div>
+                                    <div class="resolver-stat-card">
+                                        <span class="resolver-stat-label">Hit Ratio</span>
+                                        <span class="resolver-stat-value" id="resolver-stat-hit-ratio">0%</span>
+                                    </div>
+                                    <div class="resolver-stat-card">
+                                        <span class="resolver-stat-label">Avg Recursion</span>
+                                        <span class="resolver-stat-value" id="resolver-stat-recursion">0 ms</span>
+                                    </div>
+                                    <div class="resolver-stat-card">
+                                        <span class="resolver-stat-label">Secure Queries</span>
+                                        <span class="resolver-stat-value" id="resolver-stat-secure">0</span>
+                                    </div>
+                                    <div class="resolver-stat-card">
+                                        <span class="resolver-stat-label">Bogus Queries</span>
+                                        <span class="resolver-stat-value" id="resolver-stat-bogus">0</span>
+                                    </div>
+                                    <div class="resolver-stat-card">
+                                        <span class="resolver-stat-label">Insecure Queries</span>
+                                        <span class="resolver-stat-value" id="resolver-stat-insecure">0</span>
+                                    </div>
+                                </div>
+                                <div class="resolver-cache-controls">
+                                    <label class="resolver-toggle" for="resolver-cache-autorefresh">
+                                        <input type="checkbox" id="resolver-cache-autorefresh" checked>
+                                        Auto-refresh
+                                    </label>
+                                    <button type="button" id="resolver-flush-all"
+                                        class="resolver-danger-btn">Flush Entire Cache</button>
+                                </div>
+                                <p id="resolver-cache-status" class="resolver-status" aria-live="polite"></p>
+                                <div class="resolver-table-scroll">
+                                    <table id="resolver-cache-table" class="resolver-table"
+                                        aria-label="Entries this Resolver is holding in cache">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">Name</th>
+                                                <th scope="col">Type</th>
+                                                <th scope="col">TTL</th>
+                                                <th scope="col">Status</th>
+                                                <th scope="col">Validation</th>
+                                                <th scope="col">Data</th>
+                                                <th scope="col">Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="resolver-cache-tbody"></tbody>
+                                    </table>
+                                </div>
+                            </section>
+
+                            <section id="resolver-panel-access" class="resolver-panel"
+                                role="tabpanel" aria-labelledby="resolver-tab-access" tabindex="0" hidden>
+                                <p class="resolver-hint">
+                                    Unbound matches Access Control rules by longest prefix, not by the
+                                    order they are listed in below, so a narrower Subnet always
+                                    overrides a wider one. Saving a rule reloads the daemon without
+                                    dropping the cache, but does restart its query counters.
+                                </p>
+                                <p id="resolver-access-status" class="resolver-status" aria-live="polite"></p>
+                                <table id="resolver-access-table" class="resolver-table"
+                                    aria-label="Access Control rules in force on this Resolver">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">Subnet</th>
+                                            <th scope="col">Action</th>
+                                            <th scope="col">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="resolver-access-tbody"></tbody>
+                                </table>
+                                <div id="resolver-access-error" class="resolver-error" role="alert"
+                                    tabindex="-1" hidden></div>
+                                <form id="resolver-access-form" class="resolver-access-form" novalidate>
+                                    <div class="resolver-form-group resolver-form-group-wide">
+                                        <label for="resolver-access-subnet">Client Subnet (CIDR)</label>
+                                        <input type="text" id="resolver-access-subnet" name="subnet"
+                                            autocomplete="off" spellcheck="false" placeholder="10.0.5.0/24">
+                                    </div>
+                                    <div class="resolver-form-group">
+                                        <label for="resolver-access-action">Action</label>
+                                        <select id="resolver-access-action" name="action">
+                                            <option value="allow" selected>allow</option>
+                                            <option value="refuse">refuse</option>
+                                            <option value="deny">deny</option>
+                                        </select>
+                                    </div>
+                                    <div class="resolver-form-actions">
+                                        <button type="submit" id="resolver-access-submit"
+                                            class="resolver-submit-btn">Add Rule</button>
+                                        <button type="button" id="resolver-access-cancel"
+                                            class="resolver-cancel-btn" hidden>Cancel</button>
+                                    </div>
+                                </form>
+                            </section>
+                        </div>
+                    </div>
+                </div>
+
+        </main>
+
+        <div class="workspace-status-line">
+            <div class="header-info">
+                <div id="ws-status" class="ws-status" aria-live="polite" aria-label="Connection status">
+                    <span class="ws-status-dot" aria-hidden="true"></span>
+                    <span class="ws-status-text">Connecting…</span>
+                </div>
+                <span class="separator-horizontal" aria-hidden="true">|</span>
+                <div id="status" aria-live="polite">
+                    <strong>Nodes:</strong> <span id="node-count">-</span>
+                    <span class="separator-horizontal" aria-hidden="true">|</span>
+                    <span id="learner-session-status" hidden>
+                        <strong>Learner Sessions:</strong> <span id="learner-session-count">-</span>
+                        <span class="separator-horizontal" aria-hidden="true">|</span>
+                    </span>
+                    <strong>Active Terminals:</strong> <span id="terminal-count">-</span>
+                </div>
+                <div id="classroom-status" role="group" aria-label="Classroom totals" hidden>
+                    <strong>Classroom:</strong>
+                    <span class="classroom-total"><span id="classroom-lab-count">—</span> running Labs</span>
+                    <span class="separator-horizontal" aria-hidden="true">|</span>
+                    <span class="classroom-total"><span id="classroom-session-count">—</span> learner Sessions</span>
+                    <span class="separator-horizontal" aria-hidden="true">|</span>
+                    <span class="classroom-total"><span id="classroom-terminal-count">—</span> active Terminals</span>
+                </div>
+                <div class="workspace-status-messages">
+                    <div id="instructor-dashboard-status" role="status" aria-live="polite"></div>
+                    <div id="layout-status" class="save-status" aria-live="polite"></div>
+
+                </div>
+                <div class="workspace-status-actions">
+                    <div id="topology-canvas-controls" class="canvas-controls" role="toolbar"
+                        aria-label="Topology zoom and arrange controls" hidden>
+                        <button id="zoom-in" class="btn-icon" type="button" aria-label="Zoom in" title="Zoom in">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <circle cx="11" cy="11" r="8"></circle>
+                                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                                <line x1="11" y1="8" x2="11" y2="14"></line>
+                                <line x1="8" y1="11" x2="14" y2="11"></line>
+                            </svg>
+                        </button>
+                        <button id="zoom-out" class="btn-icon" type="button" aria-label="Zoom out" title="Zoom out">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <circle cx="11" cy="11" r="8"></circle>
+                                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                                <line x1="8" y1="11" x2="14" y2="11"></line>
+                            </svg>
+                        </button>
+                        <button id="fit-view" class="btn-icon canvas-control-labelled" type="button"
+                            title="Zoom to fit the topology on screen">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <polyline points="15 3 21 3 21 9"></polyline>
+                                <polyline points="9 21 3 21 3 15"></polyline>
+                                <line x1="21" y1="3" x2="14" y2="10"></line>
+                                <line x1="3" y1="21" x2="10" y2="14"></line>
+                            </svg>
+                            Fit
+                        </button>
+                        <button id="auto-arrange-nodes" class="btn-icon canvas-control-labelled" type="button"
+                            aria-label="Auto-Arrange Nodes (unpins every node)" title="Unpins every node and re-arranges them">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <path d="M2 18h1.4c1.3 0 2.5-.6 3.3-1.7l6.1-8.6c.7-1.1 2-1.7 3.3-1.7H22"></path>
+                                <path d="m18 2 4 4-4 4"></path>
+                                <path d="M2 6h1.9c1.5 0 2.9.9 3.6 2.2"></path>
+                                <path d="M22 18h-5.9c-1.3 0-2.6-.7-3.3-1.8l-.5-.8"></path>
+                                <path d="m18 14 4 4-4 4"></path>
+                            </svg>
+                            Auto-Arrange
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Help Modal -->
+        <div id="help-modal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="help-modal-title">
+            <div class="modal-content help-modal">
+                <div class="modal-header">
+                    <h2 id="help-modal-title">Help & Keyboard Shortcuts</h2>
+                    <button id="help-modal-close" class="btn-icon" aria-label="Close help">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+                <div class="modal-body" tabindex="0" aria-label="Help and keyboard shortcuts">
+                    <section class="help-section">
+                        <h3>Getting Started</h3>
+                        <ul>
+                            <li><strong>Open Terminal:</strong> Click on any node in the topology or sidebar to open a terminal. A Switch has no terminal: click it to open its Switch panel.</li>
+                            <li><strong>Move Nodes:</strong> Drag nodes to rearrange the topology view, or focus a node and use the Arrow keys to nudge it (see Keyboard Shortcuts).</li>
+                            <li><strong>Pan & Zoom:</strong> Click and drag empty space to pan. Scroll or pinch to zoom, or use the zoom buttons in the topology's bottom-right corner (see Layout &amp; Organization).</li>
+                        </ul>
+                    </section>
+
+                    <section class="help-section">
+                        <h3>Layout & Organization</h3>
+                        <ul>
+                            <li><strong>Auto-Arrange Nodes</strong> (bottom-right corner): Unpins every node, lets the physics
+                                re-arrange them, then re-centres the view. Discards your Personal
+                                Layout, and cannot be undone.
+                            </li>
+                            <li><strong>Zoom In / Zoom Out</strong> (bottom-right corner): Zoom the topology in or out by a fixed step, for users without pinch or scroll. The same controls the wheel and pinch gestures drive.</li>
+                            <li><strong>Fit</strong> (bottom-right corner): Centers the topology without moving any nodes.</li>
+                            <li><strong>Reset to Authored Layout:</strong> Resets the canvas to this lab's authored layout, discarding your own drags.</li>
+                            <li><strong>Grouping:</strong> Select multiple nodes (Ctrl+Click) then choose 'Group' under
+                                View to create a visual cluster. With a cluster selected, 'Ungroup' appears there too.</li>
+                            <li><strong>Link Configuration:</strong> Click a link in the topology to open link actions
+                                (disconnect/reconnect) and settings.</li>
+                        </ul>
+                    </section>
+
+                    <section class="help-section">
+                        <h3>Troubleshooting</h3>
+                        <p id="browser-preferences-description">Reset this browser’s saved theme, panel sizes and
+                            other Mininet-IPLab preferences. The page reloads; saved Labs, drafts and configurations are kept.</p>
+                        <button id="reset-browser-preferences" class="btn-secondary mt-2" type="button"
+                            aria-haspopup="dialog" aria-controls="confirm-modal"
+                            aria-describedby="browser-preferences-description">Reset browser preferences…</button>
+                        <p id="browser-preferences-error" class="mt-2" role="alert" hidden></p>
+                    </section>
+
+                    <section class="help-section">
+                        <h3>Keyboard Shortcuts</h3>
+                        <div class="shortcut-list">
+                            <div class="shortcut-item">
+                                <kbd>Ctrl</kbd> + <kbd>B</kbd>
+                                <span>Toggle the Labs list (no Lab running)</span>
+                            </div>
+                            <div class="shortcut-item">
+                                <kbd>Ctrl</kbd> + <kbd>T</kbd>
+                                <span>Show or hide the Terminal pane</span>
+                            </div>
+                            <div class="shortcut-item">
+                                <kbd>Ctrl</kbd> + <kbd>Click</kbd>
+                                <span>Select multiple nodes</span>
+                            </div>
+                            <div class="shortcut-item">
+                                <kbd>Arrow Keys</kbd>
+                                <span>Nudge the focused node's position (pins it, like a drag)</span>
+                            </div>
+                            <div class="shortcut-item">
+                                <kbd>Ctrl</kbd> + <kbd>Arrow Keys</kbd>
+                                <span>Move focus to the connected neighbor in that direction</span>
+                            </div>
+                            <div class="shortcut-item">
+                                <kbd>Ctrl</kbd> + <kbd>W</kbd>
+                                <span>Close active terminal</span>
+                            </div>
+                            <div class="shortcut-item">
+                                <kbd>?</kbd>
+                                <span>Open this help menu</span>
+                            </div>
+                            <div class="shortcut-item">
+                                <kbd>Esc</kbd>
+                                <span>Close modals / Focus topology</span>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+        <!-- Input Modal -->
+        <div id="input-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="input-modal-title"
+            style="display: none;">
+            <div class="modal-content input-modal">
+                <div class="modal-header">
+                    <h2 id="input-modal-title">Create Group</h2>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="input-group-name">Group Name</label>
+                        <input type="text" id="input-group-name" class="form-control" placeholder="Enter name...">
+                    </div>
+                    <div class="modal-actions">
+                        <button id="input-cancel" class="btn-secondary">Cancel</button>
+                        <button id="input-confirm" class="btn-primary">Create</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+        <div id="session-identity-modal" class="modal-overlay" role="dialog" aria-modal="true"
+            aria-labelledby="session-identity-title" style="display: none;">
+            <div class="modal-content confirm-modal">
+                <div class="modal-header">
+                    <h2 id="session-identity-title">Your Session</h2>
+                    <button id="session-identity-close" type="button" class="btn-secondary"
+                        aria-label="Close Your Session">Close</button>
+                </div>
+                <div class="modal-body">
+                    <p>Connection code: <code id="session-code"></code></p>
+                    <p>Tell the Instructor these details if your connection needs help.</p>
+                    <label for="session-details">Session details</label>
+                    <input id="session-details" class="form-control" type="text" readonly>
+                    <button id="session-copy" class="btn-secondary" type="button">Copy details</button>
+                    <form id="session-nickname-form">
+                        <div class="form-group">
+                            <label for="session-nickname">Session nickname</label>
+                            <input id="session-nickname" class="form-control" type="text" maxlength="40" required
+                                aria-describedby="session-nickname-help">
+                            <p id="session-nickname-help">Choose a name the Instructor can recognize. Your connection code stays the same.</p>
+                        </div>
+                        <button class="btn-primary" type="submit">Save nickname</button>
+                    </form>
+                    <p id="session-identity-status" role="status" aria-live="polite"></p>
+                </div>
+            </div>
+        </div>
+        <!-- Server settings: the Limits an Instructor changes while the class
+             runs (serve only). Each field's bounds and errors are its own. -->
+        <div id="server-settings-modal" class="modal-overlay" role="dialog" aria-modal="true"
+            aria-labelledby="server-settings-title" style="display: none;">
+            <div class="modal-content server-settings-modal">
+                <div class="modal-header">
+                    <h2 id="server-settings-title">Server settings</h2>
+                    <button id="server-settings-close" class="btn-icon" type="button" aria-label="Close">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+                <!-- Two tabs, so a long list of logins never buries the Limits. -->
+                <div class="server-settings-tabs" role="tablist" aria-label="Server settings sections">
+                    <button type="button" id="server-settings-tab-limits" class="server-settings-tab" role="tab"
+                        aria-selected="true" aria-controls="server-settings-form">Limits</button>
+                    <button type="button" id="server-settings-tab-logins" class="server-settings-tab" role="tab"
+                        aria-selected="false" aria-controls="server-settings-logins" tabindex="-1">Accounts</button>
+                </div>
+                <div class="modal-body server-settings-body">
+                <form id="server-settings-form" novalidate role="tabpanel" tabindex="0"
+                    aria-labelledby="server-settings-tab-limits">
+                    <h3 id="server-settings-limits-heading" class="sr-only">Limits</h3>
+                    <div class="server-settings-intro">
+                        <p id="server-settings-limits-help" class="server-settings-help">
+                            Changes apply as soon as you save. Empty a field to go back to the value the server
+                            started with.
+                        </p>
+                        <button type="button" class="btn-icon info-toggle" aria-expanded="false"
+                            aria-controls="server-settings-limits-note" aria-label="About Limits" title="About Limits">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" aria-hidden="true">
+                                <circle cx="12" cy="12" r="9"></circle>
+                                <line x1="12" y1="11" x2="12" y2="16"></line>
+                                <circle cx="12" cy="7.5" r="0.6" fill="currentColor"></circle>
+                            </svg>
+                        </button>
+                    </div>
+                    <div id="server-settings-limits-note" class="info-note" hidden>
+                        <p>Lowering a cap closes nothing already open; it refuses only what comes next. Lowering a
+                            timeout also reaches idle Sessions and Terminals already open.</p>
+                    </div>
+                    <div class="form-group limit-row" data-limit="terminal_per_session_cap">
+                        <div class="limit-label">
+                            <label for="limit-terminal_per_session_cap">Terminals per Session</label>
+                        </div>
+                        <p id="limit-terminal_per_session_cap-bounds" class="server-settings-bounds"></p>
+                        <div class="limit-field">
+                            <input type="number" id="limit-terminal_per_session_cap" class="form-control"
+                                name="terminal_per_session_cap" inputmode="numeric" step="1"
+                                aria-describedby="limit-terminal_per_session_cap-bounds limit-terminal_per_session_cap-error">
+                        </div>
+                        <p id="limit-terminal_per_session_cap-error" class="field-error" hidden></p>
+                    </div>
+                    <div class="form-group limit-row" data-limit="terminal_global_cap">
+                        <div class="limit-label">
+                            <label for="limit-terminal_global_cap">Terminals on the whole server</label>
+                        </div>
+                        <p id="limit-terminal_global_cap-bounds" class="server-settings-bounds"></p>
+                        <div class="limit-field">
+                            <input type="number" id="limit-terminal_global_cap" class="form-control"
+                                name="terminal_global_cap" inputmode="numeric" step="1"
+                                aria-describedby="limit-terminal_global_cap-bounds limit-terminal_global_cap-error">
+                        </div>
+                        <p id="limit-terminal_global_cap-error" class="field-error" hidden></p>
+                    </div>
+                    <div class="form-group limit-row" data-limit="terminal_idle_timeout">
+                        <div class="limit-label">
+                            <label for="limit-terminal_idle_timeout">Idle Terminal timeout</label>
+                            <button type="button" class="btn-icon info-toggle" aria-expanded="false"
+                                aria-controls="limit-terminal_idle_timeout-note" aria-label="About Idle Terminal timeout" title="About Idle Terminal timeout">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" aria-hidden="true">
+                                <circle cx="12" cy="12" r="9"></circle>
+                                <line x1="12" y1="11" x2="12" y2="16"></line>
+                                <circle cx="12" cy="7.5" r="0.6" fill="currentColor"></circle>
+                            </svg>
+                            </button>
+                        </div>
+                        <p id="limit-terminal_idle_timeout-bounds" class="server-settings-bounds"></p>
+                        <div class="limit-field">
+                            <input type="number" id="limit-terminal_idle_timeout" class="form-control"
+                                name="terminal_idle_timeout" inputmode="numeric" step="1"
+                                aria-describedby="limit-terminal_idle_timeout-bounds limit-terminal_idle_timeout-error">
+                            <span class="limit-unit">seconds<span id="limit-terminal_idle_timeout-readable" class="limit-readable"
+                                aria-hidden="true"></span></span>
+                        </div>
+                        <p id="limit-terminal_idle_timeout-error" class="field-error" hidden></p>
+                        <div id="limit-terminal_idle_timeout-note" class="info-note limit-note" hidden><p>Also how long a Terminal waits for a reloaded page to reattach, and how long a Packet Capture keeps running after its last viewer leaves.</p></div>
+                    </div>
+                    <div class="form-group limit-row" data-limit="session_idle_timeout">
+                        <div class="limit-label">
+                            <label for="limit-session_idle_timeout">Idle Session timeout</label>
+                        </div>
+                        <p id="limit-session_idle_timeout-bounds" class="server-settings-bounds"></p>
+                        <div class="limit-field">
+                            <input type="number" id="limit-session_idle_timeout" class="form-control"
+                                name="session_idle_timeout" inputmode="numeric" step="1"
+                                aria-describedby="limit-session_idle_timeout-bounds limit-session_idle_timeout-error">
+                            <span class="limit-unit">seconds<span id="limit-session_idle_timeout-readable" class="limit-readable"
+                                aria-hidden="true"></span></span>
+                        </div>
+                        <p id="limit-session_idle_timeout-error" class="field-error" hidden></p>
+                    </div>
+                    <div class="form-group limit-row" data-limit="session_per_user_cap">
+                        <div class="limit-label">
+                            <label for="limit-session_per_user_cap">Sessions per login</label>
+                        </div>
+                        <p id="limit-session_per_user_cap-bounds" class="server-settings-bounds"></p>
+                        <div class="limit-field">
+                            <input type="number" id="limit-session_per_user_cap" class="form-control"
+                                name="session_per_user_cap" inputmode="numeric" step="1"
+                                aria-describedby="limit-session_per_user_cap-bounds limit-session_per_user_cap-error">
+                        </div>
+                        <p id="limit-session_per_user_cap-error" class="field-error" hidden></p>
+                    </div>
+                    <div class="form-group limit-row" data-limit="lab_cap" hidden>
+                        <div class="limit-label">
+                            <label for="limit-lab_cap">Labs alive at once</label>
+                        </div>
+                        <p id="limit-lab_cap-bounds" class="server-settings-bounds"></p>
+                        <div class="limit-field">
+                            <input type="number" id="limit-lab_cap" class="form-control"
+                                name="lab_cap" inputmode="numeric" step="1"
+                                aria-describedby="limit-lab_cap-bounds limit-lab_cap-error">
+                        </div>
+                        <p id="limit-lab_cap-error" class="field-error" hidden></p>
+                    </div>
+                    <p id="server-settings-status" class="server-settings-status" role="status"></p>
+                    <div class="modal-actions">
+                        <button type="submit" id="server-settings-save" class="btn-primary">Save</button>
+                    </div>
+                </form>
+                <!-- Every login the server accepts, called Accounts in both Lab modes.
+                     Added logins first; .env accounts, which cannot change here,
+                     under one folded heading. A filter once the class is big. -->
+                <section id="server-settings-logins" class="server-settings-logins" role="tabpanel" tabindex="0"
+                    aria-labelledby="server-settings-tab-logins" hidden>
+                    <h3 id="server-settings-logins-heading" class="sr-only">Accounts</h3>
+                    <p class="server-settings-help">An account added here is a Learner with a generated password.<span
+                        id="server-settings-group-note" hidden> Each Learner account is a Group, with its own Lab.</span></p>
+                    <form id="server-settings-add-login" class="server-settings-add-login" novalidate
+                        aria-label="Add a login">
+                        <div class="form-group">
+                            <label for="login-name">Name of the new login</label>
+                            <input type="text" id="login-name" class="form-control" name="name"
+                                autocomplete="off" autocapitalize="none" spellcheck="false" maxlength="32"
+                                aria-describedby="login-name-rule login-name-error">
+                            <p id="login-name-rule" class="server-settings-bounds">2 to 32 lowercase
+                                letters, digits and hyphens, starting with a letter.</p>
+                            <p id="login-name-error" class="field-error" hidden></p>
+                        </div>
+                        <div class="modal-actions">
+                            <button type="submit" id="login-add" class="btn-secondary">Add login</button>
+                        </div>
+                    </form>
+                    <p id="server-settings-logins-status" class="server-settings-status" role="status"></p>
+                    <div id="server-settings-logins-filter" class="server-settings-logins-filter" hidden>
+                        <label for="login-filter" class="sr-only">Filter logins by name</label>
+                        <input type="search" id="login-filter" class="form-control" placeholder="Filter by name"
+                            autocomplete="off" spellcheck="false">
+                        <span id="login-filter-count" class="server-settings-filter-count" role="status"></span>
+                    </div>
+                    <h4 id="server-settings-added-heading" class="server-settings-subhead">Added here</h4>
+                    <ul id="server-settings-logins-list" class="server-settings-logins-list"
+                        aria-labelledby="server-settings-added-heading"></ul>
+                    <p id="server-settings-logins-empty" class="server-settings-help" hidden></p>
+                    <h4 class="server-settings-subhead">
+                        <button type="button" id="server-settings-env-toggle" class="server-settings-fold"
+                            aria-expanded="true" aria-controls="server-settings-env-list">Set in .env</button>
+                    </h4>
+                    <ul id="server-settings-env-list" class="server-settings-logins-list"
+                        aria-labelledby="server-settings-env-toggle"></ul>
+                </section>
+                </div>
+            </div>
+        </div>
+        <!-- Generic Alert/Confirm Modal -->
+        <div id="confirm-modal" class="modal-overlay" role="dialog" aria-modal="true"
+            aria-labelledby="confirm-modal-title" style="display: none;">
+            <div class="modal-content confirm-modal">
+                <div class="modal-header">
+                    <h2 id="confirm-modal-title">Confirm</h2>
+                </div>
+                <div class="modal-body">
+                    <p id="confirm-modal-message"></p>
+                    <div class="modal-actions">
+                        <button id="confirm-cancel" class="btn-secondary">Cancel</button>
+                        <button id="confirm-ok" class="btn-primary">OK</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/js/lib/d3.v7.min.js"></script>
+    <script src="/static/js/lib/marked.umd.js"></script>
+    <script src="/static/js/lib/purify.min.js"></script>
+    <script src="/static/js/lib/xterm.min.js"></script>
+    <script src="/static/js/lib/xterm-addon-fit.js"></script>
+    <script src="/static/js/lib/xterm-addon-canvas.js"></script>
+    <script type="module" src="/static/js/main.js?v=8"></script>
+</body>
+
+</html>

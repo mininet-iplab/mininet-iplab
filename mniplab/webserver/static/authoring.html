@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light dark">
+    <title>Lab Authoring · Mininet-IPLab</title>
+    <link rel="icon" type="image/svg+xml" href="/static/img/authoring-favicon.svg">
+    <link rel="stylesheet" href="/static/css/main.css?v=7">
+    <link rel="stylesheet" href="/static/css/authoring.css">
+    <script>
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+    </script>
+</head>
+<body class="authoring-page">
+    <a class="skip-link" href="#canvas-region">Skip to canvas</a>
+    <header role="banner">
+        <div class="header-left">
+            <nav aria-label="Breadcrumb" class="header-breadcrumb">
+                <ol class="breadcrumb-list">
+                    <li>
+                        <a href="/" class="header-brand-link">
+                            <svg width="24" height="24" viewBox="0 0 64 64" aria-hidden="true" focusable="false">
+                                <!-- Terminal Prompt -->
+                                <g stroke="currentColor" stroke-width="4" stroke-linecap="round" fill="none">
+                                    <path d="M10 12 L16 18 L10 24" />
+                                    <line x1="20" y1="24" x2="26" y2="24" />
+                                </g>
+                                <!-- Links -->
+                                <g stroke="currentColor" stroke-width="3.5" stroke-linecap="round" opacity="0.8">
+                                    <line x1="48" y1="18" x2="32" y2="34" stroke-dasharray="4,3" />
+                                    <line x1="32" y1="34" x2="16" y2="50" />
+                                    <line x1="32" y1="34" x2="48" y2="50" />
+                                </g>
+                                <!-- Nodes -->
+                                <g stroke="currentColor" stroke-width="3.5" fill="var(--surface-color)">
+                                    <rect x="42" y="12" width="12" height="9" rx="2" />
+                                    <rect x="26" y="30" width="12" height="9" rx="2" />
+                                    <rect x="10" y="46" width="12" height="9" rx="2" />
+                                    <rect x="42" y="46" width="12" height="9" rx="2" />
+                                </g>
+                            </svg>
+                            <span>Mininet-IPLab</span>
+                        </a>
+                    </li>
+                    <li class="breadcrumb-separator" aria-hidden="true">/</li>
+                    <li aria-current="page">
+                        <h1 class="header-page-title">Lab Authoring</h1>
+                    </li>
+                </ol>
+            </nav>
+        </div>
+        <div class="header-right">
+            <a id="return-labs-link" class="btn-icon" href="/" aria-label="Return to Labs" title="Return to Labs">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                    <line x1="19" y1="12" x2="5" y2="12"></line>
+                    <polyline points="12 19 5 12 12 5"></polyline>
+                </svg>
+            </a>
+            <div class="account-menu">
+                <button id="account-menu-btn" class="btn-secondary account-menu-button" type="button">
+                    <span id="header-username" class="header-username"></span>
+                    <span class="account-role-divider" aria-hidden="true">|</span>
+                    <span id="role-badge" class="account-role"></span>
+                    <svg class="account-menu-caret" width="12" height="12" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
+                        aria-hidden="true" focusable="false">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                </button>
+                <div id="account-menu" class="pane-menu-list account-menu-list" role="menu"
+                    aria-labelledby="account-menu-btn" hidden>
+                    <button id="theme-toggle" type="button" role="menuitemcheckbox" aria-checked="false"
+                        data-menu-keep-open>Dark mode</button>
+                    <div class="menu-separator" role="separator"></div>
+                    <button id="logout-btn" type="button" role="menuitem" class="menu-item-danger">Log out</button>
+                </div>
+            </div>
+        </div>
+    </header>
+    <main id="authoring-main" class="authoring-main">
+        <aside id="labs-explorer" class="authoring-explorer" aria-labelledby="labs-explorer-heading">
+            <div class="authoring-explorer-head">
+                <h2 id="labs-explorer-heading">Labs</h2>
+                <button type="button" id="labs-explorer-toggle" class="btn-icon" aria-expanded="true"
+                    aria-controls="labs-explorer-body" aria-label="Labs">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" aria-hidden="true" focusable="false">
+                            <rect x="3" y="4" width="18" height="16" rx="2"></rect>
+                            <line x1="9" y1="4" x2="9" y2="20"></line>
+                        </svg>
+                </button>
+            </div>
+            <div id="labs-explorer-body" class="authoring-explorer-body">
+                <section id="drafts-section" class="authoring-explorer-section" aria-labelledby="drafts-heading">
+                    <div class="authoring-explorer-heading">
+                        <h3 id="drafts-heading">Drafts</h3>
+                        <button class="btn-icon info-tip" data-info-for="drafts-note" data-topic="Drafts"></button>
+                    </div>
+                    <div id="drafts-note" class="authoring-explorer-note">
+                        <p id="drafts-hint">Shared by all Instructors. Deleting a draft keeps anything already published.</p>
+                        <p id="import-package-hint">Opens a complete lesson ZIP as a new unpublished draft, with its source mode and files.</p>
+                        <p id="upload-script-hint">Makes a separate Python draft from one .py file, with no canvas to edit.</p>
+                    </div>
+                    <div class="authoring-row">
+                        <button type="button" id="new-draft">New draft</button>
+                        <button type="button" id="upload-script" class="btn-secondary" aria-describedby="upload-script-hint">Upload a script…</button>
+                        <button type="button" id="import-package" class="btn-secondary" aria-describedby="import-package-hint">Import package…</button>
+                        <input type="file" id="import-package-file" accept=".zip,application/zip" tabindex="-1" aria-hidden="true" hidden>
+                        <input type="file" id="upload-script-file" accept=".py,text/x-python" tabindex="-1" aria-hidden="true" hidden>
+                    </div>
+                    <p id="drafts-status" class="authoring-explorer-status" role="status" aria-live="polite"></p>
+                    <ul id="drafts-list" class="authoring-explorer-list" aria-labelledby="drafts-heading"></ul>
+                </section>
+                <section id="catalog-section" class="authoring-explorer-section" aria-labelledby="catalog-heading">
+                    <div class="authoring-explorer-heading">
+                        <h3 id="catalog-heading">Lab Catalog</h3>
+                        <button class="btn-icon info-tip" data-info-for="catalog-note" data-topic="Lab Catalog"></button>
+                    </div>
+                    <p id="catalog-note" class="authoring-explorer-note">Shipped labs publish as a new lab; authored labs can also update their Catalog entry.</p>
+                    <label for="example-source-search" class="sr-only">Search labs</label>
+                    <input id="example-source-search" type="search" placeholder="Search labs" autocomplete="off">
+                    <p id="example-source-status" class="authoring-explorer-status" role="status" aria-live="polite"></p>
+                    <ul id="example-source-list" class="authoring-explorer-list" aria-labelledby="catalog-heading"></ul>
+                </section>
+            </div>
+        </aside>
+        <div id="authoring-empty" class="authoring-empty">
+            <div class="topology-empty-inner">
+                <svg width="48" height="48" viewBox="0 0 64 64" aria-hidden="true" focusable="false">
+                    <g stroke="currentColor" stroke-width="4" stroke-linecap="round" fill="none">
+                        <path d="M10 12 L16 18 L10 24" />
+                        <line x1="20" y1="24" x2="26" y2="24" />
+                    </g>
+                    <g stroke="currentColor" stroke-width="3.5" stroke-linecap="round" opacity="0.8">
+                        <line x1="48" y1="18" x2="32" y2="34" stroke-dasharray="4,3" />
+                        <line x1="32" y1="34" x2="16" y2="50" />
+                        <line x1="32" y1="34" x2="48" y2="50" />
+                    </g>
+                    <g stroke="currentColor" stroke-width="3.5" fill="var(--surface-color)">
+                        <rect x="42" y="12" width="12" height="9" rx="2" />
+                        <rect x="26" y="30" width="12" height="9" rx="2" />
+                        <rect x="10" y="46" width="12" height="9" rx="2" />
+                        <rect x="42" y="46" width="12" height="9" rx="2" />
+                    </g>
+                </svg>
+                <h2>No Lab draft open</h2>
+                <p id="authoring-status" role="status" aria-live="polite">Loading drafts…</p>
+            </div>
+        </div>
+        <form id="draft-form" class="authoring-shell" novalidate hidden>
+            <input id="draft-id" type="hidden">
+            <input id="draft-revision" type="hidden">
+
+            <div class="authoring-workspace sidebar-collapsed">
+                <div id="node-palette" class="authoring-palette" role="toolbar" aria-label="Add a Node" aria-orientation="vertical"></div>
+                <section id="canvas-region" class="authoring-canvas-region" tabindex="-1" aria-labelledby="canvas-heading">
+                    <h2 id="canvas-heading" class="sr-only">Topology canvas</h2>
+                    <div id="draft-toolbar" class="controls authoring-toolbar">
+                        <button type="button" id="draft-rename" class="authoring-draft-title" title="Rename">
+                            <span class="sr-only">Rename </span><span id="draft-title"></span>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                                <path d="M12 20h9"></path>
+                                <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"></path>
+                            </svg>
+                        </button>
+                        <button type="button" id="script-toggle" class="btn-secondary authoring-script-toggle"
+                            aria-pressed="false" aria-controls="script-pane">Script</button>
+                        <div id="draft-actions" class="authoring-actions" role="group" aria-label="Draft actions">
+                            <button type="button" id="preview-draft" aria-describedby="preview-help" disabled>Preview</button>
+                            <button type="button" id="publish-draft" aria-haspopup="dialog">Publish…</button>
+                            <button type="button" id="close-draft" class="btn-secondary">Close draft</button>
+                        </div>
+                        <span id="preview-help" class="sr-only">Preview checks that the Lab starts; it does not check routing convergence or connectivity.</span>
+                    </div>
+                    <p id="canvas-item-hint" hidden>Arrow keys go to the nearest Node that way; Home, End, Page Up and Page Down go through every Node in reading order. Shift+Arrow moves this Node 10 units, Ctrl+Shift+Arrow 50. Enter edits properties. Delete or Backspace removes.</p>
+                    <p id="canvas-read-only-hint" hidden>Read-only: the script makes it. Arrow keys go to the nearest Node; Shift+Arrow moves this Node 10 units, Ctrl+Shift+Arrow 50. Enter shows where it is made.</p>
+                    <p id="canvas-link-hint" hidden>Arrow keys go to the nearest Node that way; Home, End, Page Up and Page Down go through every Node in reading order. Enter edits properties. Delete or Backspace removes.</p>
+                    <div class="authoring-canvas" id="draft-canvas-drop">
+                        <p id="canvas-help" class="authoring-canvas-hint">Arrows go to a Node · Shift+Arrows move it · Enter edits · F2 renames · Delete removes · drag a Node's + to link</p>
+                        <p id="drawing-note" class="authoring-drawing-note" role="status" hidden></p>
+                        <div id="connect-bar" class="authoring-connect-bar" role="group" hidden>
+                            <span id="connect-message"></span>
+                            <button type="button" id="connect-cancel" class="btn-secondary">Cancel</button>
+                        </div>
+                        <p id="code-section-marker" class="authoring-code-marker" hidden>+ Code section</p>
+                        <svg id="draft-canvas" role="group"
+                            aria-labelledby="draft-canvas-title" aria-describedby="draft-canvas-description canvas-help">
+                            <title id="draft-canvas-title">Draft Topology</title>
+                            <desc id="draft-canvas-description">An empty Topology.</desc>
+                            <defs>
+                                <pattern id="draft-grid" width="40" height="40" patternUnits="userSpaceOnUse">
+                                    <path d="M 40 0 L 0 0 0 40" fill="none" stroke="var(--text-muted)"
+                                        stroke-width="1" stroke-dasharray="4 4" opacity="0.3"></path>
+                                </pattern>
+                            </defs>
+                            <rect class="grid-background" width="100%" height="100%" fill="url(#draft-grid)"></rect>
+                            <g id="draft-canvas-g">
+                                <g class="layer-links"></g>
+                                <g class="layer-labels"></g>
+                                <g class="layer-relations" aria-hidden="true"></g>
+                                <g class="layer-nodes"></g>
+                                <g class="layer-link-items"></g>
+                            </g>
+                        </svg>
+                    </div>
+                </section>
+                <section id="script-pane" class="authoring-script-pane" aria-labelledby="script-pane-heading" hidden>
+                    <div id="script-resize" class="authoring-script-resize" role="separator"
+                        aria-label="Script width" aria-orientation="vertical" aria-valuemin="320"
+                        aria-valuemax="680" aria-valuenow="480" tabindex="0"><span>Script width</span></div>
+                    <div class="authoring-script-bar">
+                        <h2 id="script-pane-heading">Script</h2>
+                        <button class="btn-icon info-tip" data-info-for="script-keys" data-topic="Keys" data-visible-label="Keys"></button>
+                        <button type="button" id="python-show-api-help" class="btn-secondary" aria-controls="python-api-help" aria-expanded="false">Show API help</button>
+                        <button type="button" id="script-continue-python" class="btn-secondary" aria-describedby="continue-python-help">Continue in Python</button>
+                        <button type="button" id="replace-script" class="btn-secondary" aria-describedby="replace-script-help" hidden>Replace script…</button>
+                        <input type="file" id="replace-script-file" accept=".py,text/x-python" tabindex="-1" aria-hidden="true" hidden>
+                        <button type="button" id="script-download" class="btn-secondary">Download .zip</button>
+                    </div>
+                    <p id="continue-python-help" class="authoring-note authoring-script-keys">Create a separate editable Python draft with this lesson’s files. The Canvas original stays available; the drafts do not synchronize. Nothing is published or changed in a running Lab.</p>
+                    <div id="script-keys" class="authoring-note authoring-script-keys">
+                        <p id="code-section-help">Python for what the canvas cannot draw. It runs at the end of <code>build_network()</code>, before the Lab starts, with <code>net</code> and each Node by its name above. Commands for the running Lab go in a Node's After-start Startup commands.</p>
+                        <p id="replace-script-help" hidden>Replace this draft’s Python script from a .py file. Pending edits save first; lesson files, Guide and Layout stay with this draft. A changed script needs a fresh Preview.</p>
+                        <p id="python-editor-help">Edit this Lab Example’s Python script and Seed files here. Changes save to this draft; the canvas draws the Nodes and Links after each save. Preview rebuilds the saved recipe.</p>
+                        <p id="python-files-help">A Seed file is a Router's <code>frr.conf</code> under <code>frr-config/</code>, at the path its script names; the Router's other FRR files come from its Protocols. A Router whose Seed folder this draft does not hold starts with an empty configuration. The Preview Lab runs from this folder, so <code>./frr-config/lesson/r1</code> in the script reads <code>frr-config/lesson/r1</code> here.</p>
+                        <p id="script-keys-text"></p>
+                    </div>
+                    <details id="lesson-files" class="authoring-lesson-files">
+                        <summary>Supporting lesson files</summary>
+                        <p>Helpers, data and assets save automatically. Edit Python scripts and Seeds below. For Canvas drafts, edit Topology/Code section for generated Python and each Router’s FRR configuration for its Seed. Router Protocols own generated FRR files. Edit Guide in Details → Guide, and Layout by arranging the canvas.</p>
+                        <label for="lesson-new-path">New file path</label>
+                        <input id="lesson-new-path" type="text" aria-describedby="lesson-path-help lesson-feedback">
+                        <p id="lesson-path-help">Relative paths, for example helpers/routes.py or presentation/diagram.png. Upload preserves exact bytes; use Create text file for editable text.</p>
+                        <div class="authoring-file-actions">
+                            <button id="lesson-create" type="button" class="btn-secondary">Create text file</button>
+                            <button id="lesson-upload" type="button" class="btn-secondary">Upload asset</button>
+                        </div>
+                        <input id="lesson-upload-input" type="file" hidden>
+                        <input id="lesson-replace-input" type="file" hidden>
+                        <p id="lesson-feedback" class="field-error" role="alert"></p>
+                        <p id="lesson-empty">No supporting files yet.</p>
+                        <label for="lesson-file">Supporting file</label>
+                        <select id="lesson-file"></select>
+                        <div id="lesson-selected" hidden>
+                            <label for="lesson-path">Selected file path</label>
+                            <input id="lesson-path" type="text" aria-describedby="lesson-path-help lesson-feedback">
+                            <label for="lesson-role">File role</label>
+                            <select id="lesson-role" aria-describedby="lesson-role-help lesson-feedback">
+                                <option value="build">Build</option>
+                                <option value="presentation">Presentation</option>
+                            </select>
+                            <p id="lesson-role-help">Build files can affect the Lab and require a new Preview. Presentation is only for documents/media under presentation/ that are not read while building.</p>
+                            <div class="authoring-file-actions">
+                                <button id="lesson-rename" type="button" class="btn-secondary">Rename selected file</button>
+                                <button id="lesson-delete" type="button" class="btn-secondary">Delete selected file</button>
+                                <button id="lesson-download" type="button" class="btn-secondary">Download selected file</button>
+                                <button id="lesson-replace" type="button" class="btn-secondary">Replace selected file</button>
+                            </div>
+                            <p id="lesson-binary" hidden>Binary asset: download or replace to change its bytes.</p>
+                            <label id="lesson-content-label" for="lesson-content">Supporting file content</label>
+                            <textarea id="lesson-content" rows="10" spellcheck="false" aria-describedby="lesson-content-help"></textarea>
+                            <p id="lesson-content-help">Text edits save automatically. Tab leaves this editor. Renaming/deleting does not rewrite references; check Save and Preview diagnostics.</p>
+                        </div>
+                    </details>
+                    <p id="code-section-band" class="authoring-band-label"></p>
+                    <div id="script-editor" class="authoring-code-editor authoring-script-editor"></div>
+                    <p id="code-section-error" class="field-error" hidden></p>
+                    <div id="python-editor" class="authoring-python-files" hidden>
+                        <p id="python-read-only" class="authoring-band-label">Edit the script and Seeds here. Changes save automatically to this draft.</p>
+                        <div class="authoring-file-strip">
+                            <div id="python-files" class="authoring-file-tabs" role="tablist" aria-label="Files"></div>
+                        </div>
+                        <div id="python-code-editor" class="authoring-code-editor authoring-script-editor" role="tabpanel"></div>
+                        <p id="python-source-error" class="field-error" hidden></p>
+                    </div>
+                    <div id="python-api-help" role="region" aria-label="Mininet-IPLab API help" tabindex="-1" hidden></div>
+                </section>
+                <aside id="authoring-sidebar" class="authoring-sidebar" aria-labelledby="sidebar-heading">
+                    <div id="sidebar-resize" class="authoring-sidebar-resize" role="separator"
+                        aria-label="Sidebar width" aria-orientation="vertical" aria-valuemin="280"
+                        aria-valuemax="680" aria-valuenow="340" tabindex="0"><span>Sidebar width</span></div>
+                    <div class="authoring-sidebar-head">
+                        <h2 id="sidebar-heading">Details</h2>
+                        <div class="authoring-sidebar-size-controls" role="group" aria-label="Sidebar width controls">
+                            <button type="button" id="sidebar-narrower" class="btn-secondary" aria-label="Narrower sidebar">Narrower</button>
+                            <button type="button" id="sidebar-wider" class="btn-secondary" aria-label="Wider sidebar">Wider</button>
+                        </div>
+                        <button type="button" id="sidebar-toggle" class="btn-icon" aria-expanded="false"
+                            aria-controls="sidebar-body" aria-label="Details">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" aria-hidden="true" focusable="false">
+                                <rect x="3" y="4" width="18" height="16" rx="2"></rect>
+                                <line x1="15" y1="4" x2="15" y2="20"></line>
+                            </svg>
+                        </button>
+                    </div>
+                    <div id="sidebar-body" class="authoring-sidebar-body" hidden>
+                        <section id="selection" class="authoring-selection" aria-label="Selection" hidden>
+                            <h3 id="selection-title"></h3>
+                            <div id="selection-details"></div>
+                            <p id="selection-keep" hidden><span id="selection-keep-count"></span><button type="button"
+                                id="selection-keep-action" class="authoring-link-button" aria-haspopup="dialog">Keep…</button></p>
+                            <div class="authoring-row">
+                                <button type="button" id="selection-edit" aria-haspopup="dialog">Edit…</button>
+                                <button type="button" id="selection-addresses" class="btn-secondary" aria-haspopup="dialog">Addresses…</button>
+                                <button type="button" id="selection-connect" class="btn-secondary">Connect…</button>
+                                <button type="button" id="selection-remove" class="btn-danger">Remove</button>
+                            </div>
+                        </section>
+                        <div role="tablist" aria-label="Lab Example details" class="authoring-tabs">
+                            <button type="button" role="tab" id="tab-lesson" aria-controls="panel-lesson" aria-selected="true">Lesson</button>
+                            <button type="button" role="tab" id="tab-guide" aria-controls="panel-guide" aria-selected="false" tabindex="-1">Guide</button>
+                        </div>
+                        <div role="tabpanel" id="panel-lesson" aria-labelledby="tab-lesson" class="authoring-tabpanel">
+                            <fieldset id="lab-settings">
+                                <legend>Lab settings</legend>
+                                <label for="lab-address-family">Address family</label>
+                                <select id="lab-address-family" aria-describedby="lab-address-family-error">
+                                    <option value="ipv4">IPv4</option>
+                                    <option value="ipv6">IPv6</option>
+                                    <option value="dual">Dual-stack</option>
+                                </select>
+                                <p id="lab-address-family-error" class="field-error" hidden></p>
+                                <label class="authoring-choice"><input type="checkbox" id="lab-persistent-config"
+                                    aria-describedby="lab-persistent-config-help"> A Learner's saved Router config carries over between sessions</label>
+                                <p id="lab-persistent-config-help" class="authoring-hint">Each Group gets a Config Copy from each Router's Seed.
+                                    Saved changes carry over until a Config Reset. When off, each start uses the authored configuration.</p>
+                            </fieldset>
+                            <label for="catalog-name">
+                                Catalog name <span class="required-marker" aria-hidden="true">*</span><span class="sr-only"> (required to publish)</span>
+                            </label>
+                            <p id="catalog-name-help" class="authoring-hint">Required to publish.</p>
+                            <input id="catalog-name" name="catalog-name" type="text" maxlength="120"
+                                aria-describedby="catalog-name-help catalog-name-error">
+                            <p id="catalog-name-error" class="field-error" hidden></p>
+                            <label for="catalog-description">Description</label>
+                            <textarea id="catalog-description" name="catalog-description" rows="4" maxlength="4000"
+                                aria-describedby="catalog-description-error"></textarea>
+                            <p id="catalog-description-error" class="field-error" hidden></p>
+                            <label for="catalog-area">Area <span class="sr-only">(required to publish)</span></label>
+                            <p id="catalog-area-help" class="authoring-hint">Choose an Area before publishing.</p>
+                            <select id="catalog-area" name="catalog-area"
+                                aria-describedby="catalog-area-help catalog-area-error">
+                                <option value="">Choose an Area…</option>
+                            </select>
+                            <p id="catalog-area-error" class="field-error" hidden></p>
+                            <label for="catalog-protocols">Protocols or Services</label>
+                            <p id="protocols-help" class="authoring-hint">Comma-separated Catalog labels.</p>
+                            <input id="catalog-protocols" name="catalog-protocols" type="text"
+                                aria-describedby="protocols-help catalog-protocols-error">
+                            <p id="catalog-protocols-error" class="field-error" hidden></p>
+                        </div>
+                        <div role="tabpanel" id="panel-guide" aria-labelledby="tab-guide" class="authoring-tabpanel" hidden>
+                            <label for="draft-guide">Guide (Markdown)</label>
+                            <textarea id="draft-guide" rows="14" maxlength="200000"
+                                aria-describedby="draft-guide-error"></textarea>
+                            <p id="draft-guide-error" class="field-error" hidden></p>
+                            <div class="authoring-row">
+                                <button type="button" id="guide-expand" class="btn-secondary" aria-haspopup="dialog">Expand</button>
+                            </div>
+                        </div>
+                    </div>
+                </aside>
+            </div>
+            <section id="status-line" class="authoring-status-line" aria-label="Status">
+                <p class="authoring-status-segment">Draft: <span id="status-draft-state">Saved</span></p>
+                <p class="authoring-status-segment">Preview: <span id="status-preview-state">not running</span>
+                    <a id="preview-lab-link" hidden>Open Lab</a>
+                    <span id="status-keep-count" hidden></span><button type="button" id="keep-draft" class="authoring-link-button" aria-haspopup="dialog" hidden>Keep changes…</button></p>
+                <p id="status-message" class="authoring-status-message" role="status" aria-live="polite"></p>
+                <p id="status-alert" class="authoring-status-message" role="alert"></p>
+                <div class="canvas-controls" role="group" aria-label="Canvas zoom and arrange controls">
+                    <button type="button" id="canvas-zoom-in" class="btn-icon" aria-label="Zoom in" title="Zoom in">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                            <line x1="11" y1="8" x2="11" y2="14"></line>
+                            <line x1="8" y1="11" x2="14" y2="11"></line>
+                        </svg>
+                    </button>
+                    <button type="button" id="canvas-zoom-out" class="btn-icon" aria-label="Zoom out" title="Zoom out">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                            <line x1="8" y1="11" x2="14" y2="11"></line>
+                        </svg>
+                    </button>
+                    <button type="button" id="canvas-zoom-fit" class="btn-icon canvas-control-labelled">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <polyline points="15 3 21 3 21 9"></polyline>
+                            <polyline points="9 21 3 21 3 15"></polyline>
+                            <line x1="21" y1="3" x2="14" y2="10"></line>
+                            <line x1="3" y1="21" x2="10" y2="14"></line>
+                        </svg>
+                        Fit
+                    </button>
+                    <button type="button" id="canvas-auto-arrange" class="btn-icon canvas-control-labelled"
+                        aria-label="Auto-Arrange Nodes" title="Re-arrange every Node in the Layout">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M2 18h1.4c1.3 0 2.5-.6 3.3-1.7l6.1-8.6c.7-1.1 2-1.7 3.3-1.7H22"></path>
+                            <path d="m18 2 4 4-4 4"></path>
+                            <path d="M2 6h1.9c1.5 0 2.9.9 3.6 2.2"></path>
+                            <path d="M22 18h-5.9c-1.3 0-2.6-.7-3.3-1.8l-.5-.8"></path>
+                            <path d="m18 14 4 4-4 4"></path>
+                        </svg>
+                        Auto-Arrange
+                    </button>
+                </div>
+            </section>
+        </form>
+    </main>
+    <div id="palette-tip" class="authoring-tip" aria-hidden="true" hidden></div>
+
+
+    <dialog id="guide-dialog" class="authoring-dialog authoring-dialog-wide" aria-labelledby="guide-dialog-title">
+        <h2 id="guide-dialog-title">Guide</h2>
+        <div role="tablist" aria-label="Guide view" class="authoring-tabs">
+            <button type="button" role="tab" id="guide-tab-edit" aria-controls="guide-panel-edit" aria-selected="true">Edit</button>
+            <button type="button" role="tab" id="guide-tab-preview" aria-controls="guide-panel-preview" aria-selected="false" tabindex="-1">Preview</button>
+        </div>
+        <div role="tabpanel" id="guide-panel-edit" aria-labelledby="guide-tab-edit" class="authoring-tabpanel">
+            <label for="guide-dialog-source">Guide Markdown</label>
+            <textarea id="guide-dialog-source" class="authoring-code" rows="22" maxlength="200000"></textarea>
+        </div>
+        <div role="tabpanel" id="guide-panel-preview" aria-labelledby="guide-tab-preview" class="authoring-tabpanel" tabindex="0" hidden>
+            <div id="guide-dialog-preview" class="lab-guide-content"></div>
+        </div>
+        <div class="authoring-dialog-actions">
+            <button type="button" id="guide-dialog-close">Close</button>
+        </div>
+    </dialog>
+
+    <dialog id="host-dialog" class="authoring-dialog" aria-labelledby="host-dialog-title">
+        <form method="dialog" novalidate>
+            <div class="authoring-dialog-header">
+                <h2 id="host-dialog-title">Host</h2>
+                <button type="button" class="btn-icon" data-close aria-label="Close">✕</button>
+            </div>
+            <div id="node-dialog-error-summary" class="dialog-error-summary" role="group" aria-labelledby="node-dialog-error-heading" tabindex="-1" hidden>
+                <h3 id="node-dialog-error-heading"></h3>
+                <ul id="node-dialog-error-list"></ul>
+            </div>
+            <div role="tablist" aria-label="Node settings" class="authoring-tabs" id="node-dialog-tabs">
+                <button type="button" role="tab" id="node-tab-general" data-tab="general" aria-controls="node-panel-general" aria-selected="true">General</button>
+                <button type="button" role="tab" id="node-tab-routing" data-tab="routing" aria-controls="node-panel-routing" aria-selected="false" tabindex="-1" hidden>Routing</button>
+                <button type="button" role="tab" id="node-tab-speaker" data-tab="speaker" aria-controls="node-panel-speaker" aria-selected="false" tabindex="-1" hidden>Speaker</button>
+                <button type="button" role="tab" id="node-tab-nat" data-tab="nat" aria-controls="node-panel-nat" aria-selected="false" tabindex="-1" hidden>NAT</button>
+                <button type="button" role="tab" id="node-tab-services" data-tab="services" aria-controls="node-panel-services" aria-selected="false" tabindex="-1" hidden>Services</button>
+                <button type="button" role="tab" id="node-tab-startup" data-tab="startup" aria-controls="node-panel-startup" aria-selected="false" tabindex="-1" hidden>Startup</button>
+                <button type="button" role="tab" id="node-tab-interfaces" data-tab="interfaces" aria-controls="node-panel-interfaces" aria-selected="false" tabindex="-1">Interfaces</button>
+            </div>
+
+            <div role="tabpanel" id="node-panel-general" aria-labelledby="node-tab-general" class="authoring-tabpanel">
+                <p class="required-legend"><span class="required-marker" aria-hidden="true">*</span> Required</p>
+                <label for="host-name">Node name <span class="required-marker" aria-hidden="true">*</span></label>
+                <input id="host-name" data-field="name" aria-required="true" required
+                    pattern="[A-Za-z][A-Za-z0-9_-]{0,7}" maxlength="8" autocomplete="off"
+                    aria-describedby="host-name-error">
+                <p id="host-name-error" class="field-error" hidden></p>
+                <label for="container-image" id="container-image-label" hidden>Container image <span class="required-marker" aria-hidden="true">*</span></label>
+                <input id="container-image" autocomplete="off" aria-required="true" maxlength="255" required hidden
+                    placeholder="e.g., alpine:3.20" aria-describedby="container-image-error">
+                <p id="container-image-error" class="field-error" hidden></p>
+                <fieldset id="switch-spanning-tree" hidden>
+                    <legend>Spanning tree</legend>
+                    <label for="switch-stp">Protocol</label>
+                    <select id="switch-stp" aria-describedby="switch-stp-error">
+                        <option value="off">Off</option>
+                        <option value="stp">STP (classic)</option>
+                        <option value="rstp">RSTP (rapid)</option>
+                    </select>
+                    <p id="switch-stp-error" class="field-error" hidden></p>
+                    <label for="switch-priority">Bridge priority (optional)</label>
+                    <input id="switch-priority" type="number" min="0" max="65535" step="1"
+                        aria-describedby="switch-priority-help switch-priority-error">
+                    <p id="switch-priority-help" class="help-text">Lower priorities win the root election. RSTP uses multiples of 4096, up to 61440.</p>
+                    <p id="switch-priority-error" class="field-error" hidden></p>
+                </fieldset>
+                <fieldset id="host-nameservers" hidden>
+                    <legend>Nameservers <button class="btn-icon info-tip" data-info-for="host-nameservers-help" data-topic="Nameservers"></button></legend>
+                    <p id="host-nameservers-help" class="authoring-note">Choose Nodes by identity so renaming one keeps this Host pointed at it. The Node needs a static Interface address. You can also enter IP addresses.</p>
+                    <div id="host-nameserver-choices"></div>
+                    <label for="host-nameserver-addresses">Additional nameserver IP addresses</label>
+                    <input id="host-nameserver-addresses" data-address-examples="addresses" autocomplete="off"
+                        aria-describedby="host-nameservers-help host-nameserver-addresses-error">
+                    <p id="host-nameserver-addresses-error" class="field-error" hidden></p>
+                </fieldset>
+                <details id="node-position-disclosure" class="authoring-disclosure">
+                    <summary>Position</summary>
+                    <div class="authoring-field-group">
+                        <label for="host-x">Canvas x position <span class="required-marker" aria-hidden="true">*</span></label>
+                        <input id="host-x" data-layout="x" type="number" step="any"
+                            aria-required="true" required aria-describedby="host-x-error">
+                        <p id="host-x-error" class="field-error" hidden></p>
+                        <label for="host-y">Canvas y position <span class="required-marker" aria-hidden="true">*</span></label>
+                        <input id="host-y" data-layout="y" type="number" step="any"
+                            aria-required="true" required aria-describedby="host-y-error">
+                        <p id="host-y-error" class="field-error" hidden></p>
+                    </div>
+                </details>
+            </div>
+
+            <div role="tabpanel" id="node-panel-routing" aria-labelledby="node-tab-routing" class="authoring-tabpanel" hidden>
+                <fieldset id="router-protocols" tabindex="-1" aria-describedby="router-protocols-help router-protocols-error">
+                    <legend>Protocols <button class="btn-icon info-tip" data-info-for="router-protocols-help" data-topic="Protocols"></button></legend>
+                    <p id="router-protocols-help" class="authoring-note">Each Protocol starts its FRR Daemon. zebra and staticd always run, so static routes need none.</p>
+                    <div id="router-protocol-choices" class="authoring-protocol-choices"></div>
+                    <p id="router-protocols-error" class="field-error" hidden></p>
+                </fieldset>
+                <div id="router-fast-timers-group">
+                    <div class="info-row"><label class="authoring-choice"><input type="checkbox" id="router-fast-timers"
+                        aria-describedby="router-fast-timers-help"> Fast OSPF timers</label><button class="btn-icon info-tip" data-info-for="router-fast-timers-help" data-topic="Fast OSPF timers"></button></div>
+                    <p id="router-fast-timers-help" class="authoring-note">On by default: every Interface of this Router gets
+                        hello 1 s and dead 3 s when the Lab starts, so neighbours form and routes appear within seconds.
+                        These lines are not shown in the FRR configuration below, and timers you write there take precedence.
+                        Turn this off to use FRR's defaults (hello 10 s, dead 40 s); the Lab can then take 40 s or more to converge.</p>
+                </div>
+                <div class="info-row" id="router-frr-config-heading"><label for="router-frr-config" id="router-frr-config-label">FRR configuration</label><button class="btn-icon info-tip" data-info-for="router-frr-config-help" data-topic="FRR configuration"></button></div>
+                <p id="router-frr-config-help" class="authoring-note">Native FRR commands, as in <code>frr.conf</code>. The hostname line is added for you.</p>
+                <textarea id="router-frr-config" class="authoring-code" rows="10" maxlength="100000" spellcheck="false"
+                    autocapitalize="off" aria-describedby="router-frr-config-help router-frr-config-error"></textarea>
+                <p id="router-frr-config-error" class="field-error" hidden></p>
+                <fieldset id="router-subinterfaces" tabindex="-1" aria-describedby="router-subinterfaces-help router-subinterfaces-error">
+                    <legend>VLAN subinterfaces <button class="btn-icon info-tip" data-info-for="router-subinterfaces-help" data-topic="VLAN subinterfaces"></button></legend>
+                    <p id="router-subinterfaces-help" class="authoring-note">Choose an attached parent Interface and VLAN ID. Addresses follow the Lab's address family.</p>
+                    <div id="router-subinterface-list"></div>
+                    <p id="router-subinterfaces-error" class="field-error" hidden></p>
+                    <button type="button" id="router-add-subinterface" class="btn-secondary">Add VLAN subinterface</button>
+                </fieldset>
+                <fieldset id="router-vrfs" tabindex="-1" aria-describedby="router-vrfs-help">
+                    <legend>VRFs <button class="btn-icon info-tip" data-info-for="router-vrfs-help" data-topic="VRFs"></button></legend>
+                    <p id="router-vrfs-help" class="authoring-note">Each VRF is a separate routing table on this Router. Place an Interface in one on the Interfaces tab; configure its routing in the FRR configuration.</p>
+                    <div id="router-vrf-list"></div>
+                    <button type="button" id="router-add-vrf" class="btn-secondary">Add VRF</button>
+                </fieldset>
+                <fieldset id="router-nat" tabindex="-1" aria-describedby="router-nat-help router-nat-error">
+                    <legend>Router NAT <button class="btn-icon info-tip" data-info-for="router-nat-help" data-topic="Router NAT"></button></legend>
+                    <p id="router-nat-help" class="authoring-note">Port forwards and static 1:1 mappings this Router translates when the Lab starts. Mark an Interface outside on the Interfaces tab first; each entry applies to an outside Interface.</p>
+                    <div id="router-nat-list"></div>
+                    <p id="router-nat-error" class="field-error" hidden></p>
+                    <button type="button" id="router-add-nat" class="btn-secondary">Add NAT entry</button>
+                </fieldset>
+            </div>
+
+            <div role="tabpanel" id="node-panel-speaker" aria-labelledby="node-tab-speaker" class="authoring-tabpanel" hidden>
+                <fieldset id="speaker-fields">
+                    <legend>BGP Speaker <button class="btn-icon info-tip" data-info-for="speaker-fields-help" data-topic="BGP Speaker"></button></legend>
+                    <p id="speaker-fields-help" class="authoring-note">The Speaker listens passively. Configure the peering Router in its FRR configuration to open each Neighbor session and allow the route policy you intend.</p>
+                    <label for="speaker-local-as">Local AS <span class="required-marker" aria-hidden="true">*</span></label>
+                    <input id="speaker-local-as" type="number" min="1" max="4294967295" step="1" aria-required="true" aria-describedby="speaker-local-as-error">
+                    <p id="speaker-local-as-error" class="field-error" hidden></p>
+                    <fieldset id="speaker-generator-scope">
+                        <legend>Route generators</legend>
+                        <label class="authoring-choice"><input type="radio" name="speaker-generator-scope" value="neighbor"> Per-Neighbor Routes</label>
+                        <label class="authoring-choice"><input type="radio" name="speaker-generator-scope" value="global"> Global Routes</label>
+                    </fieldset>
+                    <fieldset id="speaker-neighbors" tabindex="-1" aria-describedby="speaker-neighbors-help speaker-neighbors-error">
+                        <legend>Neighbors <span class="required-marker" aria-hidden="true">*</span> <button class="btn-icon info-tip" data-info-for="speaker-neighbors-help" data-topic="Neighbors"></button></legend>
+                        <p id="speaker-neighbors-help" class="authoring-note">Each Neighbor has a peer, a local address of its own, both AS numbers and an optional hold time.
+                            Pick the peer from another Node's Interfaces, or type any address. A Neighbor with Routes announces only those;
+                            one without inherits the Global Routes. Generators use the Neighbor's family and local address as next hop.
+                            Hand-written Routes are under More and announce alongside generated ones.</p>
+                        <div id="speaker-neighbors-rows" class="row-editor"></div>
+                        <p id="speaker-neighbors-error" class="field-error" hidden></p>
+                    </fieldset>
+                    <fieldset id="speaker-routes" tabindex="-1" aria-describedby="speaker-routes-help speaker-routes-error">
+                        <legend>Global Routes <button class="btn-icon info-tip" data-info-for="speaker-routes-help" data-topic="Global Routes"></button></legend>
+                        <p id="speaker-routes-help" class="authoring-note">The same seeds and count apply to each Neighbor without its own generator.
+                            Each uses its own local address and family. Sub-prefix counts are an upper bound: shorter ranges may fit fewer.
+                            Hand-written Global Routes apply to Neighbors without hand-written Routes of their own.</p>
+                        <div id="speaker-generator"></div>
+                        <details class="authoring-disclosure" id="speaker-routes-more">
+                            <summary>More · Hand-written Global Routes</summary>
+                            <div id="speaker-routes-rows" class="row-editor"></div>
+                        </details>
+                        <p id="speaker-routes-error" class="field-error" hidden></p>
+                    </fieldset>
+                </fieldset>
+            </div>
+
+            <div role="tabpanel" id="node-panel-nat" aria-labelledby="node-tab-nat" class="authoring-tabpanel" hidden>
+                <fieldset id="nat-fields">
+                    <legend>Internet Gateway</legend>
+                    <p data-address-family="6" class="authoring-note" hidden>Internet Gateways use IPv4. Choose IPv4 or Dual-stack in the Lesson tab to configure one.</p>
+                    <label data-address-family="4" for="nat-ip">Gateway IPv4 address <span class="required-marker" aria-hidden="true">*</span></label>
+                    <input data-address-family="4" id="nat-ip" autocomplete="off" placeholder="e.g., 100.64.0.1/24" aria-required="true" aria-describedby="nat-ip-error">
+                    <p id="nat-ip-error" class="field-error" hidden></p>
+                    <label data-address-family="4" for="nat-subnet">Translated subnet <span class="required-marker" aria-hidden="true">*</span></label>
+                    <input data-address-family="4" id="nat-subnet" autocomplete="off" placeholder="e.g., 100.64.0.0/23" aria-required="true" aria-describedby="nat-subnet-error">
+                    <p id="nat-subnet-error" class="field-error" hidden></p>
+                    <fieldset id="nat-downstream-fields" tabindex="-1" aria-describedby="nat-downstream-fields-error" hidden>
+                        <legend>Downstream Routers <button class="btn-icon info-tip" data-info-for="nat-downstream-help" data-topic="Downstream Routers"></button></legend>
+                        <p id="nat-downstream-help" class="authoring-note">Choose the Routers whose traffic this Transit Internet Gateway translates.</p>
+                        <div id="nat-downstream-choices"></div>
+                        <p id="nat-downstream-fields-error" class="field-error" hidden></p>
+                    </fieldset>
+                </fieldset>
+            </div>
+
+            <div role="tabpanel" id="node-panel-services" aria-labelledby="node-tab-services" class="authoring-tabpanel" hidden>
+                <fieldset class="authoring-services-checklist">
+                    <legend>Services <button class="btn-icon info-tip" data-info-for="services-help" data-topic="Services"></button></legend>
+                    <p id="services-help" class="authoring-note">Tick a Service to configure it on this Node.</p>
+                    <div class="authoring-service-item">
+                        <div class="info-row"><label class="authoring-choice"><input type="checkbox" id="dhcp-enabled" data-service="dhcp"
+                            aria-describedby="dhcp-enabled-help"> DHCP</label><button class="btn-icon info-tip" data-info-for="dhcp-enabled-help" data-topic="DHCP"></button></div>
+                        <p id="dhcp-enabled-help" class="authoring-note">Kea serves one Pool per Subnet this Node is attached to.
+                            A Subnet without a Pool gets no answer; another Node may also serve the same Subnet.</p>
+                        <div id="dhcp-pool-fields" class="authoring-field-group" hidden>
+                            <fieldset id="dhcp-pools" tabindex="-1" aria-describedby="dhcp-pools-help dhcp-pools-error">
+                                <legend>Pools <button class="btn-icon info-tip" data-info-for="dhcp-pools-help" data-topic="Pools"></button></legend>
+                                <p id="dhcp-pools-help" class="authoring-note">Each Pool serves one Subnet, and the Subnet sets its family:
+                                    Preferred lifetime is IPv6 only and Router is IPv4 only, because an IPv6 client takes its default
+                                    route from the Router Advertisement. An IPv4 Reservation names a MAC address; an IPv6 Reservation
+                                    names exactly one of a MAC address or a DUID. Leave Lease time empty for Kea's default. Pin the
+                                    client's MAC address in its Link.</p>
+                                <div id="dhcp-pools-rows" class="row-editor"></div>
+                                <p id="dhcp-pools-error" class="field-error" hidden></p>
+                            </fieldset>
+                        </div>
+                    </div>
+
+                    <div class="authoring-service-item">
+                        <div class="info-row"><label class="authoring-choice"><input type="checkbox" id="dns-enabled" data-service="dns"
+                            aria-describedby="dns-enabled-help"> Authoritative DNS</label><button class="btn-icon info-tip" data-info-for="dns-enabled-help" data-topic="Authoritative DNS"></button></div>
+                        <p id="dns-enabled-help" class="authoring-note">A Primary holds authored Records. A Secondary receives its Records by Zone Transfer and has no seeded Records.</p>
+                        <div id="dns-zone-fields" class="authoring-field-group" hidden>
+                            <fieldset id="dns-zones" tabindex="-1" aria-describedby="dns-zones-hint dns-zones-help dns-zones-error">
+                                <legend>Zones <button class="btn-icon info-tip" data-info-for="dns-zones-help" data-topic="Zones"></button></legend>
+                                <p id="dns-zones-help" class="authoring-note">A Primary holds authored Records. Use @ for the apex or enter a relative owner such as web.
+                                    Record types are A, AAAA, CNAME, PTR, TXT, MX, NS and SOA. New Records start with the Zone's default TTL;
+                                    change an individual TTL under More. Omit SOA or apex NS to use the DNS Service's defaults.
+                                    DNSSEC generates signing keys and signatures when the Lab starts; KASP stores the signing keys.
+                                    NSEC3 requires DNSSEC and uses hashed denial of existence; its optional salt is pairs of hexadecimal digits.
+                                    A DS delegation names a signed child Primary Zone on another Node; the parent must also be signed.
+                                    Transfer permission: Default permits declared Secondaries, None refuses transfers, and Listed permits only the chosen Nodes or addresses.</p>
+                                <p id="dns-zones-hint" class="authoring-hint">* Required. Apex ends in a dot; @ names the apex Record owner.</p>
+                                <div id="dns-zones-rows" class="row-editor"></div>
+                                <p id="dns-zones-error" class="field-error" hidden></p>
+                            </fieldset>
+                            <div class="info-row"><label for="dns-secondary-source">Primary Zone to serve as Secondary</label><button class="btn-icon info-tip" data-info-for="dns-secondary-help" data-topic="Secondary Zone"></button></div>
+                            <select id="dns-secondary-source" aria-describedby="dns-secondary-help"></select>
+                            <p id="dns-secondary-help" class="authoring-note">Choose another Node's Primary Zone. Its stable Node ID is saved so a rename keeps the Zone Transfer relationship.</p>
+                            <button type="button" id="dns-add-secondary" class="btn-secondary">Add Secondary Zone</button>
+                        </div>
+                    </div>
+
+                    <div class="authoring-service-item">
+                        <div class="info-row"><label class="authoring-choice"><input type="checkbox" id="resolver-enabled" data-service="resolver"
+                            aria-describedby="resolver-enabled-help"> Resolver</label><button class="btn-icon info-tip" data-info-for="resolver-enabled-help" data-topic="Resolver"></button></div>
+                        <p id="resolver-enabled-help" class="authoring-note">Choose an in-lab Root for iterative resolution, or enter upstream forwarders. Forwarders take precedence when both are set.</p>
+                        <div id="resolver-settings" class="authoring-field-group" hidden>
+                            <fieldset><legend>Root Hints <button class="btn-icon info-tip" data-info-for="resolver-root-help" data-topic="Root Hints"></button></legend>
+                                <p id="resolver-root-help" class="authoring-note">Choose Nodes by identity; their Interface addresses are read when the Lab starts.</p>
+                                <div id="resolver-root-choices" aria-describedby="resolver-root-help"></div>
+                            </fieldset>
+                            <fieldset><legend>DNSSEC trust anchors <button class="btn-icon info-tip" data-info-for="resolver-trust-help" data-topic="DNSSEC trust anchors"></button></legend>
+                                <p id="resolver-trust-help" class="authoring-note">Choose a Node serving a signed root Zone. Its trust anchor is generated when the Lab starts.</p>
+                                <div id="resolver-trust-choices" aria-describedby="resolver-trust-help"></div>
+                            </fieldset>
+                            <label for="resolver-root-addresses">Additional Root Hint IP addresses</label>
+                            <input id="resolver-root-addresses" data-address-examples="addresses" autocomplete="off"
+                                aria-describedby="resolver-root-addresses-error">
+                            <p id="resolver-root-addresses-error" class="field-error" hidden></p>
+                            <label for="resolver-forwarders">Forwarder IP addresses</label>
+                            <input id="resolver-forwarders" data-address-examples="addresses" autocomplete="off"
+                                aria-describedby="resolver-forwarders-error">
+                            <p id="resolver-forwarders-error" class="field-error" hidden></p>
+                            <label for="resolver-max-ttl">Maximum positive cache TTL (seconds)</label>
+                            <input id="resolver-max-ttl" type="number" min="1" step="1"
+                                aria-describedby="resolver-max-ttl-error">
+                            <p id="resolver-max-ttl-error" class="field-error" hidden></p>
+                            <label for="resolver-max-negative-ttl">Maximum negative cache TTL (seconds)</label>
+                            <input id="resolver-max-negative-ttl" type="number" min="1" step="1"
+                                aria-describedby="resolver-max-negative-ttl-error">
+                            <p id="resolver-max-negative-ttl-error" class="field-error" hidden></p>
+                            <fieldset id="resolver-access-control" tabindex="-1" aria-describedby="resolver-access-control-help resolver-access-control-error">
+                                <legend>Access Control rules <button class="btn-icon info-tip" data-info-for="resolver-access-control-help"
+                                    data-topic="Access Control rules"></button></legend>
+                                <p id="resolver-access-control-help" class="authoring-note" hidden>Each rule has a Subnet and an action: allow, refuse or deny. Unbound applies the most specific matching Subnet.</p>
+                                <div id="resolver-access-control-rows" class="row-editor"></div>
+                                <p id="resolver-access-control-error" class="field-error" hidden></p>
+                            </fieldset>
+                        </div>
+                    </div>
+
+                    <div class="authoring-service-item">
+                        <div class="info-row"><label class="authoring-choice"><input type="checkbox" id="relay-enabled" data-service="relay"
+                            aria-describedby="relay-enabled-help"> Relay</label>
+                        <button class="btn-icon info-tip" data-info-for="relay-enabled-help" data-topic="Relay"></button></div>
+                        <p id="relay-enabled-help" class="authoring-note">Forwards DHCP requests from attached Subnets to a
+                            DHCP Service elsewhere. A server that cannot be reached is allowed: requests time out, which a
+                            lesson may intend.</p>
+                        <div id="relay-group" class="authoring-field-group" hidden>
+                            <div class="info-row"><label for="relay-subnets">Relayed Subnets <span class="required-marker" aria-hidden="true">*</span></label>
+                            <button class="btn-icon info-tip" data-info-for="relay-subnets-help" data-topic="Relayed Subnets"></button></div>
+                            <input id="relay-subnets" data-address-examples="subnets" autocomplete="off"
+                                aria-required="true" aria-describedby="relay-subnets-help relay-subnets-error">
+                            <p id="relay-subnets-help" class="authoring-note">Subnet CIDRs, separated by commas.</p>
+                            <p id="relay-subnets-error" class="field-error" hidden></p>
+                            <fieldset id="relay-servers" tabindex="-1" aria-describedby="relay-servers-help relay-servers-error">
+                                <legend>DHCP servers <span class="required-marker" aria-hidden="true">*</span> <button class="btn-icon info-tip" data-info-for="relay-servers-help" data-topic="DHCP servers"></button></legend>
+                                <p id="relay-servers-help" class="authoring-note">The DHCP Service's address: one IPv4, one IPv6,
+                                    or one of each. Pick an Interface of another Node, or type any address; a server that cannot
+                                    be reached is allowed.</p>
+                                <div id="relay-servers-rows" class="row-editor"></div>
+                                <p id="relay-servers-error" class="field-error" hidden></p>
+                            </fieldset>
+                        </div>
+                    </div>
+
+                    <div class="authoring-service-item">
+                        <div class="info-row"><label class="authoring-choice"><input type="checkbox" id="rpki-ca-enabled" data-service="rpki-ca"
+                            aria-describedby="rpki-ca-enabled-help"> RPKI CA</label><button class="btn-icon info-tip" data-info-for="rpki-ca-enabled-help" data-topic="RPKI CA"></button></div>
+                        <p id="rpki-ca-enabled-help" class="authoring-note">Krill runs on this Node and holds one Hosted CA per Autonomous System,
+                            each signing only for the prefixes it holds. A Lab has at most one RPKI CA.</p>
+                        <p id="rpki-ca-enabled-error" class="field-error" hidden></p>
+                        <div id="rpki-ca-fields" class="authoring-field-group" hidden>
+                            <div class="info-row"><label for="rpki-ca-hostname">Hostname</label><button class="btn-icon info-tip" data-info-for="rpki-ca-hostname-help" data-topic="Hostname"></button></div>
+                            <input id="rpki-ca-hostname" autocomplete="off" placeholder="defaults to this Node's name"
+                                aria-describedby="rpki-ca-hostname-help rpki-ca-hostname-error">
+                            <p id="rpki-ca-hostname-help" class="authoring-note">The DNS name Krill is reached by, and names in its certificate.
+                                Leave it empty to use this Node's name, which must then be a DNS name.</p>
+                            <p id="rpki-ca-hostname-error" class="field-error" hidden></p>
+                            <fieldset id="rpki-ca-hosted-cas" tabindex="-1" aria-describedby="rpki-ca-hosted-cas-help rpki-ca-hosted-cas-error">
+                                <legend>Hosted CAs <span class="required-marker" aria-hidden="true">*</span> <button class="btn-icon info-tip" data-info-for="rpki-ca-hosted-cas-help" data-topic="Hosted CAs"></button></legend>
+                                <p id="rpki-ca-hosted-cas-help" class="authoring-note">Each Hosted CA is one Autonomous System's certificate authority.
+                                    Its prefixes are the only resources it can sign for. Starting ROAs take one line each as
+                                    prefix[-maxLength] =&gt; origin, such as 10.1.0.0/24-24 =&gt; 65002. Starting ASPAs take one line each
+                                    as ASn =&gt; ASm, ASk, where ASn is this Hosted CA's ASN. Both must fall within its resources.</p>
+                                <div id="rpki-ca-hosted-cas-rows" class="row-editor"></div>
+                                <p id="rpki-ca-hosted-cas-error" class="field-error" hidden></p>
+                            </fieldset>
+                        </div>
+                    </div>
+
+                    <div class="authoring-service-item">
+                        <div class="info-row"><label class="authoring-choice"><input type="checkbox" id="validator-enabled" data-service="validator"
+                            aria-describedby="validator-enabled-help"> Validator</label><button class="btn-icon info-tip" data-info-for="validator-enabled-help" data-topic="Validator"></button></div>
+                        <p id="validator-enabled-help" class="authoring-note">Routinator on this Node fetches the Lab's RPKI objects from its RPKI CA
+                            and serves them to Routers over RTR. A Lab with a Validator needs an RPKI CA.</p>
+                        <p id="validator-enabled-error" class="field-error" hidden></p>
+                        <div id="validator-fields" class="authoring-field-group" hidden>
+                            <div class="info-row"><label for="validator-refresh">Refresh (seconds)</label><button class="btn-icon info-tip" data-info-for="validator-refresh-help" data-topic="Refresh"></button></div>
+                            <input id="validator-refresh" type="number" min="1" step="1" aria-describedby="validator-refresh-help validator-refresh-error">
+                            <p id="validator-refresh-help" class="authoring-note">Seconds between validation runs. The default, 10, lets a Learner see a change within about a quarter of a minute.</p>
+                            <p id="validator-refresh-error" class="field-error" hidden></p>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+
+            <div role="tabpanel" id="node-panel-startup" aria-labelledby="node-tab-startup" class="authoring-tabpanel" hidden>
+                <fieldset id="node-startup" tabindex="-1" aria-describedby="node-startup-help node-startup-error">
+                    <legend>Startup commands <button class="btn-icon info-tip" data-info-for="node-startup-help" data-topic="Startup commands"></button></legend>
+                    <p id="node-startup-help" class="authoring-note"><strong>Before daemons</strong> runs once Interfaces are up, before FRR and Services start.
+                        <strong>After start</strong> runs when the Lab has started. Nodes run in parallel; this Node's commands run in order.
+                        A failing or timed-out command stops the Lab start unless it may fail.</p>
+                    <ol id="node-startup-list" class="authoring-startup-list"></ol>
+                    <p id="node-startup-error" class="field-error" hidden></p>
+                    <button type="button" id="node-add-startup" class="btn-secondary">Add Startup command</button>
+                </fieldset>
+            </div>
+
+            <div role="tabpanel" id="node-panel-interfaces" aria-labelledby="node-tab-interfaces" class="authoring-tabpanel" hidden>
+                <fieldset id="host-gateways">
+                    <legend>Default gateways <button class="btn-icon info-tip" data-info-for="host-gateway-help" data-topic="Default gateways"></button></legend>
+                    <p id="host-gateway-help" class="authoring-note">Optional. The Host's default route for each address family.</p>
+                    <label data-address-family="4" for="host-ipv4-gateway">IPv4 default gateway</label>
+                    <input data-address-family="4" id="host-ipv4-gateway" data-node-field="ipv4_gateway" autocomplete="off"
+                        placeholder="e.g., 192.0.2.1" aria-describedby="host-gateway-help host-ipv4-gateway-error">
+                    <p id="host-ipv4-gateway-error" class="field-error" hidden></p>
+                    <label data-address-family="6" for="host-ipv6-gateway">IPv6 default gateway</label>
+                    <input data-address-family="6" id="host-ipv6-gateway" data-node-field="ipv6_gateway" autocomplete="off"
+                        placeholder="e.g., 2001:db8::1" aria-describedby="host-gateway-help host-ipv6-gateway-error">
+                    <p id="host-ipv6-gateway-error" class="field-error" hidden></p>
+                </fieldset>
+                <div id="node-interfaces-list"></div>
+                <p id="node-interfaces-empty" class="authoring-empty-state" hidden>No Links connected to this Node.</p>
+            </div>
+
+            <div class="authoring-dialog-actions">
+                <button type="button" id="host-remove" class="btn-danger">Remove Host</button>
+                <button type="submit" id="host-close">Close</button>
+            </div>
+        </form>
+    </dialog>
+    <dialog id="addresses-dialog" class="authoring-dialog" aria-labelledby="addresses-title">
+        <form method="dialog" novalidate>
+            <div class="authoring-dialog-header">
+                <h2 id="addresses-title"></h2>
+                <button type="button" class="btn-icon" data-close aria-label="Close">✕</button>
+            </div>
+            <div id="addresses-list"></div>
+            <p id="addresses-empty" class="authoring-empty-state" hidden>No Links connected to this Node.</p>
+            <div class="authoring-dialog-actions">
+                <button type="button" class="btn-secondary" data-close>Cancel</button>
+                <button type="submit" id="addresses-apply">Apply</button>
+            </div>
+        </form>
+    </dialog>
+
+    <dialog id="link-dialog" class="authoring-dialog" aria-labelledby="link-dialog-title">
+        <form method="dialog" novalidate>
+            <div class="authoring-dialog-header">
+                <h2 id="link-dialog-title">Link</h2>
+                <button type="button" class="btn-icon" data-close aria-label="Close">✕</button>
+            </div>
+            <p class="required-legend"><span class="required-marker" aria-hidden="true">*</span> Required</p>
+            <div id="link-dialog-ends" class="authoring-link-end"></div>
+            <details id="link-condition-disclosure" class="authoring-disclosure">
+                <summary>Initial Link Condition</summary>
+                <div class="authoring-field-group">
+                    <label class="authoring-choice"><input id="link-condition-enabled" type="checkbox"> Set an initial Link Condition</label>
+                    <div id="link-condition-controls" hidden>
+                        <label for="link-condition-status">Initial status</label>
+                        <select id="link-condition-status"><option value="up">Up</option><option value="down">Down</option></select>
+                        <label for="link-condition-delay">Delay</label>
+                        <input id="link-condition-delay" placeholder="e.g., 10ms" aria-describedby="link-condition-delay-error">
+                        <p id="link-condition-delay-error" class="field-error" hidden></p>
+                        <label for="link-condition-jitter">Jitter</label>
+                        <input id="link-condition-jitter" placeholder="e.g., 2ms" aria-describedby="link-condition-jitter-error">
+                        <p id="link-condition-jitter-error" class="field-error" hidden></p>
+                        <label for="link-condition-loss">Packet loss</label>
+                        <input id="link-condition-loss" placeholder="e.g., 5%" aria-describedby="link-condition-loss-error">
+                        <p id="link-condition-loss-error" class="field-error" hidden></p>
+                        <label for="link-condition-bandwidth">Bandwidth (Mbps)</label>
+                        <input id="link-condition-bandwidth" type="number" min="0.001" step="any" aria-describedby="link-condition-bandwidth-error">
+                        <p id="link-condition-bandwidth-error" class="field-error" hidden></p>
+                        <label for="link-condition-scheduler">Queue scheduler</label>
+                        <select id="link-condition-scheduler"><option value="hfsc">HFSC</option><option value="htb">HTB</option><option value="tbf">TBF</option></select>
+                    </div>
+                </div>
+            </details>
+            <div class="authoring-dialog-actions">
+                <button type="button" id="link-remove" class="btn-danger">Remove Link</button>
+                <button type="submit" id="link-close">Close</button>
+            </div>
+        </form>
+    </dialog>
+    <dialog id="confirm-dialog" class="authoring-dialog" role="alertdialog"
+        aria-labelledby="confirm-dialog-title" aria-describedby="confirm-dialog-message">
+        <h2 id="confirm-dialog-title"></h2>
+        <p id="confirm-dialog-message"></p>
+        <p id="confirm-dialog-items-label" hidden></p>
+        <ul id="confirm-dialog-items" aria-labelledby="confirm-dialog-items-label" hidden></ul>
+        <div id="confirm-dialog-choices" hidden></div>
+        <p id="confirm-dialog-feedback" role="alert"></p>
+        <div class="authoring-dialog-actions">
+            <button type="button" id="confirm-dialog-confirm" class="btn-danger"></button>
+            <button type="button" id="confirm-dialog-secondary" class="btn-danger" hidden></button>
+            <button type="button" id="confirm-dialog-cancel" class="btn-secondary">Cancel</button>
+        </div>
+    </dialog>
+    <dialog id="publish-dialog" class="authoring-dialog" aria-labelledby="publish-dialog-title">
+        <h2 id="publish-dialog-title">Publish</h2>
+        <div id="publish-missing" hidden>
+            <p id="publish-missing-title">Publishing needs</p>
+            <ul id="publish-missing-list" class="authoring-publish-missing" aria-labelledby="publish-missing-title"></ul>
+        </div>
+        <p id="publish-summary" hidden></p>
+        <p id="publish-check-note" class="authoring-hint" hidden>Publish starts a check Lab before adding this lesson to the Catalog.</p>
+        <section id="publish-changes" aria-labelledby="publish-changes-title" hidden>
+            <h3 id="publish-changes-title">Changes not yet kept</h3>
+            <p>Only ticked changes are kept. Unticked changes are left out of the published lesson; a fresh check discards them.</p>
+            <div id="publish-keep-choices"></div>
+        </section>
+        <p id="publish-progress" role="status" aria-live="polite"></p>
+        <p id="publish-feedback" role="alert"></p>
+        <div class="authoring-dialog-actions">
+            <button type="button" id="publish-new" hidden>Publish</button>
+            <button type="button" id="publish-update" class="btn-secondary" hidden>Update existing</button>
+            <button type="button" id="publish-close" class="btn-secondary">Cancel</button>
+        </div>
+    </dialog>
+    <dialog id="keep-dialog" class="authoring-dialog" aria-labelledby="keep-dialog-title"
+        aria-describedby="keep-dialog-intro">
+        <form method="dialog" novalidate>
+            <h2><span id="keep-dialog-title">Keep changes</span> <button class="btn-icon info-tip" data-info-for="keep-help" data-topic="Keep"></button></h2>
+            <p id="keep-dialog-intro">Nothing is kept unless you tick it.</p>
+            <label class="authoring-choice" id="keep-select-all-label" for="keep-select-all"><input type="checkbox" id="keep-select-all"> Select all</label>
+            <div id="keep-routers"></div>
+            <div id="keep-help" class="authoring-note" hidden>
+                <p id="keep-row-keys" class="authoring-hint">Use arrow keys within a row; Space ticks a checkbox and Enter opens Show changes.</p>
+                <p>Keep never takes shell addresses, gateways or commands (use Startup commands), observed or generated state, Speaker announcements or Routers from the Code section (edit that section).</p>
+            </div>
+            <p id="keep-dialog-feedback" role="status" aria-live="polite"></p>
+            <div class="authoring-dialog-actions">
+                <button type="button" id="keep-apply">Keep selected</button>
+                <button type="submit" id="keep-cancel" class="btn-secondary">Cancel</button>
+            </div>
+        </form>
+    </dialog>
+    <aside id="session-recovery" hidden aria-label="Session recovery">
+        <p role="alert">Your session expired. Unsaved edits are still in this page. Sign in again to save them.</p>
+        <button type="button" id="session-sign-in">Sign in again</button>
+    </aside>
+    <dialog id="session-dialog" class="authoring-dialog" aria-labelledby="session-dialog-title"
+        aria-describedby="session-dialog-description">
+        <form id="session-form">
+            <h2 id="session-dialog-title">Sign in again</h2>
+            <p id="session-dialog-description">Your session expired. Sign in with the same Instructor account to keep editing. Unsaved edits stay in this page.</p>
+            <label for="session-username">Username</label>
+            <input id="session-username" autocomplete="username" readonly>
+            <label for="session-password">Password (required)</label>
+            <input id="session-password" type="password" autocomplete="current-password" required
+                aria-required="true" aria-describedby="session-error">
+            <p id="session-error" role="alert"></p>
+            <div class="authoring-dialog-actions">
+                <button type="submit" id="session-submit">Sign in</button>
+                <button type="button" id="session-close" class="btn-secondary">Stay here</button>
+            </div>
+        </form>
+    </dialog>
+    <script src="/static/js/lib/d3.v7.min.js"></script>
+    <script src="/static/js/lib/marked.umd.js"></script>
+    <script src="/static/js/lib/purify.min.js"></script>
+    <script type="module" src="/static/js/authoring/authoring.js"></script>
+</body>
+</html>

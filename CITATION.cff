@@ -1,0 +1,47 @@
+cff-version: 1.2.0
+message: "If you use Mininet-IPLab in your teaching or research, please cite the poster below."
+title: Mininet-IPLab
+type: software
+license: MIT
+version: 0.1.0
+repository-code: "https://github.com/mininet-iplab/mininet-iplab"
+authors:
+  - given-names: Akbar Fikri
+    family-names: Abdillah
+    affiliation: Brawijaya University
+  - given-names: Izzah Faiq Putri
+    family-names: Madani
+    affiliation: Brawijaya University
+  - given-names: Achmad
+    family-names: Basuki
+    affiliation: Brawijaya University
+  - given-names: Achmad Husni
+    family-names: Thamrin
+    affiliation: Keio University
+preferred-citation:
+  type: conference-paper
+  title: "Mininet-IPLab: Lightweight Multi-Group Routing Labs on a Single Host for Network Education"
+  authors:
+    - given-names: Akbar Fikri
+      family-names: Abdillah
+      affiliation: Brawijaya University
+    - given-names: Izzah Faiq Putri
+      family-names: Madani
+      affiliation: Brawijaya University
+    - given-names: Achmad
+      family-names: Basuki
+      affiliation: Brawijaya University
+    - given-names: Achmad Husni
+      family-names: Thamrin
+      affiliation: Keio University
+  collection-title: "21st Asian Internet Engineering Conference (AINTEC 2026), Poster Session"
+  conference:
+    name: "21st Asian Internet Engineering Conference (AINTEC 2026)"
+    city: Taipei
+    country: TW
+    date-start: 2026-12-01
+    date-end: 2026-12-03
+  year: 2026
+  month: 12
+  notes: Poster
+  url: "https://interlab.ait.ac.th/aintec2026/program"

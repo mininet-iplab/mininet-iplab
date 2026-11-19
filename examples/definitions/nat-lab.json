@@ -1,0 +1,247 @@
+{
+  "schema_version": 3,
+  "address_family": "dual",
+  "persistent_config": true,
+  "example": "nat-lab",
+  "seeds": "frr-config/nat-lab",
+  "topology": {
+    "nodes": [
+      {
+        "id": "r1",
+        "name": "r1",
+        "type": "router",
+        "protocols": [],
+        "fast_timers": false,
+        "startup": [],
+        "nat": [
+          {
+            "kind": "port_forward",
+            "protocol": "tcp",
+            "outside_port": 8080,
+            "inside": "192.168.1.20",
+            "inside_port": 80,
+            "hairpin": false
+          },
+          {
+            "kind": "static",
+            "inside": "192.168.1.30",
+            "outside": "203.0.113.5"
+          }
+        ]
+      },
+      {
+        "id": "isp",
+        "name": "isp",
+        "type": "router",
+        "protocols": [],
+        "fast_timers": false,
+        "startup": []
+      },
+      {
+        "id": "s1",
+        "name": "s1",
+        "type": "switch"
+      },
+      {
+        "id": "s2",
+        "name": "s2",
+        "type": "switch"
+      },
+      {
+        "id": "h1",
+        "name": "h1",
+        "type": "host",
+        "ipv4_gateway": "192.168.1.1",
+        "ipv6_gateway": "2001:db8:1::1",
+        "startup": []
+      },
+      {
+        "id": "srv",
+        "name": "srv",
+        "type": "host",
+        "ipv4_gateway": "192.168.1.1",
+        "ipv6_gateway": "2001:db8:1::1",
+        "startup": []
+      },
+      {
+        "id": "h2",
+        "name": "h2",
+        "type": "host",
+        "ipv4_gateway": "192.168.1.1",
+        "ipv6_gateway": "2001:db8:1::1",
+        "startup": []
+      },
+      {
+        "id": "web",
+        "name": "web",
+        "type": "host",
+        "ipv4_gateway": "198.51.100.1",
+        "ipv6_gateway": "2001:db8:100::1",
+        "startup": []
+      },
+      {
+        "id": "remote",
+        "name": "remote",
+        "type": "host",
+        "ipv4_gateway": "198.51.100.1",
+        "ipv6_gateway": "2001:db8:100::1",
+        "startup": []
+      }
+    ],
+    "links": [
+      {
+        "id": "r1-s1",
+        "ends": [
+          {
+            "node_id": "r1",
+            "interface_id": "if-000000000001",
+            "port": 0,
+            "ipv4": "192.168.1.1/24",
+            "ipv6": "2001:db8:1::1/64"
+          },
+          {
+            "node_id": "s1",
+            "interface_id": "if-000000000002",
+            "port": 1,
+            "ipv4": "",
+            "ipv6": ""
+          }
+        ]
+      },
+      {
+        "id": "h1-s1",
+        "ends": [
+          {
+            "node_id": "h1",
+            "interface_id": "if-000000000003",
+            "port": 0,
+            "ipv4": "192.168.1.10/24",
+            "ipv6": "2001:db8:1::10/64"
+          },
+          {
+            "node_id": "s1",
+            "interface_id": "if-000000000004",
+            "port": 2,
+            "ipv4": "",
+            "ipv6": ""
+          }
+        ]
+      },
+      {
+        "id": "srv-s1",
+        "ends": [
+          {
+            "node_id": "srv",
+            "interface_id": "if-000000000005",
+            "port": 0,
+            "ipv4": "192.168.1.20/24",
+            "ipv6": "2001:db8:1::20/64"
+          },
+          {
+            "node_id": "s1",
+            "interface_id": "if-000000000006",
+            "port": 3,
+            "ipv4": "",
+            "ipv6": ""
+          }
+        ]
+      },
+      {
+        "id": "h2-s1",
+        "ends": [
+          {
+            "node_id": "h2",
+            "interface_id": "if-000000000007",
+            "port": 0,
+            "ipv4": "192.168.1.30/24",
+            "ipv6": "2001:db8:1::30/64"
+          },
+          {
+            "node_id": "s1",
+            "interface_id": "if-000000000008",
+            "port": 4,
+            "ipv4": "",
+            "ipv6": ""
+          }
+        ]
+      },
+      {
+        "id": "r1-isp",
+        "ends": [
+          {
+            "node_id": "r1",
+            "interface_id": "if-000000000009",
+            "port": 1,
+            "ipv4": "203.0.113.2/30",
+            "ipv6": "2001:db8:ff::2/64",
+            "outside": true
+          },
+          {
+            "node_id": "isp",
+            "interface_id": "if-000000000010",
+            "port": 0,
+            "ipv4": "203.0.113.1/30",
+            "ipv6": "2001:db8:ff::1/64"
+          }
+        ]
+      },
+      {
+        "id": "isp-s2",
+        "ends": [
+          {
+            "node_id": "isp",
+            "interface_id": "if-000000000011",
+            "port": 1,
+            "ipv4": "198.51.100.1/24",
+            "ipv6": "2001:db8:100::1/64"
+          },
+          {
+            "node_id": "s2",
+            "interface_id": "if-000000000012",
+            "port": 1,
+            "ipv4": "",
+            "ipv6": ""
+          }
+        ]
+      },
+      {
+        "id": "web-s2",
+        "ends": [
+          {
+            "node_id": "web",
+            "interface_id": "if-000000000013",
+            "port": 0,
+            "ipv4": "198.51.100.10/24",
+            "ipv6": "2001:db8:100::10/64"
+          },
+          {
+            "node_id": "s2",
+            "interface_id": "if-000000000014",
+            "port": 2,
+            "ipv4": "",
+            "ipv6": ""
+          }
+        ]
+      },
+      {
+        "id": "remote-s2",
+        "ends": [
+          {
+            "node_id": "remote",
+            "interface_id": "if-000000000015",
+            "port": 0,
+            "ipv4": "198.51.100.20/24",
+            "ipv6": "2001:db8:100::20/64"
+          },
+          {
+            "node_id": "s2",
+            "interface_id": "if-000000000016",
+            "port": 3,
+            "ipv4": "",
+            "ipv6": ""
+          }
+        ]
+      }
+    ]
+  }
+}

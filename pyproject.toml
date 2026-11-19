@@ -1,0 +1,117 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mniplab"
+# Single source of truth: ``mniplab.__version__``, so ``mniplab --version``
+# and the installed distribution can never disagree again.
+dynamic = ["version"]
+description = "Network emulation framework for teaching IP routing and core network services, built on Mininet with FRR routing, ExaBGP speakers, DHCP, DNS, DNSSEC and RPKI servers, and an optional web UI."
+readme = "README.md"
+license = { file = "LICENSE" }
+requires-python = ">=3.11"
+keywords = ["networking", "mininet", "frr", "bgp", "ospf", "routing", "emulation"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Education",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: System :: Networking",
+]
+# Mininet is deliberately absent from this list, and its absence is not an
+# oversight. mniplab imports `mininet` at runtime and cannot work without it,
+# but the only Mininet on PyPI is a 2020 pre-release that this project does
+# not run against, and a direct git reference (`mininet @ git+https://...`)
+# cannot appear in a distribution's dependencies -- PyPI rejects it. So the
+# version that matters is pinned where it is actually installed: the
+# MININET_VERSION ARG in the Dockerfile and in .devcontainer/Dockerfile,
+# which CI asserts agree. Installing
+# this package by itself therefore gives you a mniplab that cannot import
+# until Mininet is installed alongside it; see docs/install.md.
+dependencies = [
+    "mako>=1.3.0",
+    "exabgp>=5.0.13,<6",
+    "python-dotenv>=1.0.0",
+    # Pure-Python ctypes binding for Knot's control channel. Its major.minor
+    # must track the Knot package the Dockerfile installs: each release
+    # hardcodes the libknot soname it loads, so a newer binding would look
+    # for a library the image does not ship.
+    "libknot>=3.2,<3.3",
+]
+
+[project.optional-dependencies]
+web = [
+    "fastapi>=0.104.0",
+    "uvicorn[standard]>=0.24.0",
+    "websockets>=12.0",
+    "pydantic>=2.5.0",
+    "pydantic-settings>=2.1.0",
+    "python-multipart>=0.0.6",
+]
+dev = [
+    "pytest>=8.0.0",          # runs the unit and integration suites
+    "httpx2>=0.1.0",          # Starlette's TestClient requires it; the plain-httpx
+                               # fallback works but Starlette deprecates it, so this
+                               # is the correct choice rather than a workaround
+    "pylint>=3.0.0",          # the CI lint step's "errors and fatals only" gate
+    "pylint-pydantic>=0.3.0", # pylint plugin that understands Pydantic models,
+                               # loaded by the same lint step
+    "mypy>=1.8.0",            # the CI type-check step
+    "pip-tools>=7.0.0",       # the dependency compiler that produces both this
+                               # extra's lock file and requirements.txt
+    "playwright>=1.40.0",     # drives a real browser for requires_browser tests;
+                               # needs its own `playwright install --with-deps
+                               # chromium` step, not a pip dependency it can pull in
+]
+
+[project.scripts]
+mniplab = "mniplab.__main__:main"
+
+[project.urls]
+Homepage = "https://github.com/mininet-iplab/mininet-iplab"
+Documentation = "https://github.com/mininet-iplab/mininet-iplab/tree/main/docs"
+"Bug Tracker" = "https://github.com/mininet-iplab/mininet-iplab/issues"
+
+[tool.setuptools.dynamic]
+version = { attr = "mniplab.__version__" }
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["mniplab*"]
+
+# setuptools ships .py files and nothing else unless told otherwise, so
+# without this a clean `pip install` produced a package whose web UI had no
+# assets to serve and whose FRR and ExaBGP config builders had no templates
+# to render. It went unnoticed because the lab runs from a checkout or the
+# compose image, where the files are simply there.
+[tool.setuptools.package-data]
+"mniplab.webserver" = ["static/**/*"]
+"mniplab.frrouter" = ["templates/*.mako"]
+"mniplab.exabgp" = ["templates/*.mako"]
+
+[tool.mypy]
+ignore_missing_imports = true
+warn_unused_ignores = true
+warn_redundant_casts = true
+warn_unused_configs = true
+show_error_codes = true
+
+[tool.pytest.ini_options]
+testpaths = ["mniplab/tests"]
+markers = [
+    "unit: fast tests that do not require privileged networking, Mininet namespaces, or Docker",
+    "browser: frontend UI and API tests driven by Playwright against an ephemeral web server",
+    "browser_authoring: browser tests of Lab Authoring (exactly one browser_* area per browser test)",
+    "browser_services: browser tests of the Service and Speaker panels, captures and NAT Tables",
+    "browser_classroom: browser tests of Multi-Lab Mode, Groups and the Learner start screen",
+    "browser_workspace: browser tests of the Topology, Terminals and the page's common controls",
+    "integration: end-to-end tests that exercise real Mininet/FRR/Docker lab behavior",
+    "requires_root: tests that require root privileges and working netlink/Mininet setup",
+    "requires_docker: tests that require a reachable Docker CLI/daemon",
+    "requires_ovs: tests that build a switch, which needs a usable Open vSwitch",
+    "requires_browser: tests that drive a real browser via Playwright",
+    "slow: tests that may take noticeably longer than the unit suite",
+]

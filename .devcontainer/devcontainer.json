@@ -1,0 +1,43 @@
+{
+  "name": "Mininet Network Lab (single)",
+  "build": {
+    "context": "..",
+    "dockerfile": "./Dockerfile",
+    "options": [
+      "--build-arg", "BUILDKIT_INLINE_CACHE=0"
+    ]
+  },
+  "features": {
+    "ghcr.io/devcontainers/features/docker-in-docker:4.1.0": {}
+  },
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "terminal.integrated.defaultProfile.linux": "bash"
+      }
+    }
+  },
+  "runArgs": [
+    "--init",
+    "--network=host",
+    "--privileged",
+    "--add-host=mininet-iplab:127.0.1.1",
+    "--add-host=host.docker.internal:host-gateway",
+    "--hostname=mininet-iplab"
+  ],
+  "workspaceFolder": "/workspaces/mininet-iplab",
+  "workspaceMount": "source=${localWorkspaceFolder},target=/workspaces/mininet-iplab,type=bind,consistency=cached",
+  "mounts": [
+    "source=mininet-iplab-root,target=/root,type=volume",
+    "source=/lib/modules,target=/lib/modules,type=bind,consistency=cached"
+  ],
+  "containerEnv": {
+    "MININET_DOCKER": "true",
+    "PYTHONUNBUFFERED": "1",
+    "DEBIAN_FRONTEND": "noninteractive"
+  },
+  "postStartCommand": "",
+  "shutdownAction": "stopContainer",
+  "remoteUser": "root",
+  "overrideCommand": false
+}

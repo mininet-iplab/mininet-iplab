@@ -1,0 +1,81 @@
+name: Mininet-IPLab CI
+
+on:
+  # A change to prose only cannot break lint, types or a unit test.
+  push:
+    branches: [main]
+    paths-ignore: ['docs/**', '*.md']
+  pull_request:
+    branches: [main]
+    paths-ignore: ['docs/**', '*.md']
+  workflow_dispatch:
+  # The image installs FRR, Docker and Node.js fresh and pins Kea to one
+  # build; a weekly run notices an upstream change before a push meets it.
+  schedule:
+    - cron: '0 3 * * 1'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  # Only a pull request's stale run is cancelled; every main commit keeps
+  # its own result.
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  # Lint, types and unit tests; run browser and integration tiers locally.
+  checks:
+    name: Lint, types and unit suite in the Mininet-IPLab image
+    runs-on: ubuntu-24.04
+    # A hung test would otherwise hold the runner for six hours.
+    timeout-minutes: 30
+
+    steps:
+      - uses: actions/checkout@v7
+
+      # Both Dockerfiles must pin the same Mininet commit.
+      - name: The Mininet pin agrees between the image and the dev container
+        run: |
+          image=$(grep -oP 'ARG MININET_VERSION=\K\S+' Dockerfile)
+          devc=$(grep -oP 'ARG MININET_VERSION=\K\S+' .devcontainer/Dockerfile)
+          echo "Dockerfile   $image"
+          echo "devcontainer $devc"
+          if [ "$image" != "$devc" ]; then
+            echo "::error::Mininet pin drifted; both Dockerfiles must name the same ref."
+            exit 1
+          fi
+
+      # The GitHub cache keeps the image's layers between runs, so the
+      # slow package installs repeat only after the Dockerfile changes.
+      # The tag is the one docker-compose.yml names, so `compose run`
+      # below uses this image rather than building another.
+      - uses: docker/setup-buildx-action@v3
+
+      - name: Build the lab image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          load: true
+          tags: mininet-iplab:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      # The container needs Open vSwitch from the host kernel.
+      - name: Load the Open vSwitch kernel module on the runner
+        run: sudo modprobe openvswitch
+
+      - name: Lint (errors and fatals only)
+        run: |
+          docker compose run -T --rm mniplab \
+            pylint mniplab/ --disable=all --enable=E,F \
+              --ignore-paths='mniplab/webserver/static' \
+              --load-plugins=pylint_pydantic
+
+      - name: Type check with mypy
+        run: |
+          docker compose run -T --rm mniplab \
+            mypy mniplab/ --ignore-missing-imports
+
+      - name: Run unit suite inside the lab image
+        run: docker compose run -T --rm mniplab pytest -m unit -rs

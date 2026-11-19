@@ -1,0 +1,1896 @@
+/* The page is the viewport: the canvas takes what the header, palette,
+   sidebar and status line leave, and the page itself does not scroll. */
+.authoring-page {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow: hidden;
+    background: var(--bg-color);
+    color: var(--text-color);
+}
+
+/* Labs explorer · canvas card, as the running view's sidebar · topology. */
+.authoring-main {
+    flex: 1;
+    min-height: 0;
+    display: grid;
+    grid-template-columns: 300px minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr);
+    gap: .75rem;
+    padding: .75rem;
+}
+
+.authoring-main:has(.authoring-explorer.folded) {
+    grid-template-columns: 3.25rem minmax(0, 1fr);
+}
+
+/* The canvas card holds the open draft, or says that none is open. */
+.authoring-shell,
+.authoring-empty {
+    grid-column: 2;
+    grid-row: 1;
+    min-width: 0;
+    min-height: 0;
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+}
+
+.authoring-shell {
+    display: flex;
+    flex-direction: column;
+}
+
+.authoring-shell[hidden],
+.authoring-empty[hidden] {
+    display: none;
+}
+
+.authoring-empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+}
+
+/* Unlike the running view's placeholder, the status under it is read in full. */
+.authoring-empty .topology-empty-inner {
+    max-width: 28rem;
+    opacity: 1;
+}
+
+.authoring-page .header-breadcrumb {
+    flex-shrink: 0;
+    white-space: nowrap;
+}
+
+.authoring-page .header-right {
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: .5rem;
+}
+
+/* The Labs explorer: Drafts above the Lab Catalog, each scrolling its own list. */
+.authoring-explorer {
+    grid-column: 1;
+    grid-row: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    min-height: 0;
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+}
+
+.authoring-explorer-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: .5rem;
+    padding: .25rem .25rem .25rem .75rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.authoring-explorer-head h2 {
+    font-size: 1rem;
+    margin: 0;
+}
+
+/* Folded, the explorer is a rail: its toggle, then its name read upwards. */
+.authoring-explorer.folded .authoring-explorer-head {
+    flex-direction: column-reverse;
+    justify-content: flex-end;
+    padding: .25rem;
+    border-bottom: 0;
+}
+
+.authoring-explorer.folded .authoring-explorer-head h2,
+.sidebar-collapsed #sidebar-heading {
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    white-space: nowrap;
+}
+
+.authoring-explorer-body {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    padding: 0 .75rem;
+    /* When both sections need more than the window has, the body scrolls. */
+    overflow-y: auto;
+}
+
+.authoring-explorer-body[hidden] {
+    display: none;
+}
+
+.authoring-explorer-section {
+    display: flex;
+    flex-direction: column;
+    /* At least as tall as its heading, note and buttons, so an opened note
+       pushes the next section down instead of running over it. */
+    min-height: min-content;
+}
+
+.authoring-explorer-section > * {
+    flex: none;
+}
+
+#drafts-section { flex: 3 1 0; }
+
+#catalog-section {
+    flex: 7 1 0;
+    border-top: 1px solid var(--border-color);
+}
+
+.authoring-explorer-heading {
+    display: flex;
+    align-items: center;
+    gap: .25rem;
+    margin: .5rem 0 .35rem;
+}
+
+.authoring-explorer-heading h3 {
+    margin: 0;
+    font-size: .8rem;
+    font-weight: 700;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+}
+
+.authoring-explorer-heading .info-tip {
+    padding: .25rem;
+    color: var(--text-muted);
+}
+
+.authoring-explorer-note,
+.authoring-explorer-note p {
+    margin: 0 0 .35rem;
+    font-size: .8rem;
+}
+
+.authoring-explorer-note[hidden] {
+    display: none;
+}
+
+.authoring-explorer .authoring-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .35rem;
+}
+
+.authoring-explorer .authoring-row button {
+    padding: .3rem .6rem;
+    font-size: .85rem;
+}
+
+.authoring-explorer-status {
+    margin: .25rem 0 0;
+    color: var(--text-muted);
+    font-size: .75rem;
+}
+
+.authoring-explorer-status:empty {
+    display: none;
+}
+
+.authoring-explorer #example-source-search {
+    min-height: 2rem;
+}
+
+/* Rows pack at the top of their section; only the list scrolls. Its rows
+   do not count toward the section's height (size containment), so a long
+   list scrolls in what is left, never less than about two rows. */
+.authoring-explorer-section > .authoring-explorer-list {
+    flex: 1;
+    contain: size;
+    min-height: 4.5rem;
+}
+
+.authoring-explorer-list {
+    display: grid;
+    /* One column no wider than the list: a long name ends in "…" and its
+       ⋯ button stays in view. */
+    grid-template-columns: minmax(0, 1fr);
+    align-content: start;
+    gap: 2px;
+    min-height: 0;
+    overflow-y: auto;
+    margin: .35rem 0 0;
+    padding: 0 0 .5rem;
+    list-style: none;
+}
+
+.authoring-explorer-list li {
+    display: flex;
+    align-items: center;
+    gap: .25rem;
+    border-radius: .3rem;
+}
+
+#example-source-list li {
+    flex-direction: column;
+    align-items: stretch;
+}
+
+/* The open draft: a bar on its left, shaded. */
+.authoring-explorer-list li.current {
+    box-shadow: inset 3px 0 var(--primary-color);
+    background: var(--surface-hover);
+}
+
+#example-source-list li:has([aria-expanded="true"]) {
+    background: var(--surface-hover);
+}
+
+.authoring-explorer-open,
+.authoring-explorer-example {
+    flex: 1;
+    min-width: 0;
+    padding: .35rem .5rem;
+    text-align: left;
+    color: var(--text-color);
+    background: none;
+    border-radius: .3rem;
+    font-size: .875rem;
+    font-weight: 600;
+    line-height: 1.3;
+}
+
+.authoring-explorer-open {
+    justify-content: flex-start;
+    gap: .5rem;
+}
+
+.authoring-explorer-example {
+    display: grid;
+    gap: 0;
+    justify-content: stretch;
+    justify-items: start;
+}
+
+/* Inside a scrolling list, a focus ring is drawn within the row, never clipped. */
+.authoring-page .authoring-explorer-list button:focus-visible {
+    outline-offset: -2px;
+}
+
+.authoring-explorer-open:hover:not(:disabled),
+.authoring-explorer-example:hover:not(:disabled),
+.authoring-explorer-more:hover:not(:disabled) {
+    background: var(--surface-hover);
+    color: var(--text-color);
+    transform: none;
+}
+
+.authoring-explorer-name {
+    min-width: 0;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.authoring-explorer-meta {
+    flex: none;
+    color: var(--text-muted);
+    font-size: .75rem;
+    font-weight: 400;
+}
+
+.authoring-explorer-more {
+    flex: none;
+    min-width: 1.5rem;
+    min-height: 1.5rem;
+    padding: 0 .45rem;
+    color: var(--text-muted);
+    font-weight: 700;
+}
+
+/* A ⋯ menu floats over its list, so the list never clips it. */
+.authoring-explorer-menu {
+    position: fixed;
+    z-index: 30;
+    display: grid;
+    gap: .25rem;
+    min-width: 12rem;
+    padding: .35rem;
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: .4rem;
+    box-shadow: var(--shadow);
+}
+
+.authoring-explorer-menu[hidden] {
+    display: none;
+}
+
+.authoring-explorer-menu button {
+    justify-content: flex-start;
+}
+
+.authoring-explorer-details {
+    padding: 0 .5rem .5rem;
+}
+
+.authoring-explorer-details[hidden] {
+    display: none;
+}
+
+.authoring-explorer-details p {
+    margin: 0 0 .35rem;
+    font-size: .8rem;
+}
+
+/* The canvas toolbar: the draft and its actions, as the running view's controls. */
+.authoring-toolbar {
+    flex: none;
+    flex-wrap: wrap;
+}
+
+/* The draft's name renames it in place, as a row's Rename does. */
+.authoring-draft-title {
+    min-width: 0;
+    max-width: 22rem;
+    gap: .35rem;
+    padding: .3rem .5rem;
+    color: var(--text-color);
+    background: none;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.authoring-draft-title:hover:not(:disabled) {
+    background: var(--surface-hover);
+    color: var(--text-color);
+    transform: none;
+}
+
+.authoring-draft-title svg {
+    flex: none;
+    color: var(--text-muted);
+}
+
+#draft-title {
+    min-width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.authoring-draft-title[hidden],
+.authoring-explorer-open[hidden] {
+    display: none;
+}
+
+/* The rename field takes its name's row, at the row's height. */
+.authoring-main .authoring-rename-field {
+    flex: 1;
+    min-width: 0;
+    max-width: 22rem;
+    min-height: 0;
+    padding: .3rem .5rem;
+    font-size: .875rem;
+}
+
+.authoring-page .authoring-explorer-list .authoring-rename-field:focus-visible {
+    outline-offset: -2px;
+}
+
+.authoring-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: .5rem;
+    margin-left: auto;
+}
+
+/* Palette rail · canvas · sidebar. */
+.authoring-workspace {
+    --authoring-sidebar-width: var(--authoring-sidebar-open-width, 340px);
+    flex: 1;
+    min-height: 0;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) var(--authoring-sidebar-width);
+}
+
+.authoring-workspace.sidebar-collapsed {
+    --authoring-sidebar-width: 3rem;
+}
+
+/* Palette rail · canvas · Script pane · sidebar (folded to its rail). */
+.authoring-workspace.script-open {
+    grid-template-columns: auto minmax(0, 1fr) var(--script-pane-width, minmax(0, 1fr)) var(--authoring-sidebar-width);
+}
+
+.script-open .authoring-sidebar { grid-column: 4; }
+
+.authoring-canvas-region {
+    grid-column: 2;
+    position: relative;
+    min-width: 0;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: auto;
+}
+
+.authoring-canvas-region:focus-visible {
+    outline: 3px solid var(--focus-color);
+    outline-offset: -3px;
+}
+
+.authoring-sidebar {
+    grid-column: 3;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    min-height: 0;
+    background: var(--surface-color);
+    border-left: 1px solid var(--border-color);
+}
+
+.authoring-sidebar-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: .5rem;
+    padding: .25rem .25rem .25rem .75rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.authoring-sidebar-head h2 {
+    font-size: 1rem;
+    margin: 0;
+}
+
+.authoring-sidebar-size-controls { display: flex; gap: .25rem; margin-left: auto; }
+.authoring-sidebar-size-controls button { padding: .3rem .4rem; font-size: .8rem; }
+
+.authoring-sidebar-resize,
+.authoring-script-resize {
+    position: absolute;
+    z-index: 2;
+    left: -12px;
+    top: 3rem;
+    bottom: 0;
+    width: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-muted);
+    cursor: col-resize;
+    touch-action: none;
+    user-select: none;
+}
+
+.authoring-sidebar-resize span,
+.authoring-script-resize span {
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    padding: .5rem .2rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    background: var(--surface-color);
+    font-size: .7rem;
+}
+
+.authoring-sidebar-resize:focus-visible,
+.authoring-script-resize:focus-visible { outline: 3px solid var(--focus-color); outline-offset: -2px; }
+.authoring-sidebar-resize:hover span,
+.authoring-sidebar-resize:focus-visible span,
+.authoring-script-resize:hover span,
+.authoring-script-resize:focus-visible span { color: var(--primary-color); border-color: var(--primary-color); }
+
+.sidebar-collapsed .authoring-sidebar-size-controls,
+.sidebar-collapsed .authoring-sidebar-resize { display: none; }
+
+.sidebar-collapsed .authoring-sidebar-head {
+    flex-direction: column-reverse;
+    justify-content: flex-end;
+    align-items: center;
+    padding: .25rem;
+}
+
+/* Positioned, so screen-reader-only text deep in a long tab scrolls with it
+   instead of hanging below the sidebar and stretching the canvas card. */
+.authoring-sidebar-body {
+    position: relative;
+    flex: 1;
+    min-height: 0;
+    overflow: auto;
+    padding: .75rem;
+}
+
+/* The selected Node or Link, above the tabs. */
+.authoring-selection {
+    display: grid;
+    gap: .4rem;
+    margin-bottom: .75rem;
+    padding-bottom: .75rem;
+    border-bottom: 1px solid var(--border-color);
+    font-size: .9rem;
+}
+
+.authoring-selection[hidden] {
+    display: none;
+}
+
+.authoring-selection h3,
+.authoring-selection p {
+    margin: 0;
+}
+
+.authoring-selection-label {
+    color: var(--text-muted);
+    font-size: .8rem;
+    font-weight: 600;
+}
+
+.authoring-selection-list {
+    display: grid;
+    gap: .25rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.authoring-selection-addresses {
+    display: block;
+    color: var(--text-muted);
+    overflow-wrap: anywhere;
+}
+
+.authoring-tabs {
+    display: flex;
+    gap: 2px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.authoring-tabs [role="tab"] {
+    padding: .45rem .8rem;
+    color: var(--text-muted);
+    font-weight: 600;
+    background: transparent;
+    border: 0;
+    border-bottom: 3px solid transparent;
+    border-radius: var(--radius) var(--radius) 0 0;
+}
+
+.authoring-tabs [role="tab"]:hover:not(:disabled) {
+    color: var(--text-color);
+    background: var(--surface-hover);
+    transform: none;
+}
+
+.authoring-tabs [role="tab"][aria-selected="true"] {
+    color: var(--primary-color);
+    border-bottom-color: var(--primary-color);
+}
+
+.authoring-tabpanel:not([hidden]) {
+    display: grid;
+    gap: .5rem;
+    padding-top: .75rem;
+}
+
+.authoring-tabpanel h3 {
+    font-size: 1rem;
+    margin: .75rem 0 0;
+}
+
+.authoring-hint {
+    margin: 0;
+    color: var(--text-muted);
+    font-size: .875rem;
+}
+
+.authoring-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .5rem;
+}
+
+/* The status line: save state, Preview state, outcome and canvas controls. */
+.authoring-status-line {
+    flex-shrink: 0;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: .25rem 1.5rem;
+    padding: .25rem 1rem;
+    font-size: .875rem;
+    background: var(--surface-color);
+    border-top: 1px solid var(--border-color);
+}
+
+/* Keep canvas controls in the bottom row, clear of Nodes and status text. */
+.authoring-status-line .canvas-controls {
+    position: static;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    margin-inline-start: auto;
+    padding: 0;
+    border: 0;
+    box-shadow: none;
+}
+
+.authoring-status-line p {
+    margin: 0;
+}
+
+.authoring-status-message {
+    white-space: pre-line;
+}
+
+.authoring-status-message:empty {
+    display: none;
+}
+
+#status-alert {
+    color: var(--error-color);
+    font-weight: 600;
+}
+
+#preview-lab-link,
+#keep-draft {
+    margin-inline-start: .5rem;
+    font-weight: 600;
+}
+
+/* A button that reads as a link inside a sentence, such as Reopen. */
+.authoring-link-button {
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--primary-color);
+    font: inherit;
+    font-weight: 600;
+    text-align: start;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.authoring-link-button:focus-visible {
+    outline: 2px solid var(--focus-color);
+    outline-offset: 2px;
+}
+
+.authoring-note {
+    margin: .5rem 0 0;
+    color: var(--text-muted);
+}
+
+.authoring-link-end {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+    gap: .6rem;
+}
+
+.authoring-main fieldset {
+    display: grid;
+    gap: .6rem;
+    margin: 1rem 0;
+    padding: 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: .4rem;
+}
+
+.authoring-main label {
+    font-weight: 600;
+}
+
+.required-marker {
+    color: var(--error-color);
+    font-weight: 700;
+}
+
+.required-legend {
+    margin: 0;
+    color: var(--text-muted);
+    font-size: .875rem;
+    font-weight: 400;
+}
+
+.authoring-note p {
+    margin: 0 0 .25rem;
+}
+
+.field-error:not([hidden]) {
+    margin: 0;
+    color: var(--error-color);
+    font-weight: 600;
+}
+
+.authoring-main [aria-invalid="true"] {
+    border: 2px solid var(--error-color);
+}
+
+.authoring-main input,
+.authoring-main textarea,
+.authoring-main select {
+    width: 100%;
+    min-height: 2.6rem;
+    padding: .5rem;
+    color: var(--text-color);
+    background: var(--bg-color);
+    border: 1px solid var(--border-color);
+    border-radius: .3rem;
+}
+
+.authoring-main textarea {
+    resize: vertical;
+}
+
+.authoring-page button:focus-visible,
+.authoring-page a:focus-visible,
+.authoring-page input:focus-visible,
+.authoring-page textarea:focus-visible,
+.authoring-page select:focus-visible {
+    outline: 3px solid var(--focus-color);
+    outline-offset: 2px;
+}
+
+.authoring-palette {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-height: 0;
+    overflow: auto;
+    padding: 6px;
+    background: var(--surface-color);
+    border-right: 1px solid var(--border-color);
+}
+
+.authoring-palette[hidden] {
+    display: none;
+}
+
+.authoring-palette hr {
+    margin: 2px 0;
+    border: 0;
+    border-top: 1px solid var(--border-color);
+}
+
+.authoring-palette-item {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    cursor: grab;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: var(--radius);
+}
+
+.authoring-palette-item:hover:not(:disabled) {
+    background: var(--surface-hover);
+    border-color: var(--border-color);
+    transform: none;
+}
+
+.authoring-palette-item svg {
+    width: 28px;
+    height: 28px;
+}
+
+/* An item's name, shown on hover and on focus; hoverable, so it has no gap
+   the pointer must cross. */
+.authoring-tip {
+    position: fixed;
+    z-index: 1000;
+    padding: 4px 8px;
+    color: var(--surface-color);
+    font-size: .85rem;
+    font-weight: 600;
+    white-space: nowrap;
+    background: var(--text-color);
+    border-radius: 6px;
+}
+
+.authoring-canvas {
+    position: relative;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+    background-color: var(--bg-color);
+}
+
+.authoring-canvas[hidden] {
+    display: none;
+}
+
+/* The Script pane: its bar, which lines are the Instructor's, then one editor. */
+.authoring-script-pane {
+    grid-column: 3;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    min-height: 0;
+    background: var(--surface-color);
+    border-left: 1px solid var(--border-color);
+}
+
+.authoring-script-pane[hidden] {
+    display: none;
+}
+
+/* The divider sits on the canvas side of the pane's edge, clear of the
+   script's line numbers. */
+.authoring-script-pane .authoring-script-resize { left: -24px; }
+
+.authoring-script-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: .4rem;
+    padding: .35rem .6rem .35rem 1rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.authoring-script-bar h2 {
+    margin: 0 auto 0 0;
+    font-size: 1rem;
+}
+
+.authoring-script-keys {
+    margin: 0;
+    padding: .25rem 1rem;
+    border-bottom: 1px solid var(--border-color);
+    font-size: .85rem;
+}
+
+.authoring-script-keys p { margin: .25rem 0; }
+
+.authoring-band-label {
+    margin: 0;
+    padding: .2rem 1rem;
+    color: var(--primary-color);
+    font-size: .85rem;
+    font-weight: 600;
+}
+
+.authoring-band-label[hidden],
+.authoring-script-pane .authoring-code-editor[hidden] {
+    display: none;
+}
+
+.authoring-script-pane .authoring-script-editor {
+    flex: 1;
+    min-height: 0;
+    border: 0;
+    border-top: 1px solid var(--border-color);
+}
+
+.authoring-script-editor .cm-editor { height: 100%; }
+.authoring-code-editor.authoring-script-editor .cm-scroller { max-height: none; min-height: 0; }
+
+/* The Code section band: the lines the Instructor types, marked as theirs. */
+.authoring-code-editor .cm-code-band {
+    background: color-mix(in srgb, var(--focus-color) 10%, transparent);
+    box-shadow: inset 3px 0 var(--focus-color);
+}
+
+.authoring-python-files {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    min-width: 0;
+    min-height: 0;
+}
+
+.authoring-python-files[hidden] {
+    display: none;
+}
+
+.authoring-python-files .authoring-script-editor { border-top: 0; }
+.authoring-python-files .field-error,
+.authoring-script-pane > .field-error { margin: .25rem 1rem; }
+
+/* Opens the Script pane, from the canvas toolbar. */
+.authoring-script-toggle[aria-pressed="true"] {
+    border-color: var(--focus-color);
+    box-shadow: inset 0 -3px var(--focus-color);
+}
+
+.authoring-code-editor {
+    min-width: 0;
+    border: 1px solid var(--border-color);
+    background: var(--surface-color);
+}
+
+.authoring-code-editor .cm-editor { color: var(--text-color); }
+.authoring-code-editor .cm-scroller { overflow: auto; max-height: 55vh; min-height: 16rem; }
+.authoring-code-editor .cm-content { font-family: monospace; }
+.authoring-code-editor .cm-gutters {
+    background: var(--bg-color);
+    color: var(--text-muted);
+    border-color: var(--border-color);
+}
+.authoring-code-editor .cm-cursor { border-left-color: var(--text-color); }
+.authoring-code-editor .cm-focused { outline: 3px solid var(--focus-color); }
+.authoring-code-editor .cm-matchingBracket {
+    outline: 2px solid var(--focus-color);
+    background: color-mix(in srgb, var(--focus-color) 22%, var(--surface-color));
+}
+.authoring-code-editor .cm-compile-error-line {
+    background: color-mix(in srgb, var(--error-color) 15%, var(--surface-color));
+    border-left: 3px solid var(--error-color);
+}
+
+#python-api-help:not([hidden]) {
+    max-height: 40%;
+    overflow: auto;
+    padding: .75rem;
+    border-top: 1px solid var(--border-color);
+    background: var(--surface-color);
+}
+.authoring-api-help code { white-space: normal; overflow-wrap: anywhere; }
+.authoring-api-help p { margin: .5rem 0 0; }
+.authoring-code-editor .cm-tooltip {
+    color: var(--text-color);
+    background: var(--surface-color);
+    border-color: var(--border-color);
+}
+.authoring-code-editor .cm-tooltip-autocomplete > ul > li[aria-selected] {
+    color: var(--text-color);
+    background: var(--surface-hover);
+    box-shadow: inset 4px 0 var(--focus-color);
+}
+
+/* A Python draft's files: one tab each, directly above line 1. */
+.authoring-file-strip {
+    display: flex;
+    align-items: stretch;
+    gap: .4rem;
+    padding: 0 .6rem 0 .25rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.authoring-file-tabs {
+    display: flex;
+    flex: 1;
+    min-width: 0;
+    overflow-x: auto;
+}
+
+.authoring-file-tabs [role="tab"] {
+    padding: .35rem .75rem;
+    border: 0;
+    border-bottom: 3px solid transparent;
+    border-radius: 0;
+    background: none;
+    color: var(--text-color);
+    font-family: monospace;
+    white-space: nowrap;
+}
+
+.authoring-file-tabs [role="tab"][aria-selected="true"] {
+    border-bottom-color: var(--focus-color);
+    font-weight: 700;
+}
+
+.authoring-file-tabs [role="tab"]:focus-visible {
+    outline: 3px solid var(--focus-color);
+    outline-offset: -3px;
+}
+
+:root {
+    --python-keyword: #6433a1;
+    --python-string: #17602e;
+    --python-comment: #565f69;
+    --python-number: #9a3412;
+}
+
+[data-theme="dark"] {
+    --python-keyword: #d1aaff;
+    --python-string: #9dd6a7;
+    --python-comment: #b5bfc9;
+    --python-number: #ffc08a;
+}
+
+/* Why the script could not be drawn, over the canvas below its hint. */
+.authoring-drawing-note {
+    position: absolute;
+    top: 1.75rem;
+    left: .5rem;
+    z-index: 6;
+    max-width: calc(100% - 7rem);
+    margin: 0;
+    padding: .25rem .5rem;
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-left: 4px solid var(--warning-color, var(--primary-color));
+    border-radius: .4rem;
+    font-size: .9rem;
+}
+
+.authoring-drawing-note[hidden] {
+    display: none;
+}
+
+/* Drawn Nodes are moved, never edited, so they offer no Link handle. */
+#draft-canvas .node.read-only .link-handle {
+    display: none;
+}
+
+/* What a Code section adds is greyed beside the canvas's own Nodes. */
+#draft-canvas .node.from-code .node-body {
+    stroke: var(--text-muted);
+    stroke-dasharray: 6 4;
+}
+
+#draft-canvas .node.from-code .node-icon path {
+    fill: var(--text-muted);
+}
+
+#draft-canvas .link-line.from-code {
+    stroke: var(--text-muted);
+    stroke-dasharray: 6 4;
+}
+
+#draft-canvas .node-tag {
+    fill: var(--text-muted);
+    font-size: 12px;
+    text-anchor: middle;
+    pointer-events: none;
+}
+
+/* Says the Lab is more than its drawing: it has a Code section. */
+.authoring-code-marker {
+    position: absolute;
+    bottom: .75rem;
+    left: .75rem;
+    z-index: 10;
+    margin: 0;
+    padding: .25rem .5rem;
+    background: var(--surface-color);
+    border: 1px dashed var(--text-muted);
+    border-radius: .4rem;
+    color: var(--text-color);
+    font-size: .85rem;
+    font-weight: 600;
+    pointer-events: none;
+}
+
+.authoring-code-marker[hidden] {
+    display: none;
+}
+
+
+/* The canvas's one-line hint, over the grid and out of the way. */
+.authoring-canvas-hint {
+    position: absolute;
+    top: .25rem;
+    left: .5rem;
+    max-width: calc(100% - 7rem);
+    z-index: 5;
+    margin: 0;
+    color: var(--text-muted);
+    font-size: .8rem;
+    pointer-events: none;
+}
+
+.authoring-canvas-hint[hidden] {
+    display: none;
+}
+
+/* Connect mode's bar names the first Node and how to leave. It takes the
+   hint's corner, clear of the fitted Nodes, and the hint steps aside. */
+.authoring-connect-bar {
+    position: absolute;
+    top: .25rem;
+    left: .5rem;
+    z-index: 6;
+    display: flex;
+    flex-wrap: wrap;
+    gap: .5rem;
+    align-items: center;
+    max-width: calc(100% - 1rem);
+    padding: .25rem .5rem;
+    background: var(--surface-color);
+    border: 2px solid var(--primary-color);
+    border-radius: var(--radius, .5rem);
+    box-shadow: var(--shadow);
+    font-size: .9rem;
+}
+
+.authoring-connect-bar[hidden] {
+    display: none;
+}
+
+.authoring-canvas-region.connecting .authoring-canvas-hint {
+    visibility: hidden;
+}
+
+#draft-canvas .node.connect-source .node-body {
+    stroke: var(--primary-color);
+    stroke-width: 6px;
+}
+
+/* While connecting, the Node that Enter would choose is marked however
+   focus reached it, including after Connect… was clicked. */
+#draft-canvas.connecting .node:focus .node-body {
+    stroke: var(--focus-color);
+    stroke-width: 6px;
+    stroke-dasharray: 8 4;
+}
+
+/* One layout unit is one canvas unit on both axes, as in Preview; Nodes keep
+   the running-Lab view's sizes, set by the shared --topo-* tokens. */
+#draft-canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+    cursor: grab;
+    touch-action: none;
+}
+
+#draft-canvas:active {
+    cursor: grabbing;
+}
+
+/* Interface labels too small to read hide, except the selection's. */
+#draft-canvas.small-labels .link-label-group:not(.near) {
+    display: none;
+}
+
+#draft-canvas.small-labels .link-label-group.near .link-label {
+    font-size: var(--near-label-size);
+}
+
+#draft-canvas .node:focus-visible {
+    outline: none;
+}
+
+/* A Link's visible line, painted beneath the Nodes; it shows the Link's
+   selection and, in the focus colour, its focus. */
+#draft-canvas .link-line {
+    stroke: var(--text-muted);
+    stroke-opacity: 0.72;
+    cursor: pointer;
+    stroke-width: 6px;
+    transition: stroke 0.15s ease, stroke-width 0.15s ease;
+}
+
+#draft-canvas .link-line:hover {
+    stroke: var(--primary-color);
+    stroke-opacity: 0.8;
+    stroke-width: 8px;
+}
+
+#draft-canvas .link-line.selected {
+    stroke: var(--primary-color);
+    stroke-opacity: 1;
+    stroke-width: 8px;
+}
+
+#draft-canvas .link-line.focused {
+    stroke: var(--focus-color);
+    stroke-width: 9px;
+}
+
+/* The focusable Link follows the Nodes in the DOM; it stays invisible and
+   leaves the pointer to its line underneath. */
+#draft-canvas .link,
+#draft-canvas .link.selected,
+#draft-canvas .link:focus-visible {
+    stroke: transparent;
+    outline: none;
+    pointer-events: none;
+}
+
+/* The "+" handle shows on the hovered or selected Node. */
+#draft-canvas .node .link-handle {
+    cursor: crosshair;
+    visibility: hidden;
+}
+
+#draft-canvas .node:hover .link-handle,
+#draft-canvas .node.selected .link-handle {
+    visibility: visible;
+}
+
+/* The selected Node's relationships: dashed, and never taking the pointer. */
+#draft-canvas .relation-line {
+    fill: none;
+    stroke: var(--primary-color);
+    stroke-width: 3px;
+    stroke-dasharray: 10 8;
+    pointer-events: none;
+}
+
+#draft-canvas .node .link-handle circle {
+    fill: var(--primary-color);
+    stroke: var(--node-bg);
+    stroke-width: 2px;
+    stroke-dasharray: none;
+    filter: none;
+}
+
+#draft-canvas .node .link-handle path {
+    fill: none;
+    stroke: #ffffff;
+    stroke-width: 2.5px;
+    stroke-linecap: round;
+}
+
+#draft-canvas .link-line.link-pending {
+    stroke: var(--primary-color);
+    stroke-dasharray: 6 4;
+    pointer-events: none;
+}
+
+.authoring-dialog {
+    --dialog-field-gap: .5rem;
+    --dialog-section-padding: .75rem;
+    margin: auto;
+    width: min(42rem, calc(100vw - 2rem));
+    max-height: calc(100vh - 2rem);
+    padding: 1rem;
+    color: var(--text-color);
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: .5rem;
+}
+
+.authoring-dialog[open] {
+    display: grid;
+    /* Prevent older WebKit from stretching native dialog rows to the viewport. */
+    align-content: start;
+    gap: var(--dialog-field-gap);
+}
+
+#host-dialog,
+#link-dialog {
+    width: min(48rem, calc(100vw - 2rem));
+}
+
+.authoring-dialog-wide {
+    width: min(64rem, calc(100vw - 2rem));
+}
+
+.authoring-dialog-wide textarea {
+    min-height: 50vh;
+}
+
+.authoring-dialog-wide .lab-guide-content {
+    max-height: 60vh;
+    overflow: auto;
+}
+
+.authoring-dialog::backdrop {
+    background: rgb(0 0 0 / 45%);
+}
+
+.authoring-dialog form,
+.authoring-dialog fieldset {
+    display: grid;
+    gap: var(--dialog-field-gap);
+}
+
+.authoring-dialog .authoring-tabpanel:not([hidden]) {
+    gap: var(--dialog-field-gap);
+    padding-top: 0;
+}
+
+.authoring-dialog .authoring-tabs {
+    flex-wrap: wrap;
+}
+
+.authoring-dialog .authoring-tabs [role="tab"] {
+    min-height: 2.25rem;
+    padding: .375rem .5rem;
+}
+
+/* A toggled group inside a fieldset keeps the fieldset's stacked layout. */
+.authoring-field-group:not([hidden]) {
+    display: grid;
+    gap: var(--dialog-field-gap, .5rem);
+}
+
+.authoring-dialog textarea {
+    width: 100%;
+}
+
+.authoring-dialog-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0;
+}
+
+.authoring-dialog-header h2 {
+    margin: 0;
+}
+
+.dialog-error-summary {
+    background: var(--error-bg, rgba(220, 38, 38, 0.1));
+    border: 1px solid var(--error-color, #dc2626);
+    border-radius: .4rem;
+    padding: var(--dialog-section-padding);
+    margin-bottom: 0;
+}
+
+.dialog-error-summary h3 {
+    margin: 0 0 .5rem;
+    font-size: .95rem;
+    color: var(--error-color, #dc2626);
+}
+
+.dialog-error-summary ul {
+    margin: 0;
+    padding-left: 1.25rem;
+}
+
+.dialog-error-summary a {
+    color: var(--text-color);
+    text-decoration: underline;
+}
+
+.dialog-tab-error-mark {
+    color: var(--error-color, #dc2626);
+    font-weight: bold;
+    margin-left: .25rem;
+}
+
+.authoring-disclosure {
+    margin: 0;
+    border: 1px solid var(--border-color);
+    border-radius: .4rem;
+    padding: .5rem .75rem;
+}
+
+.authoring-disclosure summary {
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.authoring-disclosure[open] summary {
+    margin-bottom: .5rem;
+}
+
+.authoring-dialog h2 {
+    margin: 0;
+}
+
+.authoring-dialog fieldset {
+    margin: 0;
+    padding: var(--dialog-section-padding);
+    border: 1px solid var(--border-color);
+    border-radius: .4rem;
+}
+
+.authoring-dialog label {
+    font-weight: 600;
+}
+
+.authoring-dialog [aria-invalid="true"] {
+    border: 2px solid var(--error-color);
+}
+
+#link-dialog-ends {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    align-items: start;
+}
+
+@media (max-width: 700px) {
+    #link-dialog-ends {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+}
+
+.authoring-link-end-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: .5rem;
+}
+
+.authoring-link-end-head h3 {
+    margin: 0;
+    font-size: 1.1rem;
+}
+
+.authoring-link-end-fields {
+    display: grid;
+    gap: var(--dialog-field-gap);
+    padding: var(--dialog-section-padding);
+    border: 1px solid var(--border-color);
+    border-radius: .4rem;
+}
+
+.authoring-dialog input,
+.authoring-dialog select {
+    width: 100%;
+    min-height: 2.25rem;
+    height: auto;
+    box-sizing: border-box;
+    padding: .375rem .5rem;
+    color: var(--text-color);
+    background: var(--bg-color);
+    border: 1px solid var(--border-color);
+    border-radius: .3rem;
+}
+
+.authoring-dialog input::placeholder,
+.authoring-dialog textarea::placeholder {
+    color: var(--text-muted);
+    opacity: 1;
+}
+
+.authoring-dialog .authoring-note {
+    margin: 0;
+}
+
+.authoring-dialog input[type="checkbox"],
+.authoring-dialog input[type="radio"] {
+    width: auto;
+    min-height: auto;
+    height: auto;
+}
+
+.authoring-dialog-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: var(--dialog-field-gap);
+    margin-top: .5rem;
+}
+
+.authoring-dialog-actions > button {
+    min-height: 2.25rem;
+}
+
+#authoring-status[role="status"] {
+    min-height: 1.5rem;
+    padding: 0 1rem;
+}
+
+/* An empty status keeps its live region but takes no room. */
+#authoring-status:empty {
+    min-height: 0;
+    margin: 0;
+}
+
+.authoring-dialog [hidden] {
+    display: none;
+}
+
+.authoring-choice {
+    display: flex;
+    gap: .5rem;
+    align-items: center;
+    justify-content: flex-start;
+    min-height: 1.5rem;
+    font-weight: 400;
+}
+
+.authoring-choice input {
+    flex: 0 0 auto;
+    width: 1.1rem;
+    height: 1.1rem;
+    min-height: 0;
+    margin: 0;
+    padding: 0;
+}
+
+.authoring-dialog .authoring-choice {
+    font-weight: 400;
+}
+
+.authoring-protocol-choices {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(7rem, 1fr));
+    gap: .25rem .75rem;
+}
+
+.authoring-code {
+    font-family: var(--font-mono, ui-monospace, monospace);
+}
+
+.authoring-startup-list {
+    display: grid;
+    gap: .5rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.authoring-startup-list:empty {
+    display: none;
+}
+
+.authoring-diff {
+    margin: 0;
+    padding: .5rem;
+    overflow-x: auto;
+    font-family: var(--font-mono, ui-monospace, monospace);
+    font-size: .85rem;
+    background: var(--bg-color);
+    border: 1px solid var(--border-color);
+    border-radius: .3rem;
+}
+
+.authoring-diff span {
+    display: block;
+    white-space: pre;
+}
+
+.authoring-diff .diff-added {
+    color: var(--diff-added-color);
+    font-weight: 600;
+}
+
+.authoring-diff .diff-removed {
+    color: var(--error-color);
+    text-decoration: line-through;
+}
+
+
+
+:root {
+    /* #28a745 is ~3:1 on white; this green meets 4.5:1 for diff text. */
+    --diff-added-color: #1a7f37;
+}
+
+[data-theme="dark"] {
+    --diff-added-color: var(--success-color);
+}
+
+/* Below 1024 px the Script pane stacks under the canvas; the sidebar's rail
+   stays beside both. */
+@media (max-width: 1023px) {
+    .authoring-script-resize { display: none; }
+
+    .authoring-workspace.script-open {
+        grid-template-columns: auto minmax(0, 1fr) var(--authoring-sidebar-width);
+        grid-template-rows: minmax(0, 1fr) minmax(0, 1fr);
+    }
+
+    .script-open .authoring-palette,
+    .script-open .authoring-canvas-region { grid-row: 1; }
+
+    .script-open .authoring-script-pane {
+        grid-column: 1 / 3;
+        grid-row: 2;
+        border-left: 0;
+        border-top: 1px solid var(--border-color);
+    }
+
+    .script-open .authoring-sidebar { grid-column: 3; grid-row: 1 / 3; }
+}
+
+/* Below 900 px the sidebar stacks under the canvas, never over it, and the
+   page scrolls vertically instead of the canvas shrinking to nothing. */
+@media (max-width: 900px) {
+    .authoring-sidebar-size-controls,
+    .authoring-sidebar-resize { display: none; }
+
+    .authoring-page {
+        height: auto;
+        min-height: 100vh;
+        overflow: visible;
+    }
+
+    .authoring-workspace {
+        grid-template-columns: auto minmax(0, 1fr);
+        grid-template-rows: minmax(360px, 60vh) auto;
+    }
+
+    .authoring-sidebar {
+        grid-column: 1 / -1;
+        border-top: 1px solid var(--border-color);
+        border-left: 0;
+    }
+
+    .authoring-workspace.script-open {
+        grid-template-columns: auto minmax(0, 1fr);
+        grid-template-rows: minmax(360px, 60vh) minmax(360px, 70vh) auto;
+    }
+
+    .script-open .authoring-script-pane { grid-column: 1 / -1; }
+    .script-open .authoring-sidebar { grid-column: 1 / -1; grid-row: 3; }
+
+    /* Stacked, a folded explorer or sidebar is one row under its name. */
+    .sidebar-collapsed .authoring-sidebar-head,
+    .authoring-explorer.folded .authoring-explorer-head {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        padding: .25rem .25rem .25rem .75rem;
+    }
+
+    .sidebar-collapsed #sidebar-heading,
+    .authoring-explorer.folded .authoring-explorer-head h2 {
+        writing-mode: horizontal-tb;
+        transform: none;
+    }
+
+    .authoring-main,
+    .authoring-main:has(.authoring-explorer.folded) {
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-rows: auto auto;
+    }
+
+    .authoring-explorer {
+        height: min(70vh, 32rem);
+    }
+
+    .authoring-explorer.folded {
+        height: auto;
+    }
+
+    .authoring-shell,
+    .authoring-empty {
+        grid-column: 1;
+        grid-row: 2;
+    }
+
+    .authoring-empty {
+        min-height: 16rem;
+    }
+
+    /* The shared main rule clips its overflow, which would pin the status
+       line to a box that never scrolls; the page scrolls here instead. */
+    .authoring-main {
+        overflow: visible;
+    }
+
+    .authoring-status-line {
+        position: sticky;
+        bottom: 0;
+        /* Keep status actions and canvas controls visible when scrolling. */
+        z-index: 11;
+    }
+}
+
+/* Below 600 px the palette is one row above the canvas. */
+@media (max-width: 600px) {
+    .authoring-page .header-right {
+        justify-content: flex-start;
+    }
+
+    .authoring-workspace {
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-rows: auto minmax(320px, 60vh) auto;
+    }
+
+    .authoring-palette {
+        flex-direction: row;
+        overflow-x: auto;
+        border-right: 0;
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .authoring-palette hr {
+        margin: 0 2px;
+        border-top: 0;
+        border-left: 1px solid var(--border-color);
+    }
+
+    .authoring-canvas-region,
+    .authoring-sidebar {
+        grid-column: 1;
+    }
+
+    .authoring-workspace.script-open {
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-rows: auto minmax(320px, 60vh) minmax(360px, 70vh) auto;
+    }
+
+    .script-open .authoring-canvas-region { grid-row: 2; }
+    .script-open .authoring-script-pane { grid-column: 1; grid-row: 3; }
+    .script-open .authoring-sidebar { grid-column: 1; grid-row: 4; }
+}
+
+/* Publish…: one row per thing publishing needs, its fix beside it. */
+.authoring-publish-missing {
+    display: grid;
+    gap: .5rem;
+    margin: 0 0 1rem;
+    padding: 0;
+    list-style: none;
+}
+
+.authoring-publish-missing li {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: .5rem 1rem;
+    padding: .5rem .75rem;
+    border: 1px solid var(--border-color);
+    border-radius: .4rem;
+}
+
+#publish-missing-title {
+    margin: 0 0 .5rem;
+    font-weight: 600;
+}
+
+#publish-feedback,
+#confirm-dialog-feedback {
+    color: var(--error-color);
+}
+
+#confirm-dialog-feedback { font-weight: 600; }
+
+#publish-feedback:empty,
+#confirm-dialog-feedback:empty {
+    display: none;
+}
+
+/* Keep review: a setting's fields before and after the Preview changed it. */
+.authoring-keep-region {
+    overflow-x: auto;
+}
+
+.authoring-keep-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: .875rem;
+}
+
+.authoring-keep-table th,
+.authoring-keep-table td {
+    padding: .3rem .5rem;
+    border-bottom: 1px solid var(--border-color);
+    text-align: start;
+    vertical-align: top;
+}
+
+/* Addresses stay whole; a narrow dialog scrolls the table instead. */
+.authoring-keep-table td,
+.authoring-keep-table thead th {
+    white-space: nowrap;
+}
+
+.authoring-keep-table thead th {
+    color: var(--text-muted);
+    font-weight: 600;
+}
+
+.authoring-keep-mark {
+    font-weight: 700;
+}
+
+/* Row editors: a list of the definition edited as labelled rows. */
+.row-editor { display: flex; flex-direction: column; gap: 8px; align-items: flex-start; min-width: 0; }
+.row-editor-table { width: 100%; border-collapse: collapse; }
+.row-editor-table th { text-align: left; font-weight: 600; color: var(--text-muted); padding: 0 6px 4px 0; }
+.row-editor-table td { vertical-align: top; padding: 2px 6px 2px 0; }
+.row-editor-table td input,
+.row-editor-table td select,
+.row-editor-table td textarea { width: 100%; min-width: 8rem; }
+.row-editor-table td:last-child { width: 1%; white-space: nowrap; }
+
+/* Zone controls fit the dialog; only their Records table scrolls on narrow screens. */
+#host-dialog > form { grid-template-columns: minmax(0, 1fr); }
+#node-panel-services, .authoring-services-checklist, #dns-zone-fields, #dns-zones { min-width: 0; }
+#dns-zones .row-card-title { min-width: 0; overflow-wrap: anywhere; }
+#dns-zones td[data-field="name"] input { min-width: 6rem; }
+#dns-zones td[data-field="type"] select { min-width: 5rem; }
+
+/* The (i) button that opens a list's description: the Keep pane's icon button, sized
+   to the WCAG 2.2 24px target minimum so it does not enlarge the legend. */
+.info-row { display: flex; align-items: center; gap: 6px; }
+.info-tip { flex: none; margin-left: 6px; padding: 0.25rem; vertical-align: middle; }
+.info-tip[data-visible-label] { display: inline-flex; align-items: center; gap: 0.25rem; border-radius: var(--radius); }
+button.info-tip:hover:not(:disabled),
+.info-tip[aria-expanded="true"] { background: var(--surface-hover); color: var(--text-color); }
+
+/* Collapsible row cards: a Pool and the settings and child table inside it. */
+.row-list { display: flex; flex-direction: column; gap: 8px; align-items: flex-start; width: 100%; min-width: 0; }
+.row-card { width: 100%; min-width: 0; border: 1px solid var(--border-color); border-radius: var(--radius); }
+.row-card > summary {
+    display: flex; align-items: center; gap: 8px; padding: 8px 10px; cursor: pointer;
+    list-style: none; font-family: ui-monospace, monospace;
+}
+.row-card > summary::-webkit-details-marker { display: none; }
+.row-card > summary::before { content: '▸'; content: '▸' / ''; color: var(--text-muted); }
+.row-card[open] > summary::before { content: '▾'; content: '▾' / ''; }
+.row-card > summary:focus-visible { outline: 2px solid var(--focus-color); outline-offset: -2px; }
+.row-card-title { font-weight: 700; }
+.row-card-error { display: none; color: var(--error-color); }
+.row-card:has([aria-invalid="true"]) .row-card-error { display: inline; }
+.row-card-body { display: flex; flex-direction: column; gap: 10px; padding: 4px 10px 10px; min-width: 0; }
+.row-card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr)); gap: 10px; }
+.row-field { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.row-field input[type="checkbox"] { width: 24px; height: 24px; min-height: 24px; align-self: flex-start; }
+.row-field[hidden], .row-editor-table [hidden] { display: none; }
+.row-card-actions { display: flex; justify-content: flex-end; }
+.row-table-scroll { width: 100%; min-width: 0; overflow-x: auto; padding: 4px; margin: -4px; }
+
+/* The address picker: a field with a list of other Nodes' Interfaces under it. */
+.address-picker { display: flex; align-items: center; gap: 4px; width: 100%; min-width: 0; }
+.address-picker input { flex: 1 1 auto; }
+.address-picker-button { flex: none; min-width: 28px; min-height: 28px; padding: 0.25rem 0.5rem; }
+.address-picker-list {
+    position: fixed; z-index: 50; max-height: 12rem; overflow-y: auto; margin: 0; padding: 4px 0;
+    list-style: none; background: var(--surface-color); border: 1px solid var(--border-color);
+    border-radius: var(--radius); box-shadow: 0 4px 12px rgb(0 0 0 / 25%);
+}
+.address-picker-list [role="option"] { padding: 6px 10px; cursor: pointer; font-family: ui-monospace, monospace; }
+.address-picker-list [role="option"]:hover { background: var(--surface-hover); }
+.address-picker-list [role="option"][aria-selected="true"] { background: var(--primary-button-bg); color: white; }
+
+/* A Route's More: a per-row disclosure under the row, and a cue on the button when it holds an error. */
+.row-actions { text-align: right; }
+.row-actions > * + * { margin-left: 6px; }
+.row-more-row > td { padding: 0 6px 8px 0; }
+.row-more { width: 100%; padding: 8px; border-left: 2px solid var(--border-color); }
+.row-editor-table tr:has(+ .row-more-row [aria-invalid="true"]) .row-more-toggle::after { content: ' ⚠'; color: var(--error-color); }
+
+/* Keep secondary-button contrast when the global button hover rule is more specific. */
+.row-more-toggle:hover:not(:disabled),
+.row-editor-add:hover:not(:disabled) { background: var(--surface-hover); color: var(--text-color); }
+
+/* Keep the breadcrumb readable when the viewport is 320 CSS pixels. */
+@media (max-width: 600px) {
+    .authoring-page .header-breadcrumb { flex-shrink: 1; white-space: normal; }
+    .authoring-page .breadcrumb-list { flex-wrap: wrap; }
+}
+
+/* The in-place rename field sits over the Node it renames. */
+.node-rename {
+    position: absolute;
+    z-index: 3;
+    transform: translate(-50%, -50%);
+    display: grid;
+    gap: .25rem;
+}
+
+.node-rename input {
+    width: 9ch;
+    text-align: center;
+    font-weight: 600;
+}
+
+/* Supporting files use the same Script workspace in either source mode. */
+.authoring-lesson-files {
+    padding: .5rem 1rem;
+    flex-shrink: 0;
+    overflow-wrap: anywhere;
+}
+.authoring-lesson-files[open] { max-height: min(40%, 65vh); overflow-y: auto; }
+.authoring-lesson-files label { display: block; margin-top: .5rem; }
+.authoring-lesson-files input,
+.authoring-lesson-files select,
+.authoring-lesson-files textarea { width: 100%; min-width: 0; box-sizing: border-box; }
+.authoring-lesson-files textarea { font-family: monospace; }
+.authoring-file-actions { display: flex; flex-wrap: wrap; gap: .4rem; margin: .5rem 0; }

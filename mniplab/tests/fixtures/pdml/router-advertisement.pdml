@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet type="text/xsl" href="pdml2html.xsl"?>
+<!-- You can find pdml2html.xsl in /usr/share/wireshark or at https://gitlab.com/wireshark/wireshark/-/raw/master/pdml2html.xsl. -->
+<pdml version="0" creator="wireshark/4.0.17" time="Tue Sep 22 19:08:09 2026" capture_file="">
+<packet>
+  <proto name="geninfo" pos="0" showname="General information" size="110">
+    <field name="num" pos="0" show="1" showname="Number" value="1" size="110"/>
+    <field name="len" pos="0" show="110" showname="Frame Length" value="6e" size="110"/>
+    <field name="caplen" pos="0" show="110" showname="Captured Length" value="6e" size="110"/>
+    <field name="timestamp" pos="0" show="Sep 22, 2026 19:08:09.783897785 UTC" showname="Captured Time" value="1790104089.783897785" size="110"/>
+  </proto>
+  <proto name="frame" showname="Frame 1: 110 bytes on wire (880 bits), 110 bytes captured (880 bits) on interface h1-eth0, id 0" size="110" pos="0">
+    <field name="frame.section_number" showname="Section number: 1" size="0" pos="0" show="1"/>
+    <field name="frame.interface_id" showname="Interface id: 0 (h1-eth0)" size="0" pos="0" show="0">
+      <field name="frame.interface_name" showname="Interface name: h1-eth0" size="0" pos="0" show="h1-eth0"/>
+    </field>
+    <field name="frame.encap_type" showname="Encapsulation type: Ethernet (1)" size="0" pos="0" show="1"/>
+    <field name="frame.time" showname="Arrival Time: Sep 22, 2026 19:08:09.783897785 UTC" size="0" pos="0" show="Sep 22, 2026 19:08:09.783897785 UTC"/>
+    <field name="frame.offset_shift" showname="Time shift for this packet: 0.000000000 seconds" size="0" pos="0" show="0.000000000"/>
+    <field name="frame.time_epoch" showname="Epoch Time: 1790104089.783897785 seconds" size="0" pos="0" show="1790104089.783897785"/>
+    <field name="frame.time_delta" showname="Time delta from previous captured frame: 0.000000000 seconds" size="0" pos="0" show="0.000000000"/>
+    <field name="frame.time_delta_displayed" showname="Time delta from previous displayed frame: 0.000000000 seconds" size="0" pos="0" show="0.000000000"/>
+    <field name="frame.time_relative" showname="Time since reference or first frame: 0.000000000 seconds" size="0" pos="0" show="0.000000000"/>
+    <field name="frame.number" showname="Frame Number: 1" size="0" pos="0" show="1"/>
+    <field name="frame.len" showname="Frame Length: 110 bytes (880 bits)" size="0" pos="0" show="110"/>
+    <field name="frame.cap_len" showname="Capture Length: 110 bytes (880 bits)" size="0" pos="0" show="110"/>
+    <field name="frame.marked" showname="Frame is marked: False" size="0" pos="0" show="0"/>
+    <field name="frame.ignored" showname="Frame is ignored: False" size="0" pos="0" show="0"/>
+    <field name="frame.protocols" showname="Protocols in frame: eth:ethertype:ipv6:icmpv6" size="0" pos="0" show="eth:ethertype:ipv6:icmpv6"/>
+  </proto>
+  <proto name="eth" showname="Ethernet II, Src: 5e:1b:d7:f2:c6:6b, Dst: 33:33:00:00:00:01" size="14" pos="0">
+    <field name="eth.dst" showname="Destination: 33:33:00:00:00:01" size="6" pos="0" show="33:33:00:00:00:01" value="333300000001">
+      <field name="eth.dst_resolved" showname="Destination (resolved): 33:33:00:00:00:01" hide="yes" size="6" pos="0" show="33:33:00:00:00:01" value="333300000001"/>
+      <field name="eth.dst.oui" showname="Destination OUI: 33:33:00" hide="yes" size="3" pos="0" show="3355392" value="333300"/>
+      <field name="eth.addr" showname="Address: 33:33:00:00:00:01" size="6" pos="0" show="33:33:00:00:00:01" value="333300000001"/>
+      <field name="eth.addr_resolved" showname="Address (resolved): 33:33:00:00:00:01" hide="yes" size="6" pos="0" show="33:33:00:00:00:01" value="333300000001"/>
+      <field name="eth.addr.oui" showname="Address OUI: 33:33:00" hide="yes" size="3" pos="0" show="3355392" value="333300"/>
+      <field name="eth.dst.lg" showname=".... ..1. .... .... .... .... = LG bit: Locally administered address (this is NOT the factory default)" size="3" pos="0" show="1" value="1" unmaskedvalue="333300"/>
+      <field name="eth.lg" showname=".... ..1. .... .... .... .... = LG bit: Locally administered address (this is NOT the factory default)" hide="yes" size="3" pos="0" show="1" value="1" unmaskedvalue="333300"/>
+      <field name="eth.dst.ig" showname=".... ...1 .... .... .... .... = IG bit: Group address (multicast/broadcast)" size="3" pos="0" show="1" value="1" unmaskedvalue="333300"/>
+      <field name="eth.ig" showname=".... ...1 .... .... .... .... = IG bit: Group address (multicast/broadcast)" hide="yes" size="3" pos="0" show="1" value="1" unmaskedvalue="333300"/>
+    </field>
+    <field name="eth.src" showname="Source: 5e:1b:d7:f2:c6:6b" size="6" pos="6" show="5e:1b:d7:f2:c6:6b" value="5e1bd7f2c66b">
+      <field name="eth.src_resolved" showname="Source (resolved): 5e:1b:d7:f2:c6:6b" hide="yes" size="6" pos="6" show="5e:1b:d7:f2:c6:6b" value="5e1bd7f2c66b"/>
+      <field name="eth.src.oui" showname="Source OUI: 5e:1b:d7" hide="yes" size="3" pos="6" show="6167511" value="5e1bd7"/>
+      <field name="eth.addr" showname="Address: 5e:1b:d7:f2:c6:6b" size="6" pos="6" show="5e:1b:d7:f2:c6:6b" value="5e1bd7f2c66b"/>
+      <field name="eth.addr_resolved" showname="Address (resolved): 5e:1b:d7:f2:c6:6b" hide="yes" size="6" pos="6" show="5e:1b:d7:f2:c6:6b" value="5e1bd7f2c66b"/>
+      <field name="eth.addr.oui" showname="Address OUI: 5e:1b:d7" hide="yes" size="3" pos="6" show="6167511" value="5e1bd7"/>
+      <field name="eth.src.lg" showname=".... ..1. .... .... .... .... = LG bit: Locally administered address (this is NOT the factory default)" size="3" pos="6" show="1" value="1" unmaskedvalue="5e1bd7"/>
+      <field name="eth.lg" showname=".... ..1. .... .... .... .... = LG bit: Locally administered address (this is NOT the factory default)" hide="yes" size="3" pos="6" show="1" value="1" unmaskedvalue="5e1bd7"/>
+      <field name="eth.src.ig" showname=".... ...0 .... .... .... .... = IG bit: Individual address (unicast)" size="3" pos="6" show="0" value="0" unmaskedvalue="5e1bd7"/>
+      <field name="eth.ig" showname=".... ...0 .... .... .... .... = IG bit: Individual address (unicast)" hide="yes" size="3" pos="6" show="0" value="0" unmaskedvalue="5e1bd7"/>
+    </field>
+    <field name="eth.type" showname="Type: IPv6 (0x86dd)" size="2" pos="12" show="0x86dd" value="86dd"/>
+  </proto>
+  <proto name="ipv6" showname="Internet Protocol Version 6, Src: fe80::5c1b:d7ff:fef2:c66b, Dst: ff02::1" size="40" pos="14">
+    <field name="ipv6.version" showname="0110 .... = Version: 6" size="1" pos="14" show="6" value="60"/>
+    <field name="ip.version" showname="0110 .... = Version: 6 [This field makes the filter match on &quot;ip.version == 6&quot; possible]" hide="yes" size="1" pos="14" show="6" value="6" unmaskedvalue="60"/>
+    <field name="ipv6.tclass" showname=".... 0000 0000 .... .... .... .... .... = Traffic Class: 0x00 (DSCP: CS0, ECN: Not-ECT)" size="4" pos="14" show="0x00000000" value="0" unmaskedvalue="6001578b">
+      <field name="ipv6.tclass.dscp" showname=".... 0000 00.. .... .... .... .... .... = Differentiated Services Codepoint: Default (0)" size="4" pos="14" show="0" value="0" unmaskedvalue="6001578b"/>
+      <field name="ipv6.tclass.ecn" showname=".... .... ..00 .... .... .... .... .... = Explicit Congestion Notification: Not ECN-Capable Transport (0)" size="4" pos="14" show="0" value="0" unmaskedvalue="6001578b"/>
+    </field>
+    <field name="ipv6.flow" showname=".... 0001 0101 0111 1000 1011 = Flow Label: 0x1578b" size="3" pos="15" show="0x01578b" value="1578B" unmaskedvalue="01578b"/>
+    <field name="ipv6.plen" showname="Payload Length: 56" size="2" pos="18" show="56" value="0038"/>
+    <field name="ipv6.nxt" showname="Next Header: ICMPv6 (58)" size="1" pos="20" show="58" value="3a"/>
+    <field name="ipv6.hlim" showname="Hop Limit: 255" size="1" pos="21" show="255" value="ff"/>
+    <field name="ipv6.src" showname="Source Address: fe80::5c1b:d7ff:fef2:c66b" size="16" pos="22" show="fe80::5c1b:d7ff:fef2:c66b" value="fe800000000000005c1bd7fffef2c66b"/>
+    <field name="ipv6.addr" showname="Source or Destination Address: fe80::5c1b:d7ff:fef2:c66b" hide="yes" size="16" pos="22" show="fe80::5c1b:d7ff:fef2:c66b" value="fe800000000000005c1bd7fffef2c66b"/>
+    <field name="ipv6.src_host" showname="Source Host: fe80::5c1b:d7ff:fef2:c66b" hide="yes" size="16" pos="22" show="fe80::5c1b:d7ff:fef2:c66b" value="fe800000000000005c1bd7fffef2c66b"/>
+    <field name="ipv6.host" showname="Source or Destination Host: fe80::5c1b:d7ff:fef2:c66b" hide="yes" size="16" pos="22" show="fe80::5c1b:d7ff:fef2:c66b" value="fe800000000000005c1bd7fffef2c66b"/>
+    <field name="ipv6.dst" showname="Destination Address: ff02::1" size="16" pos="38" show="ff02::1" value="ff020000000000000000000000000001"/>
+    <field name="ipv6.addr" showname="Source or Destination Address: ff02::1" hide="yes" size="16" pos="38" show="ff02::1" value="ff020000000000000000000000000001"/>
+    <field name="ipv6.dst_host" showname="Destination Host: ff02::1" hide="yes" size="16" pos="38" show="ff02::1" value="ff020000000000000000000000000001"/>
+    <field name="ipv6.host" showname="Source or Destination Host: ff02::1" hide="yes" size="16" pos="38" show="ff02::1" value="ff020000000000000000000000000001"/>
+  </proto>
+  <proto name="icmpv6" showname="Internet Control Message Protocol v6" size="56" pos="54">
+    <field name="icmpv6.type" showname="Type: Router Advertisement (134)" size="1" pos="54" show="134" value="86"/>
+    <field name="icmpv6.code" showname="Code: 0" size="1" pos="55" show="0" value="00"/>
+    <field name="icmpv6.checksum" showname="Checksum: 0x049c [correct]" size="2" pos="56" show="0x049c" value="049c"/>
+    <field name="icmpv6.checksum.status" showname="Checksum Status: Good" size="0" pos="56" show="1"/>
+    <field name="icmpv6.nd.ra.cur_hop_limit" showname="Cur hop limit: 64" size="1" pos="58" show="64" value="40"/>
+    <field name="icmpv6.nd.ra.flag" showname="Flags: 0x80, Managed address configuration, Prf (Default Router Preference): Medium" size="1" pos="59" show="0x80" value="80">
+      <field name="icmpv6.nd.ra.flag.m" showname="1... .... = Managed address configuration: Set" size="1" pos="59" show="1" value="1" unmaskedvalue="80"/>
+      <field name="icmpv6.nd.ra.flag.o" showname=".0.. .... = Other configuration: Not set" size="1" pos="59" show="0" value="0" unmaskedvalue="80"/>
+      <field name="icmpv6.nd.ra.flag.h" showname="..0. .... = Home Agent: Not set" size="1" pos="59" show="0" value="0" unmaskedvalue="80"/>
+      <field name="icmpv6.nd.ra.flag.prf" showname="...0 0... = Prf (Default Router Preference): Medium (0)" size="1" pos="59" show="0" value="0" unmaskedvalue="80"/>
+      <field name="icmpv6.nd.ra.flag.p" showname=".... .0.. = Proxy: Not set" size="1" pos="59" show="0" value="0" unmaskedvalue="80"/>
+      <field name="icmpv6.nd.ra.flag.rsv" showname=".... ..00 = Reserved: 0" size="1" pos="59" show="0" value="0" unmaskedvalue="80"/>
+    </field>
+    <field name="icmpv6.nd.ra.router_lifetime" showname="Router lifetime (s): 1800" size="2" pos="60" show="1800" value="0708"/>
+    <field name="icmpv6.nd.ra.reachable_time" showname="Reachable time (ms): 0" size="4" pos="62" show="0" value="00000000"/>
+    <field name="icmpv6.nd.ra.retrans_timer" showname="Retrans timer (ms): 0" size="4" pos="66" show="0" value="00000000"/>
+    <field name="icmpv6.opt" showname="ICMPv6 Option (Prefix information : 2001:db8:1::/64)" size="32" pos="70" show="" value="">
+      <field name="icmpv6.opt.type" showname="Type: Prefix information (3)" size="1" pos="70" show="3" value="03"/>
+      <field name="icmpv6.opt.length" showname="Length: 4 (32 bytes)" size="1" pos="71" show="4" value="04"/>
+      <field name="icmpv6.opt.prefix.length" showname="Prefix Length: 64" size="1" pos="72" show="64" value="40"/>
+      <field name="icmpv6.opt.prefix.flag" showname="Flag: 0x80, On-link flag(L)" size="1" pos="73" show="0x80" value="80">
+        <field name="icmpv6.opt.prefix.flag.l" showname="1... .... = On-link flag(L): Set" size="1" pos="73" show="1" value="1" unmaskedvalue="80"/>
+        <field name="icmpv6.opt.prefix.flag.a" showname=".0.. .... = Autonomous address-configuration flag(A): Not set" size="1" pos="73" show="0" value="0" unmaskedvalue="80"/>
+        <field name="icmpv6.opt.prefix.flag.r" showname="..0. .... = Router address flag(R): Not set" size="1" pos="73" show="0" value="0" unmaskedvalue="80"/>
+        <field name="icmpv6.opt.prefix.flag.reserved" showname="...0 0000 = Reserved: 0" size="1" pos="73" show="0" value="0" unmaskedvalue="80"/>
+      </field>
+      <field name="icmpv6.opt.prefix.valid_lifetime" showname="Valid Lifetime: 2592000" size="4" pos="74" show="2592000" value="00278d00"/>
+      <field name="icmpv6.opt.prefix.preferred_lifetime" showname="Preferred Lifetime: 604800" size="4" pos="78" show="604800" value="00093a80"/>
+      <field name="icmpv6.opt.reserved" showname="Reserved" size="4" pos="82" show="" value=""/>
+      <field name="icmpv6.opt.prefix" showname="Prefix: 2001:db8:1::" size="16" pos="86" show="2001:db8:1::" value="20010db8000100000000000000000000"/>
+    </field>
+    <field name="icmpv6.opt" showname="ICMPv6 Option (Source link-layer address : 5e:1b:d7:f2:c6:6b)" size="8" pos="102" show="" value="">
+      <field name="icmpv6.opt.type" showname="Type: Source link-layer address (1)" size="1" pos="102" show="1" value="01"/>
+      <field name="icmpv6.opt.length" showname="Length: 1 (8 bytes)" size="1" pos="103" show="1" value="01"/>
+      <field name="icmpv6.opt.linkaddr" showname="Link-layer address: 5e:1b:d7:f2:c6:6b" size="6" pos="104" show="5e:1b:d7:f2:c6:6b" value="5e1bd7f2c66b"/>
+      <field name="icmpv6.opt.src_linkaddr" showname="Source Link-layer address: 5e:1b:d7:f2:c6:6b" hide="yes" size="6" pos="104" show="5e:1b:d7:f2:c6:6b" value="5e1bd7f2c66b"/>
+    </field>
+  </proto>
+</packet>
+</pdml>

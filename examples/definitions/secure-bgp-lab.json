@@ -1,0 +1,306 @@
+{
+  "schema_version": 3,
+  "address_family": "ipv4",
+  "persistent_config": true,
+  "example": "secure-bgp-lab",
+  "seeds": "frr-config/secure-bgp-lab",
+  "topology": {
+    "nodes": [
+      {
+        "id": "r1",
+        "name": "r1",
+        "type": "router",
+        "protocols": [
+          "BGP"
+        ],
+        "fast_timers": false,
+        "startup": []
+      },
+      {
+        "id": "r2",
+        "name": "r2",
+        "type": "router",
+        "protocols": [
+          "BGP"
+        ],
+        "fast_timers": false,
+        "startup": []
+      },
+      {
+        "id": "r4",
+        "name": "r4",
+        "type": "router",
+        "protocols": [
+          "BGP"
+        ],
+        "fast_timers": false,
+        "startup": []
+      },
+      {
+        "id": "sp1",
+        "name": "sp1",
+        "type": "speaker",
+        "local_as": 65003,
+        "routes": [],
+        "neighbors": [
+          {
+            "peer": "10.0.13.1",
+            "local_address": "10.0.13.2",
+            "local_as": 65003,
+            "peer_as": 65001,
+            "hold_time": null,
+            "routes": [
+              {
+                "prefix": "10.2.0.0/24",
+                "next_hop": "10.0.13.2",
+                "as_path": [
+                  65003
+                ]
+              }
+            ]
+          }
+        ],
+        "startup": [
+          {
+            "stage": "before-daemons",
+            "command": "ip addr add 10.2.0.2/32 dev lo",
+            "timeout": 5,
+            "may_fail": false
+          },
+          {
+            "stage": "before-daemons",
+            "command": "ip route add 10.1.0.0/24 via 10.0.13.1",
+            "timeout": 5,
+            "may_fail": false
+          }
+        ]
+      },
+      {
+        "id": "h1",
+        "name": "h1",
+        "type": "host",
+        "ipv4_gateway": "10.1.0.1",
+        "ipv6_gateway": "",
+        "startup": []
+      },
+      {
+        "id": "h2",
+        "name": "h2",
+        "type": "host",
+        "ipv4_gateway": "10.2.0.1",
+        "ipv6_gateway": "",
+        "startup": []
+      },
+      {
+        "id": "rv",
+        "name": "rv",
+        "type": "host",
+        "ipv4_gateway": "10.1.0.65",
+        "ipv6_gateway": "",
+        "startup": [],
+        "validator": {
+          "refresh": 10
+        }
+      },
+      {
+        "id": "ca",
+        "name": "ca",
+        "type": "host",
+        "ipv4_gateway": "10.99.0.1",
+        "ipv6_gateway": "",
+        "startup": [],
+        "rpki_ca": {
+          "hostname": null,
+          "hosted_cas": [
+            {
+              "asn": 65001,
+              "prefixes": [
+                "10.1.0.0/24"
+              ],
+              "roas": [],
+              "aspas": []
+            },
+            {
+              "asn": 65002,
+              "prefixes": [
+                "10.2.0.0/24"
+              ],
+              "roas": [],
+              "aspas": []
+            },
+            {
+              "asn": 65003,
+              "prefixes": [
+                "10.3.0.0/24"
+              ],
+              "roas": [],
+              "aspas": []
+            },
+            {
+              "asn": 65004,
+              "prefixes": [
+                "10.4.0.0/24"
+              ],
+              "roas": [],
+              "aspas": []
+            }
+          ]
+        }
+      }
+    ],
+    "links": [
+      {
+        "id": "h1-r1-1",
+        "ends": [
+          {
+            "node_id": "h1",
+            "interface_id": "if-000000000001",
+            "port": 0,
+            "ipv4": "10.1.0.2/26",
+            "ipv6": ""
+          },
+          {
+            "node_id": "r1",
+            "interface_id": "if-000000000002",
+            "port": 0,
+            "ipv4": "10.1.0.1/26",
+            "ipv6": ""
+          }
+        ]
+      },
+      {
+        "id": "rv-r1-2",
+        "ends": [
+          {
+            "node_id": "rv",
+            "interface_id": "if-000000000003",
+            "port": 0,
+            "ipv4": "10.1.0.66/30",
+            "ipv6": ""
+          },
+          {
+            "node_id": "r1",
+            "interface_id": "if-000000000004",
+            "port": 1,
+            "ipv4": "10.1.0.65/30",
+            "ipv6": ""
+          }
+        ]
+      },
+      {
+        "id": "r1-r2-3",
+        "ends": [
+          {
+            "node_id": "r1",
+            "interface_id": "if-000000000005",
+            "port": 2,
+            "ipv4": "10.0.12.1/30",
+            "ipv6": ""
+          },
+          {
+            "node_id": "r2",
+            "interface_id": "if-000000000006",
+            "port": 0,
+            "ipv4": "10.0.12.2/30",
+            "ipv6": ""
+          }
+        ]
+      },
+      {
+        "id": "r1-sp1-4",
+        "ends": [
+          {
+            "node_id": "r1",
+            "interface_id": "if-000000000007",
+            "port": 3,
+            "ipv4": "10.0.13.1/30",
+            "ipv6": ""
+          },
+          {
+            "node_id": "sp1",
+            "interface_id": "if-000000000008",
+            "port": 0,
+            "ipv4": "10.0.13.2/30",
+            "ipv6": ""
+          }
+        ]
+      },
+      {
+        "id": "r1-r4-5",
+        "ends": [
+          {
+            "node_id": "r1",
+            "interface_id": "if-000000000009",
+            "port": 4,
+            "ipv4": "10.0.14.1/30",
+            "ipv6": ""
+          },
+          {
+            "node_id": "r4",
+            "interface_id": "if-000000000010",
+            "port": 0,
+            "ipv4": "10.0.14.2/30",
+            "ipv6": ""
+          }
+        ]
+      },
+      {
+        "id": "r2-r4-6",
+        "ends": [
+          {
+            "node_id": "r2",
+            "interface_id": "if-000000000011",
+            "port": 1,
+            "ipv4": "10.0.24.1/30",
+            "ipv6": ""
+          },
+          {
+            "node_id": "r4",
+            "interface_id": "if-000000000012",
+            "port": 1,
+            "ipv4": "10.0.24.2/30",
+            "ipv6": ""
+          }
+        ]
+      },
+      {
+        "id": "h2-r2-7",
+        "ends": [
+          {
+            "node_id": "h2",
+            "interface_id": "if-000000000013",
+            "port": 0,
+            "ipv4": "10.2.0.2/24",
+            "ipv6": ""
+          },
+          {
+            "node_id": "r2",
+            "interface_id": "if-000000000014",
+            "port": 2,
+            "ipv4": "10.2.0.1/24",
+            "ipv6": ""
+          }
+        ]
+      },
+      {
+        "id": "ca-r1-8",
+        "ends": [
+          {
+            "node_id": "ca",
+            "interface_id": "if-000000000015",
+            "port": 0,
+            "ipv4": "10.99.0.2/30",
+            "ipv6": ""
+          },
+          {
+            "node_id": "r1",
+            "interface_id": "if-000000000016",
+            "port": 5,
+            "ipv4": "10.99.0.1/30",
+            "ipv6": ""
+          }
+        ]
+      }
+    ]
+  }
+}

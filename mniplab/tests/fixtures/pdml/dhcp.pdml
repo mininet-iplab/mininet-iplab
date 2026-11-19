@@ -1,0 +1,685 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet type="text/xsl" href="pdml2html.xsl"?>
+<!-- You can find pdml2html.xsl in /usr/share/wireshark or at https://gitlab.com/wireshark/wireshark/-/raw/master/pdml2html.xsl. -->
+<pdml version="0" creator="wireshark/4.0.17" time="Tue Sep 22 16:56:49 2026" capture_file="">
+<packet>
+  <proto name="geninfo" pos="0" showname="General information" size="342">
+    <field name="num" pos="0" show="1" showname="Number" value="1" size="342"/>
+    <field name="len" pos="0" show="342" showname="Frame Length" value="156" size="342"/>
+    <field name="caplen" pos="0" show="342" showname="Captured Length" value="156" size="342"/>
+    <field name="timestamp" pos="0" show="Sep 22, 2026 16:56:53.760745728 UTC" showname="Captured Time" value="1790096213.760745728" size="342"/>
+  </proto>
+  <proto name="frame" showname="Frame 1: 342 bytes on wire (2736 bits), 342 bytes captured (2736 bits) on interface r1-eth0, id 0" size="342" pos="0">
+    <field name="frame.section_number" showname="Section number: 1" size="0" pos="0" show="1"/>
+    <field name="frame.interface_id" showname="Interface id: 0 (r1-eth0)" size="0" pos="0" show="0">
+      <field name="frame.interface_name" showname="Interface name: r1-eth0" size="0" pos="0" show="r1-eth0"/>
+    </field>
+    <field name="frame.encap_type" showname="Encapsulation type: Ethernet (1)" size="0" pos="0" show="1"/>
+    <field name="frame.time" showname="Arrival Time: Sep 22, 2026 16:56:53.760745728 UTC" size="0" pos="0" show="Sep 22, 2026 16:56:53.760745728 UTC"/>
+    <field name="frame.offset_shift" showname="Time shift for this packet: 0.000000000 seconds" size="0" pos="0" show="0.000000000"/>
+    <field name="frame.time_epoch" showname="Epoch Time: 1790096213.760745728 seconds" size="0" pos="0" show="1790096213.760745728"/>
+    <field name="frame.time_delta" showname="Time delta from previous captured frame: 0.000000000 seconds" size="0" pos="0" show="0.000000000"/>
+    <field name="frame.time_delta_displayed" showname="Time delta from previous displayed frame: 0.000000000 seconds" size="0" pos="0" show="0.000000000"/>
+    <field name="frame.time_relative" showname="Time since reference or first frame: 0.000000000 seconds" size="0" pos="0" show="0.000000000"/>
+    <field name="frame.number" showname="Frame Number: 1" size="0" pos="0" show="1"/>
+    <field name="frame.len" showname="Frame Length: 342 bytes (2736 bits)" size="0" pos="0" show="342"/>
+    <field name="frame.cap_len" showname="Capture Length: 342 bytes (2736 bits)" size="0" pos="0" show="342"/>
+    <field name="frame.marked" showname="Frame is marked: False" size="0" pos="0" show="0"/>
+    <field name="frame.ignored" showname="Frame is ignored: False" size="0" pos="0" show="0"/>
+    <field name="frame.protocols" showname="Protocols in frame: eth:ethertype:ip:udp:dhcp" size="0" pos="0" show="eth:ethertype:ip:udp:dhcp"/>
+  </proto>
+  <proto name="eth" showname="Ethernet II, Src: 00:00:00:00:00:02, Dst: ff:ff:ff:ff:ff:ff" size="14" pos="0">
+    <field name="eth.dst" showname="Destination: ff:ff:ff:ff:ff:ff" size="6" pos="0" show="ff:ff:ff:ff:ff:ff" value="ffffffffffff">
+      <field name="eth.dst_resolved" showname="Destination (resolved): ff:ff:ff:ff:ff:ff" hide="yes" size="6" pos="0" show="ff:ff:ff:ff:ff:ff" value="ffffffffffff"/>
+      <field name="eth.dst.oui" showname="Destination OUI: ff:ff:ff" hide="yes" size="3" pos="0" show="16777215" value="ffffff"/>
+      <field name="eth.addr" showname="Address: ff:ff:ff:ff:ff:ff" size="6" pos="0" show="ff:ff:ff:ff:ff:ff" value="ffffffffffff"/>
+      <field name="eth.addr_resolved" showname="Address (resolved): ff:ff:ff:ff:ff:ff" hide="yes" size="6" pos="0" show="ff:ff:ff:ff:ff:ff" value="ffffffffffff"/>
+      <field name="eth.addr.oui" showname="Address OUI: ff:ff:ff" hide="yes" size="3" pos="0" show="16777215" value="ffffff"/>
+      <field name="eth.dst.lg" showname=".... ..1. .... .... .... .... = LG bit: Locally administered address (this is NOT the factory default)" size="3" pos="0" show="1" value="1" unmaskedvalue="ffffff"/>
+      <field name="eth.lg" showname=".... ..1. .... .... .... .... = LG bit: Locally administered address (this is NOT the factory default)" hide="yes" size="3" pos="0" show="1" value="1" unmaskedvalue="ffffff"/>
+      <field name="eth.dst.ig" showname=".... ...1 .... .... .... .... = IG bit: Group address (multicast/broadcast)" size="3" pos="0" show="1" value="1" unmaskedvalue="ffffff"/>
+      <field name="eth.ig" showname=".... ...1 .... .... .... .... = IG bit: Group address (multicast/broadcast)" hide="yes" size="3" pos="0" show="1" value="1" unmaskedvalue="ffffff"/>
+    </field>
+    <field name="eth.src" showname="Source: 00:00:00:00:00:02" size="6" pos="6" show="00:00:00:00:00:02" value="000000000002">
+      <field name="eth.src_resolved" showname="Source (resolved): 00:00:00:00:00:02" hide="yes" size="6" pos="6" show="00:00:00:00:00:02" value="000000000002"/>
+      <field name="eth.src.oui" showname="Source OUI: 00:00:00 (Officially Xerox, but" hide="yes" size="3" pos="6" show="0" value="000000"/>
+      <field name="eth.src.oui_resolved" showname="Source OUI (resolved): Officially Xerox, but 0:0:0:0:0:0 is more common" hide="yes" size="6" pos="6" show="Officially Xerox, but 0:0:0:0:0:0 is more common" value="000000000002"/>
+      <field name="eth.addr" showname="Address: 00:00:00:00:00:02" size="6" pos="6" show="00:00:00:00:00:02" value="000000000002"/>
+      <field name="eth.addr_resolved" showname="Address (resolved): 00:00:00:00:00:02" hide="yes" size="6" pos="6" show="00:00:00:00:00:02" value="000000000002"/>
+      <field name="eth.addr.oui" showname="Address OUI: 00:00:00 (Officially Xerox, but" hide="yes" size="3" pos="6" show="0" value="000000"/>
+      <field name="eth.addr.oui_resolved" showname="Address OUI (resolved): Officially Xerox, but 0:0:0:0:0:0 is more common" hide="yes" size="6" pos="6" show="Officially Xerox, but 0:0:0:0:0:0 is more common" value="000000000002"/>
+      <field name="eth.src.lg" showname=".... ..0. .... .... .... .... = LG bit: Globally unique address (factory default)" size="3" pos="6" show="0" value="0" unmaskedvalue="000000"/>
+      <field name="eth.lg" showname=".... ..0. .... .... .... .... = LG bit: Globally unique address (factory default)" hide="yes" size="3" pos="6" show="0" value="0" unmaskedvalue="000000"/>
+      <field name="eth.src.ig" showname=".... ...0 .... .... .... .... = IG bit: Individual address (unicast)" size="3" pos="6" show="0" value="0" unmaskedvalue="000000"/>
+      <field name="eth.ig" showname=".... ...0 .... .... .... .... = IG bit: Individual address (unicast)" hide="yes" size="3" pos="6" show="0" value="0" unmaskedvalue="000000"/>
+    </field>
+    <field name="eth.type" showname="Type: IPv4 (0x0800)" size="2" pos="12" show="0x0800" value="0800"/>
+  </proto>
+  <proto name="ip" showname="Internet Protocol Version 4, Src: 0.0.0.0, Dst: 255.255.255.255" size="20" pos="14">
+    <field name="ip.version" showname="0100 .... = Version: 4" size="1" pos="14" show="4" value="45"/>
+    <field name="ip.hdr_len" showname=".... 0101 = Header Length: 20 bytes (5)" size="1" pos="14" show="20" value="45"/>
+    <field name="ip.dsfield" showname="Differentiated Services Field: 0x00 (DSCP: CS0, ECN: Not-ECT)" size="1" pos="15" show="0x00" value="00">
+      <field name="ip.dsfield.dscp" showname="0000 00.. = Differentiated Services Codepoint: Default (0)" size="1" pos="15" show="0" value="0" unmaskedvalue="00"/>
+      <field name="ip.dsfield.ecn" showname=".... ..00 = Explicit Congestion Notification: Not ECN-Capable Transport (0)" size="1" pos="15" show="0" value="0" unmaskedvalue="00"/>
+    </field>
+    <field name="ip.len" showname="Total Length: 328" size="2" pos="16" show="328" value="0148"/>
+    <field name="ip.id" showname="Identification: 0x14b8 (5304)" size="2" pos="18" show="0x14b8" value="14b8"/>
+    <field name="ip.flags" showname="000. .... = Flags: 0x0" size="1" pos="20" show="0x00" value="0" unmaskedvalue="00">
+      <field name="ip.flags.rb" showname="0... .... = Reserved bit: Not set" size="1" pos="20" show="0" value="0" unmaskedvalue="00"/>
+      <field name="ip.flags.df" showname=".0.. .... = Don&#x27;t fragment: Not set" size="1" pos="20" show="0" value="0" unmaskedvalue="00"/>
+      <field name="ip.flags.mf" showname="..0. .... = More fragments: Not set" size="1" pos="20" show="0" value="0" unmaskedvalue="00"/>
+    </field>
+    <field name="ip.frag_offset" showname="...0 0000 0000 0000 = Fragment Offset: 0" size="2" pos="20" show="0" value="0" unmaskedvalue="0000"/>
+    <field name="ip.ttl" showname="Time to Live: 64" size="1" pos="22" show="64" value="40"/>
+    <field name="ip.proto" showname="Protocol: UDP (17)" size="1" pos="23" show="17" value="11"/>
+    <field name="ip.checksum" showname="Header Checksum: 0x64ee [validation disabled]" size="2" pos="24" show="0x64ee" value="64ee"/>
+    <field name="ip.checksum.status" showname="Header checksum status: Unverified" size="0" pos="24" show="2"/>
+    <field name="ip.src" showname="Source Address: 0.0.0.0" size="4" pos="26" show="0.0.0.0" value="00000000"/>
+    <field name="ip.addr" showname="Source or Destination Address: 0.0.0.0" hide="yes" size="4" pos="26" show="0.0.0.0" value="00000000"/>
+    <field name="ip.src_host" showname="Source Host: 0.0.0.0" hide="yes" size="4" pos="26" show="0.0.0.0" value="00000000"/>
+    <field name="ip.host" showname="Source or Destination Host: 0.0.0.0" hide="yes" size="4" pos="26" show="0.0.0.0" value="00000000"/>
+    <field name="ip.dst" showname="Destination Address: 255.255.255.255" size="4" pos="30" show="255.255.255.255" value="ffffffff"/>
+    <field name="ip.addr" showname="Source or Destination Address: 255.255.255.255" hide="yes" size="4" pos="30" show="255.255.255.255" value="ffffffff"/>
+    <field name="ip.dst_host" showname="Destination Host: 255.255.255.255" hide="yes" size="4" pos="30" show="255.255.255.255" value="ffffffff"/>
+    <field name="ip.host" showname="Source or Destination Host: 255.255.255.255" hide="yes" size="4" pos="30" show="255.255.255.255" value="ffffffff"/>
+  </proto>
+  <proto name="udp" showname="User Datagram Protocol, Src Port: 68, Dst Port: 67" size="8" pos="34">
+    <field name="udp.srcport" showname="Source Port: 68" size="2" pos="34" show="68" value="0044"/>
+    <field name="udp.dstport" showname="Destination Port: 67" size="2" pos="36" show="67" value="0043"/>
+    <field name="udp.port" showname="Source or Destination Port: 68" hide="yes" size="2" pos="34" show="68" value="0044"/>
+    <field name="udp.port" showname="Source or Destination Port: 67" hide="yes" size="2" pos="36" show="67" value="0043"/>
+    <field name="udp.length" showname="Length: 308" size="2" pos="38" show="308" value="0134"/>
+    <field name="udp.checksum" showname="Checksum: 0x93de [unverified]" size="2" pos="40" show="0x93de" value="93de"/>
+    <field name="udp.checksum.status" showname="Checksum Status: Unverified" size="0" pos="40" show="2"/>
+    <field name="udp.stream" showname="Stream index: 0" size="0" pos="42" show="0"/>
+    <field name="" show="Timestamps" size="0" pos="34">
+      <field name="udp.time_relative" showname="Time since first frame: 0.000000000 seconds" size="0" pos="34" show="0.000000000"/>
+      <field name="udp.time_delta" showname="Time since previous frame: 0.000000000 seconds" size="0" pos="34" show="0.000000000"/>
+    </field>
+    <field name="udp.payload" showname="UDP payload (300 bytes)" size="300" pos="42" show="01:01:06:00:61:56:38:bd:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:02:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:63:82:53:63:35:01:01:37:0e:01:79:03:06:0c:0f:1a:1c:21:33:36:3a:3b:77:39:02:05:c0:3d:13:ff:00:00:00:02:00:01:00:01:32:45:6f:d4:00:00:00:00:00:02:50:00:74:01:01:91:01:01:ff:00:00:00:00:00:00:00" value="01010600615638bd00000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000063825363350101370e017903060c0f1a1c2133363a3b77390205c03d13ff000000020001000132456fd40000000000025000740101910101ff00000000000000"/>
+  </proto>
+  <proto name="dhcp" showname="Dynamic Host Configuration Protocol (Discover)" size="300" pos="42">
+    <field name="dhcp.type" showname="Message type: Boot Request (1)" size="1" pos="42" show="1" value="01"/>
+    <field name="dhcp.hw.type" showname="Hardware type: Ethernet (0x01)" size="1" pos="43" show="0x01" value="01"/>
+    <field name="dhcp.hw.len" showname="Hardware address length: 6" size="1" pos="44" show="6" value="06"/>
+    <field name="dhcp.hops" showname="Hops: 0" size="1" pos="45" show="0" value="00"/>
+    <field name="dhcp.id" showname="Transaction ID: 0x615638bd" size="4" pos="46" show="0x615638bd" value="615638bd"/>
+    <field name="dhcp.secs" showname="Seconds elapsed: 0" size="2" pos="50" show="0" value="0000"/>
+    <field name="dhcp.flags" showname="Bootp flags: 0x0000 (Unicast)" size="2" pos="52" show="0x0000" value="0000">
+      <field name="dhcp.flags.bc" showname="0... .... .... .... = Broadcast flag: Unicast" size="2" pos="52" show="0" value="0" unmaskedvalue="0000"/>
+      <field name="dhcp.flags.reserved" showname=".000 0000 0000 0000 = Reserved flags: 0x0000" size="2" pos="52" show="0x0000" value="0" unmaskedvalue="0000"/>
+    </field>
+    <field name="dhcp.ip.client" showname="Client IP address: 0.0.0.0" size="4" pos="54" show="0.0.0.0" value="00000000"/>
+    <field name="dhcp.ip.your" showname="Your (client) IP address: 0.0.0.0" size="4" pos="58" show="0.0.0.0" value="00000000"/>
+    <field name="dhcp.ip.server" showname="Next server IP address: 0.0.0.0" size="4" pos="62" show="0.0.0.0" value="00000000"/>
+    <field name="dhcp.ip.relay" showname="Relay agent IP address: 0.0.0.0" size="4" pos="66" show="0.0.0.0" value="00000000"/>
+    <field name="dhcp.hw.mac_addr" showname="Client MAC address: 00:00:00:00:00:02" size="6" pos="70" show="00:00:00:00:00:02" value="000000000002"/>
+    <field name="dhcp.hw.addr_padding" showname="Client hardware address padding: 00000000000000000000" size="10" pos="76" show="00:00:00:00:00:00:00:00:00:00" value="00000000000000000000"/>
+    <field name="dhcp.server" showname="Server host name not given" size="64" pos="86" show="" value="00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"/>
+    <field name="dhcp.file" showname="Boot file name not given" size="128" pos="150" show="" value="0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"/>
+    <field name="dhcp.cookie" showname="Magic cookie: DHCP" size="4" pos="278" show="99.130.83.99" value="63825363"/>
+    <field name="dhcp.option.type" showname="Option: (53) DHCP Message Type (Discover)" size="3" pos="282" show="53" value="350101">
+      <field name="dhcp.option.length" showname="Length: 1" size="1" pos="283" show="1" value="01"/>
+      <field name="dhcp.option.value" showname="Value: 01" hide="yes" size="1" pos="284" show="01" value="01"/>
+      <field name="dhcp.option.dhcp" showname="DHCP: Discover (1)" size="1" pos="284" show="1" value="01"/>
+    </field>
+    <field name="dhcp.option.type" showname="Option: (55) Parameter Request List" size="16" pos="285" show="55" value="370e017903060c0f1a1c2133363a3b77">
+      <field name="dhcp.option.length" showname="Length: 14" size="1" pos="286" show="14" value="0e"/>
+      <field name="dhcp.option.value" showname="Value: 017903060c0f1a1c2133363a3b77" hide="yes" size="14" pos="287" show="01:79:03:06:0c:0f:1a:1c:21:33:36:3a:3b:77" value="017903060c0f1a1c2133363a3b77"/>
+      <field name="dhcp.option.request_list_item" showname="Parameter Request List Item: (1) Subnet Mask" size="1" pos="287" show="1" value="01"/>
+      <field name="dhcp.option.request_list_item" showname="Parameter Request List Item: (121) Classless Static Route" size="1" pos="288" show="121" value="79"/>
+      <field name="dhcp.option.request_list_item" showname="Parameter Request List Item: (3) Router" size="1" pos="289" show="3" value="03"/>
+      <field name="dhcp.option.request_list_item" showname="Parameter Request List Item: (6) Domain Name Server" size="1" pos="290" show="6" value="06"/>
+      <field name="dhcp.option.request_list_item" showname="Parameter Request List Item: (12) Host Name" size="1" pos="291" show="12" value="0c"/>
+      <field name="dhcp.option.request_list_item" showname="Parameter Request List Item: (15) Domain Name" size="1" pos="292" show="15" value="0f"/>
+      <field name="dhcp.option.request_list_item" showname="Parameter Request List Item: (26) Interface MTU" size="1" pos="293" show="26" value="1a"/>
+      <field name="dhcp.option.request_list_item" showname="Parameter Request List Item: (28) Broadcast Address" size="1" pos="294" show="28" value="1c"/>
+      <field name="dhcp.option.request_list_item" showname="Parameter Request List Item: (33) Static Route" size="1" pos="295" show="33" value="21"/>
+      <field name="dhcp.option.request_list_item" showname="Parameter Request List Item: (51) IP Address Lease Time" size="1" pos="296" show="51" value="33"/>
+      <field name="dhcp.option.request_list_item" showname="Parameter Request List Item: (54) DHCP Server Identifier" size="1" pos="297" show="54" value="36"/>
+      <field name="dhcp.option.request_list_item" showname="Parameter Request List Item: (58) Renewal Time Value" size="1" pos="298" show="58" value="3a"/>
+      <field name="dhcp.option.request_list_item" showname="Parameter Request List Item: (59) Rebinding Time Value" size="1" pos="299" show="59" value="3b"/>
+      <field name="dhcp.option.request_list_item" showname="Parameter Request List Item: (119) Domain Search" size="1" pos="300" show="119" value="77"/>
+    </field>
+    <field name="dhcp.option.type" showname="Option: (57) Maximum DHCP Message Size" size="4" pos="301" show="57" value="390205c0">
+      <field name="dhcp.option.length" showname="Length: 2" size="1" pos="302" show="2" value="02"/>
+      <field name="dhcp.option.value" showname="Value: 05c0" hide="yes" size="2" pos="303" show="05:c0" value="05c0"/>
+      <field name="dhcp.option.dhcp_max_message_size" showname="Maximum DHCP Message Size: 1472" size="2" pos="303" show="1472" value="05c0"/>
+    </field>
+    <field name="dhcp.option.type" showname="Option: (61) Client identifier" size="21" pos="305" show="61" value="3d13ff000000020001000132456fd4000000000002">
+      <field name="dhcp.option.length" showname="Length: 19" size="1" pos="306" show="19" value="13"/>
+      <field name="dhcp.option.value" showname="Value: ff000000020001000132456fd4000000000002" hide="yes" size="19" pos="307" show="ff:00:00:00:02:00:01:00:01:32:45:6f:d4:00:00:00:00:00:02" value="ff000000020001000132456fd4000000000002"/>
+      <field name="dhcp.client_id.iaid" showname="IAID: 00000002" size="4" pos="308" show="00000002" value="00000002"/>
+      <field name="dhcp.client_id.duid_type" showname="DUID Type: link-layer address plus time (1)" size="2" pos="312" show="1" value="0001"/>
+      <field name="dhcp.client_id.duid_llt_hw_type" showname="Hardware type: Ethernet (1)" size="2" pos="314" show="1" value="0001"/>
+      <field name="dhcp.client_id.time" showname="Time: 843411412" size="4" pos="316" show="843411412" value="32456fd4"/>
+      <field name="dhcp.client_id.link_layer_address" showname="Link layer address: 00:00:00:00:00:02" size="6" pos="320" show="00:00:00:00:00:02" value="000000000002"/>
+    </field>
+    <field name="dhcp.option.type" showname="Option: (80) Rapid commit" size="2" pos="326" show="80" value="5000">
+      <field name="dhcp.option.length" showname="Length: 0" size="1" pos="327" show="0" value="00"/>
+      <field name="dhcp.option.value" showname="Value: &lt;MISSING&gt;" size="0" pos="328" show=""/>
+    </field>
+    <field name="dhcp.option.type" showname="Option: (116) DHCP Auto-Configuration" size="3" pos="328" show="116" value="740101">
+      <field name="dhcp.option.length" showname="Length: 1" size="1" pos="329" show="1" value="01"/>
+      <field name="dhcp.option.value" showname="Value: 01" hide="yes" size="1" pos="330" show="01" value="01"/>
+      <field name="dhcp.option.dhcp_auto_configuration" showname="DHCP Auto-Configuration: AutoConfigure (1)" size="1" pos="330" show="1" value="01"/>
+    </field>
+    <field name="dhcp.option.type" showname="Option: (145) Forcerenew Nonce Capable" size="3" pos="331" show="145" value="910101">
+      <field name="dhcp.option.length" showname="Length: 1" size="1" pos="332" show="1" value="01"/>
+      <field name="dhcp.option.value" showname="Value: 01" hide="yes" size="1" pos="333" show="01" value="01"/>
+      <field name="dhcp.option.forcerenew_nonce.algorithm" showname="Algorithm: HMAC-MD5 (1)" size="1" pos="333" show="1" value="01"/>
+    </field>
+    <field name="dhcp.option.type" showname="Option: (255) End" size="1" pos="334" show="0" value="ff">
+      <field name="dhcp.option.end" showname="Option End: 255" size="1" pos="334" show="255" value="ff"/>
+    </field>
+    <field name="dhcp.option.padding" showname="Padding: 00000000000000" size="7" pos="335" show="00:00:00:00:00:00:00" value="00000000000000"/>
+  </proto>
+</packet>
+<packet>
+  <proto name="geninfo" pos="0" showname="General information" size="341">
+    <field name="num" pos="0" show="2" showname="Number" value="2" size="341"/>
+    <field name="len" pos="0" show="341" showname="Frame Length" value="155" size="341"/>
+    <field name="caplen" pos="0" show="341" showname="Captured Length" value="155" size="341"/>
+    <field name="timestamp" pos="0" show="Sep 22, 2026 16:56:53.776230877 UTC" showname="Captured Time" value="1790096213.776230877" size="341"/>
+  </proto>
+  <proto name="frame" showname="Frame 2: 341 bytes on wire (2728 bits), 341 bytes captured (2728 bits) on interface r1-eth0, id 0" size="341" pos="0">
+    <field name="frame.section_number" showname="Section number: 1" size="0" pos="0" show="1"/>
+    <field name="frame.interface_id" showname="Interface id: 0 (r1-eth0)" size="0" pos="0" show="0">
+      <field name="frame.interface_name" showname="Interface name: r1-eth0" size="0" pos="0" show="r1-eth0"/>
+    </field>
+    <field name="frame.encap_type" showname="Encapsulation type: Ethernet (1)" size="0" pos="0" show="1"/>
+    <field name="frame.time" showname="Arrival Time: Sep 22, 2026 16:56:53.776230877 UTC" size="0" pos="0" show="Sep 22, 2026 16:56:53.776230877 UTC"/>
+    <field name="frame.offset_shift" showname="Time shift for this packet: 0.000000000 seconds" size="0" pos="0" show="0.000000000"/>
+    <field name="frame.time_epoch" showname="Epoch Time: 1790096213.776230877 seconds" size="0" pos="0" show="1790096213.776230877"/>
+    <field name="frame.time_delta" showname="Time delta from previous captured frame: 0.015485149 seconds" size="0" pos="0" show="0.015485149"/>
+    <field name="frame.time_delta_displayed" showname="Time delta from previous displayed frame: 0.015485149 seconds" size="0" pos="0" show="0.015485149"/>
+    <field name="frame.time_relative" showname="Time since reference or first frame: 0.015485149 seconds" size="0" pos="0" show="0.015485149"/>
+    <field name="frame.number" showname="Frame Number: 2" size="0" pos="0" show="2"/>
+    <field name="frame.len" showname="Frame Length: 341 bytes (2728 bits)" size="0" pos="0" show="341"/>
+    <field name="frame.cap_len" showname="Capture Length: 341 bytes (2728 bits)" size="0" pos="0" show="341"/>
+    <field name="frame.marked" showname="Frame is marked: False" size="0" pos="0" show="0"/>
+    <field name="frame.ignored" showname="Frame is ignored: False" size="0" pos="0" show="0"/>
+    <field name="frame.protocols" showname="Protocols in frame: eth:ethertype:ip:udp:dhcp" size="0" pos="0" show="eth:ethertype:ip:udp:dhcp"/>
+  </proto>
+  <proto name="eth" showname="Ethernet II, Src: 00:00:00:00:00:01, Dst: 00:00:00:00:00:02" size="14" pos="0">
+    <field name="eth.dst" showname="Destination: 00:00:00:00:00:02" size="6" pos="0" show="00:00:00:00:00:02" value="000000000002">
+      <field name="eth.dst_resolved" showname="Destination (resolved): 00:00:00:00:00:02" hide="yes" size="6" pos="0" show="00:00:00:00:00:02" value="000000000002"/>
+      <field name="eth.dst.oui" showname="Destination OUI: 00:00:00 (Officially Xerox, but" hide="yes" size="3" pos="0" show="0" value="000000"/>
+      <field name="eth.dst.oui_resolved" showname="Destination OUI (resolved): Officially Xerox, but 0:0:0:0:0:0 is more common" hide="yes" size="6" pos="0" show="Officially Xerox, but 0:0:0:0:0:0 is more common" value="000000000002"/>
+      <field name="eth.addr" showname="Address: 00:00:00:00:00:02" size="6" pos="0" show="00:00:00:00:00:02" value="000000000002"/>
+      <field name="eth.addr_resolved" showname="Address (resolved): 00:00:00:00:00:02" hide="yes" size="6" pos="0" show="00:00:00:00:00:02" value="000000000002"/>
+      <field name="eth.addr.oui" showname="Address OUI: 00:00:00 (Officially Xerox, but" hide="yes" size="3" pos="0" show="0" value="000000"/>
+      <field name="eth.addr.oui_resolved" showname="Address OUI (resolved): Officially Xerox, but 0:0:0:0:0:0 is more common" hide="yes" size="6" pos="0" show="Officially Xerox, but 0:0:0:0:0:0 is more common" value="000000000002"/>
+      <field name="eth.dst.lg" showname=".... ..0. .... .... .... .... = LG bit: Globally unique address (factory default)" size="3" pos="0" show="0" value="0" unmaskedvalue="000000"/>
+      <field name="eth.lg" showname=".... ..0. .... .... .... .... = LG bit: Globally unique address (factory default)" hide="yes" size="3" pos="0" show="0" value="0" unmaskedvalue="000000"/>
+      <field name="eth.dst.ig" showname=".... ...0 .... .... .... .... = IG bit: Individual address (unicast)" size="3" pos="0" show="0" value="0" unmaskedvalue="000000"/>
+      <field name="eth.ig" showname=".... ...0 .... .... .... .... = IG bit: Individual address (unicast)" hide="yes" size="3" pos="0" show="0" value="0" unmaskedvalue="000000"/>
+    </field>
+    <field name="eth.src" showname="Source: 00:00:00:00:00:01" size="6" pos="6" show="00:00:00:00:00:01" value="000000000001">
+      <field name="eth.src_resolved" showname="Source (resolved): 00:00:00:00:00:01" hide="yes" size="6" pos="6" show="00:00:00:00:00:01" value="000000000001"/>
+      <field name="eth.src.oui" showname="Source OUI: 00:00:00 (Officially Xerox, but" hide="yes" size="3" pos="6" show="0" value="000000"/>
+      <field name="eth.src.oui_resolved" showname="Source OUI (resolved): Officially Xerox, but 0:0:0:0:0:0 is more common" hide="yes" size="6" pos="6" show="Officially Xerox, but 0:0:0:0:0:0 is more common" value="000000000001"/>
+      <field name="eth.addr" showname="Address: 00:00:00:00:00:01" size="6" pos="6" show="00:00:00:00:00:01" value="000000000001"/>
+      <field name="eth.addr_resolved" showname="Address (resolved): 00:00:00:00:00:01" hide="yes" size="6" pos="6" show="00:00:00:00:00:01" value="000000000001"/>
+      <field name="eth.addr.oui" showname="Address OUI: 00:00:00 (Officially Xerox, but" hide="yes" size="3" pos="6" show="0" value="000000"/>
+      <field name="eth.addr.oui_resolved" showname="Address OUI (resolved): Officially Xerox, but 0:0:0:0:0:0 is more common" hide="yes" size="6" pos="6" show="Officially Xerox, but 0:0:0:0:0:0 is more common" value="000000000001"/>
+      <field name="eth.src.lg" showname=".... ..0. .... .... .... .... = LG bit: Globally unique address (factory default)" size="3" pos="6" show="0" value="0" unmaskedvalue="000000"/>
+      <field name="eth.lg" showname=".... ..0. .... .... .... .... = LG bit: Globally unique address (factory default)" hide="yes" size="3" pos="6" show="0" value="0" unmaskedvalue="000000"/>
+      <field name="eth.src.ig" showname=".... ...0 .... .... .... .... = IG bit: Individual address (unicast)" size="3" pos="6" show="0" value="0" unmaskedvalue="000000"/>
+      <field name="eth.ig" showname=".... ...0 .... .... .... .... = IG bit: Individual address (unicast)" hide="yes" size="3" pos="6" show="0" value="0" unmaskedvalue="000000"/>
+    </field>
+    <field name="eth.type" showname="Type: IPv4 (0x0800)" size="2" pos="12" show="0x0800" value="0800"/>
+  </proto>
+  <proto name="ip" showname="Internet Protocol Version 4, Src: 10.50.0.1, Dst: 10.50.0.50" size="20" pos="14">
+    <field name="ip.version" showname="0100 .... = Version: 4" size="1" pos="14" show="4" value="45"/>
+    <field name="ip.hdr_len" showname=".... 0101 = Header Length: 20 bytes (5)" size="1" pos="14" show="20" value="45"/>
+    <field name="ip.dsfield" showname="Differentiated Services Field: 0x10 (DSCP: Unknown, ECN: Not-ECT)" size="1" pos="15" show="0x10" value="10">
+      <field name="ip.dsfield.dscp" showname="0001 00.. = Differentiated Services Codepoint: Unknown (4)" size="1" pos="15" show="4" value="4" unmaskedvalue="10"/>
+      <field name="ip.dsfield.ecn" showname=".... ..00 = Explicit Congestion Notification: Not ECN-Capable Transport (0)" size="1" pos="15" show="0" value="0" unmaskedvalue="10"/>
+    </field>
+    <field name="ip.len" showname="Total Length: 327" size="2" pos="16" show="327" value="0147"/>
+    <field name="ip.id" showname="Identification: 0x0000 (0)" size="2" pos="18" show="0x0000" value="0000"/>
+    <field name="ip.flags" showname="010. .... = Flags: 0x2, Don&#x27;t fragment" size="1" pos="20" show="0x02" value="2" unmaskedvalue="40">
+      <field name="ip.flags.rb" showname="0... .... = Reserved bit: Not set" size="1" pos="20" show="0" value="0" unmaskedvalue="40"/>
+      <field name="ip.flags.df" showname=".1.. .... = Don&#x27;t fragment: Set" size="1" pos="20" show="1" value="1" unmaskedvalue="40"/>
+      <field name="ip.flags.mf" showname="..0. .... = More fragments: Not set" size="1" pos="20" show="0" value="0" unmaskedvalue="40"/>
+    </field>
+    <field name="ip.frag_offset" showname="...0 0000 0000 0000 = Fragment Offset: 0" size="2" pos="20" show="0" value="0" unmaskedvalue="4000"/>
+    <field name="ip.ttl" showname="Time to Live: 128" size="1" pos="22" show="128" value="80"/>
+    <field name="ip.proto" showname="Protocol: UDP (17)" size="1" pos="23" show="17" value="11"/>
+    <field name="ip.checksum" showname="Header Checksum: 0xe4ff [validation disabled]" size="2" pos="24" show="0xe4ff" value="e4ff"/>
+    <field name="ip.checksum.status" showname="Header checksum status: Unverified" size="0" pos="24" show="2"/>
+    <field name="ip.src" showname="Source Address: 10.50.0.1" size="4" pos="26" show="10.50.0.1" value="0a320001"/>
+    <field name="ip.addr" showname="Source or Destination Address: 10.50.0.1" hide="yes" size="4" pos="26" show="10.50.0.1" value="0a320001"/>
+    <field name="ip.src_host" showname="Source Host: 10.50.0.1" hide="yes" size="4" pos="26" show="10.50.0.1" value="0a320001"/>
+    <field name="ip.host" showname="Source or Destination Host: 10.50.0.1" hide="yes" size="4" pos="26" show="10.50.0.1" value="0a320001"/>
+    <field name="ip.dst" showname="Destination Address: 10.50.0.50" size="4" pos="30" show="10.50.0.50" value="0a320032"/>
+    <field name="ip.addr" showname="Source or Destination Address: 10.50.0.50" hide="yes" size="4" pos="30" show="10.50.0.50" value="0a320032"/>
+    <field name="ip.dst_host" showname="Destination Host: 10.50.0.50" hide="yes" size="4" pos="30" show="10.50.0.50" value="0a320032"/>
+    <field name="ip.host" showname="Source or Destination Host: 10.50.0.50" hide="yes" size="4" pos="30" show="10.50.0.50" value="0a320032"/>
+  </proto>
+  <proto name="udp" showname="User Datagram Protocol, Src Port: 67, Dst Port: 68" size="8" pos="34">
+    <field name="udp.srcport" showname="Source Port: 67" size="2" pos="34" show="67" value="0043"/>
+    <field name="udp.dstport" showname="Destination Port: 68" size="2" pos="36" show="68" value="0044"/>
+    <field name="udp.port" showname="Source or Destination Port: 67" hide="yes" size="2" pos="34" show="67" value="0043"/>
+    <field name="udp.port" showname="Source or Destination Port: 68" hide="yes" size="2" pos="36" show="68" value="0044"/>
+    <field name="udp.length" showname="Length: 307" size="2" pos="38" show="307" value="0133"/>
+    <field name="udp.checksum" showname="Checksum: 0x61a1 [unverified]" size="2" pos="40" show="0x61a1" value="61a1"/>
+    <field name="udp.checksum.status" showname="Checksum Status: Unverified" size="0" pos="40" show="2"/>
+    <field name="udp.stream" showname="Stream index: 1" size="0" pos="42" show="1"/>
+    <field name="" show="Timestamps" size="0" pos="34">
+      <field name="udp.time_relative" showname="Time since first frame: 0.000000000 seconds" size="0" pos="34" show="0.000000000"/>
+      <field name="udp.time_delta" showname="Time since previous frame: 0.000000000 seconds" size="0" pos="34" show="0.000000000"/>
+    </field>
+    <field name="udp.payload" showname="UDP payload (299 bytes)" size="299" pos="42" show="02:01:06:00:61:56:38:bd:00:00:00:00:00:00:00:00:0a:32:00:32:00:00:00:00:00:00:00:00:00:00:00:00:00:02:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:63:82:53:63:35:01:02:01:04:ff:ff:ff:00:03:04:0a:32:00:01:06:04:08:08:08:08:0c:02:68:31:33:04:00:00:00:78:36:04:0a:32:00:01:3d:13:ff:00:00:00:02:00:01:00:01:32:45:6f:d4:00:00:00:00:00:02:ff" value="02010600615638bd00000000000000000a320032000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000638253633501020104ffffff0003040a3200010604080808080c02683133040000007836040a3200013d13ff000000020001000132456fd4000000000002ff"/>
+  </proto>
+  <proto name="dhcp" showname="Dynamic Host Configuration Protocol (Offer)" size="299" pos="42">
+    <field name="dhcp.type" showname="Message type: Boot Reply (2)" size="1" pos="42" show="2" value="02"/>
+    <field name="dhcp.hw.type" showname="Hardware type: Ethernet (0x01)" size="1" pos="43" show="0x01" value="01"/>
+    <field name="dhcp.hw.len" showname="Hardware address length: 6" size="1" pos="44" show="6" value="06"/>
+    <field name="dhcp.hops" showname="Hops: 0" size="1" pos="45" show="0" value="00"/>
+    <field name="dhcp.id" showname="Transaction ID: 0x615638bd" size="4" pos="46" show="0x615638bd" value="615638bd"/>
+    <field name="dhcp.secs" showname="Seconds elapsed: 0" size="2" pos="50" show="0" value="0000"/>
+    <field name="dhcp.flags" showname="Bootp flags: 0x0000 (Unicast)" size="2" pos="52" show="0x0000" value="0000">
+      <field name="dhcp.flags.bc" showname="0... .... .... .... = Broadcast flag: Unicast" size="2" pos="52" show="0" value="0" unmaskedvalue="0000"/>
+      <field name="dhcp.flags.reserved" showname=".000 0000 0000 0000 = Reserved flags: 0x0000" size="2" pos="52" show="0x0000" value="0" unmaskedvalue="0000"/>
+    </field>
+    <field name="dhcp.ip.client" showname="Client IP address: 0.0.0.0" size="4" pos="54" show="0.0.0.0" value="00000000"/>
+    <field name="dhcp.ip.your" showname="Your (client) IP address: 10.50.0.50" size="4" pos="58" show="10.50.0.50" value="0a320032"/>
+    <field name="dhcp.ip.server" showname="Next server IP address: 0.0.0.0" size="4" pos="62" show="0.0.0.0" value="00000000"/>
+    <field name="dhcp.ip.relay" showname="Relay agent IP address: 0.0.0.0" size="4" pos="66" show="0.0.0.0" value="00000000"/>
+    <field name="dhcp.hw.mac_addr" showname="Client MAC address: 00:00:00:00:00:02" size="6" pos="70" show="00:00:00:00:00:02" value="000000000002"/>
+    <field name="dhcp.hw.addr_padding" showname="Client hardware address padding: 00000000000000000000" size="10" pos="76" show="00:00:00:00:00:00:00:00:00:00" value="00000000000000000000"/>
+    <field name="dhcp.server" showname="Server host name not given" size="64" pos="86" show="" value="00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"/>
+    <field name="dhcp.file" showname="Boot file name not given" size="128" pos="150" show="" value="0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"/>
+    <field name="dhcp.cookie" showname="Magic cookie: DHCP" size="4" pos="278" show="99.130.83.99" value="63825363"/>
+    <field name="dhcp.option.type" showname="Option: (53) DHCP Message Type (Offer)" size="3" pos="282" show="53" value="350102">
+      <field name="dhcp.option.length" showname="Length: 1" size="1" pos="283" show="1" value="01"/>
+      <field name="dhcp.option.value" showname="Value: 02" hide="yes" size="1" pos="284" show="02" value="02"/>
+      <field name="dhcp.option.dhcp" showname="DHCP: Offer (2)" size="1" pos="284" show="2" value="02"/>
+    </field>
+    <field name="dhcp.option.type" showname="Option: (1) Subnet Mask (255.255.255.0)" size="6" pos="285" show="1" value="0104ffffff00">
+      <field name="dhcp.option.length" showname="Length: 4" size="1" pos="286" show="4" value="04"/>
+      <field name="dhcp.option.value" showname="Value: ffffff00" hide="yes" size="4" pos="287" show="ff:ff:ff:00" value="ffffff00"/>
+      <field name="dhcp.option.subnet_mask" showname="Subnet Mask: 255.255.255.0" size="4" pos="287" show="255.255.255.0" value="ffffff00"/>
+    </field>
+    <field name="dhcp.option.type" showname="Option: (3) Router" size="6" pos="291" show="3" value="03040a320001">
+      <field name="dhcp.option.length" showname="Length: 4" size="1" pos="292" show="4" value="04"/>
+      <field name="dhcp.option.value" showname="Value: 0a320001" hide="yes" size="4" pos="293" show="0a:32:00:01" value="0a320001"/>
+      <field name="dhcp.option.router" showname="Router: 10.50.0.1" size="4" pos="293" show="10.50.0.1" value="0a320001"/>
+    </field>
+    <field name="dhcp.option.type" showname="Option: (6) Domain Name Server" size="6" pos="297" show="6" value="060408080808">
+      <field name="dhcp.option.length" showname="Length: 4" size="1" pos="298" show="4" value="04"/>
+      <field name="dhcp.option.value" showname="Value: 08080808" hide="yes" size="4" pos="299" show="08:08:08:08" value="08080808"/>
+      <field name="dhcp.option.domain_name_server" showname="Domain Name Server: 8.8.8.8" size="4" pos="299" show="8.8.8.8" value="08080808"/>
+    </field>
+    <field name="dhcp.option.type" showname="Option: (12) Host Name" size="4" pos="303" show="12" value="0c026831">
+      <field name="dhcp.option.length" showname="Length: 2" size="1" pos="304" show="2" value="02"/>
+      <field name="dhcp.option.value" showname="Value: 6831" hide="yes" size="2" pos="305" show="68:31" value="6831"/>
+      <field name="dhcp.option.hostname" showname="Host Name: h1" size="2" pos="305" show="h1" value="6831"/>
+    </field>
+    <field name="dhcp.option.type" showname="Option: (51) IP Address Lease Time" size="6" pos="307" show="51" value="330400000078">
+      <field name="dhcp.option.length" showname="Length: 4" size="1" pos="308" show="4" value="04"/>
+      <field name="dhcp.option.value" showname="Value: 00000078" hide="yes" size="4" pos="309" show="00:00:00:78" value="00000078"/>
+      <field name="dhcp.option.ip_address_lease_time" showname="IP Address Lease Time: (120s) 2 minutes" size="4" pos="309" show="120" value="00000078"/>
+    </field>
+    <field name="dhcp.option.type" showname="Option: (54) DHCP Server Identifier (10.50.0.1)" size="6" pos="313" show="54" value="36040a320001">
+      <field name="dhcp.option.length" showname="Length: 4" size="1" pos="314" show="4" value="04"/>
+      <field name="dhcp.option.value" showname="Value: 0a320001" hide="yes" size="4" pos="315" show="0a:32:00:01" value="0a320001"/>
+      <field name="dhcp.option.dhcp_server_id" showname="DHCP Server Identifier: 10.50.0.1" size="4" pos="315" show="10.50.0.1" value="0a320001"/>
+    </field>
+    <field name="dhcp.option.type" showname="Option: (61) Client identifier" size="21" pos="319" show="61" value="3d13ff000000020001000132456fd4000000000002">
+      <field name="dhcp.option.length" showname="Length: 19" size="1" pos="320" show="19" value="13"/>
+      <field name="dhcp.option.value" showname="Value: ff000000020001000132456fd4000000000002" hide="yes" size="19" pos="321" show="ff:00:00:00:02:00:01:00:01:32:45:6f:d4:00:00:00:00:00:02" value="ff000000020001000132456fd4000000000002"/>
+      <field name="dhcp.client_id.iaid" showname="IAID: 00000002" size="4" pos="322" show="00000002" value="00000002"/>
+      <field name="dhcp.client_id.duid_type" showname="DUID Type: link-layer address plus time (1)" size="2" pos="326" show="1" value="0001"/>
+      <field name="dhcp.client_id.duid_llt_hw_type" showname="Hardware type: Ethernet (1)" size="2" pos="328" show="1" value="0001"/>
+      <field name="dhcp.client_id.time" showname="Time: 843411412" size="4" pos="330" show="843411412" value="32456fd4"/>
+      <field name="dhcp.client_id.link_layer_address" showname="Link layer address: 00:00:00:00:00:02" size="6" pos="334" show="00:00:00:00:00:02" value="000000000002"/>
+    </field>
+    <field name="dhcp.option.type" showname="Option: (255) End" size="1" pos="340" show="0" value="ff">
+      <field name="dhcp.option.end" showname="Option End: 255" size="1" pos="340" show="255" value="ff"/>
+    </field>
+  </proto>
+</packet>
+<packet>
+  <proto name="geninfo" pos="0" showname="General information" size="342">
+    <field name="num" pos="0" show="3" showname="Number" value="3" size="342"/>
+    <field name="len" pos="0" show="342" showname="Frame Length" value="156" size="342"/>
+    <field name="caplen" pos="0" show="342" showname="Captured Length" value="156" size="342"/>
+    <field name="timestamp" pos="0" show="Sep 22, 2026 16:56:53.776726965 UTC" showname="Captured Time" value="1790096213.776726965" size="342"/>
+  </proto>
+  <proto name="frame" showname="Frame 3: 342 bytes on wire (2736 bits), 342 bytes captured (2736 bits) on interface r1-eth0, id 0" size="342" pos="0">
+    <field name="frame.section_number" showname="Section number: 1" size="0" pos="0" show="1"/>
+    <field name="frame.interface_id" showname="Interface id: 0 (r1-eth0)" size="0" pos="0" show="0">
+      <field name="frame.interface_name" showname="Interface name: r1-eth0" size="0" pos="0" show="r1-eth0"/>
+    </field>
+    <field name="frame.encap_type" showname="Encapsulation type: Ethernet (1)" size="0" pos="0" show="1"/>
+    <field name="frame.time" showname="Arrival Time: Sep 22, 2026 16:56:53.776726965 UTC" size="0" pos="0" show="Sep 22, 2026 16:56:53.776726965 UTC"/>
+    <field name="frame.offset_shift" showname="Time shift for this packet: 0.000000000 seconds" size="0" pos="0" show="0.000000000"/>
+    <field name="frame.time_epoch" showname="Epoch Time: 1790096213.776726965 seconds" size="0" pos="0" show="1790096213.776726965"/>
+    <field name="frame.time_delta" showname="Time delta from previous captured frame: 0.000496088 seconds" size="0" pos="0" show="0.000496088"/>
+    <field name="frame.time_delta_displayed" showname="Time delta from previous displayed frame: 0.000496088 seconds" size="0" pos="0" show="0.000496088"/>
+    <field name="frame.time_relative" showname="Time since reference or first frame: 0.015981237 seconds" size="0" pos="0" show="0.015981237"/>
+    <field name="frame.number" showname="Frame Number: 3" size="0" pos="0" show="3"/>
+    <field name="frame.len" showname="Frame Length: 342 bytes (2736 bits)" size="0" pos="0" show="342"/>
+    <field name="frame.cap_len" showname="Capture Length: 342 bytes (2736 bits)" size="0" pos="0" show="342"/>
+    <field name="frame.marked" showname="Frame is marked: False" size="0" pos="0" show="0"/>
+    <field name="frame.ignored" showname="Frame is ignored: False" size="0" pos="0" show="0"/>
+    <field name="frame.protocols" showname="Protocols in frame: eth:ethertype:ip:udp:dhcp" size="0" pos="0" show="eth:ethertype:ip:udp:dhcp"/>
+  </proto>
+  <proto name="eth" showname="Ethernet II, Src: 00:00:00:00:00:02, Dst: ff:ff:ff:ff:ff:ff" size="14" pos="0">
+    <field name="eth.dst" showname="Destination: ff:ff:ff:ff:ff:ff" size="6" pos="0" show="ff:ff:ff:ff:ff:ff" value="ffffffffffff">
+      <field name="eth.dst_resolved" showname="Destination (resolved): ff:ff:ff:ff:ff:ff" hide="yes" size="6" pos="0" show="ff:ff:ff:ff:ff:ff" value="ffffffffffff"/>
+      <field name="eth.dst.oui" showname="Destination OUI: ff:ff:ff" hide="yes" size="3" pos="0" show="16777215" value="ffffff"/>
+      <field name="eth.addr" showname="Address: ff:ff:ff:ff:ff:ff" size="6" pos="0" show="ff:ff:ff:ff:ff:ff" value="ffffffffffff"/>
+      <field name="eth.addr_resolved" showname="Address (resolved): ff:ff:ff:ff:ff:ff" hide="yes" size="6" pos="0" show="ff:ff:ff:ff:ff:ff" value="ffffffffffff"/>
+      <field name="eth.addr.oui" showname="Address OUI: ff:ff:ff" hide="yes" size="3" pos="0" show="16777215" value="ffffff"/>
+      <field name="eth.dst.lg" showname=".... ..1. .... .... .... .... = LG bit: Locally administered address (this is NOT the factory default)" size="3" pos="0" show="1" value="1" unmaskedvalue="ffffff"/>
+      <field name="eth.lg" showname=".... ..1. .... .... .... .... = LG bit: Locally administered address (this is NOT the factory default)" hide="yes" size="3" pos="0" show="1" value="1" unmaskedvalue="ffffff"/>
+      <field name="eth.dst.ig" showname=".... ...1 .... .... .... .... = IG bit: Group address (multicast/broadcast)" size="3" pos="0" show="1" value="1" unmaskedvalue="ffffff"/>
+      <field name="eth.ig" showname=".... ...1 .... .... .... .... = IG bit: Group address (multicast/broadcast)" hide="yes" size="3" pos="0" show="1" value="1" unmaskedvalue="ffffff"/>
+    </field>
+    <field name="eth.src" showname="Source: 00:00:00:00:00:02" size="6" pos="6" show="00:00:00:00:00:02" value="000000000002">
+      <field name="eth.src_resolved" showname="Source (resolved): 00:00:00:00:00:02" hide="yes" size="6" pos="6" show="00:00:00:00:00:02" value="000000000002"/>
+      <field name="eth.src.oui" showname="Source OUI: 00:00:00 (Officially Xerox, but" hide="yes" size="3" pos="6" show="0" value="000000"/>
+      <field name="eth.src.oui_resolved" showname="Source OUI (resolved): Officially Xerox, but 0:0:0:0:0:0 is more common" hide="yes" size="6" pos="6" show="Officially Xerox, but 0:0:0:0:0:0 is more common" value="000000000002"/>
+      <field name="eth.addr" showname="Address: 00:00:00:00:00:02" size="6" pos="6" show="00:00:00:00:00:02" value="000000000002"/>
+      <field name="eth.addr_resolved" showname="Address (resolved): 00:00:00:00:00:02" hide="yes" size="6" pos="6" show="00:00:00:00:00:02" value="000000000002"/>
+      <field name="eth.addr.oui" showname="Address OUI: 00:00:00 (Officially Xerox, but" hide="yes" size="3" pos="6" show="0" value="000000"/>
+      <field name="eth.addr.oui_resolved" showname="Address OUI (resolved): Officially Xerox, but 0:0:0:0:0:0 is more common" hide="yes" size="6" pos="6" show="Officially Xerox, but 0:0:0:0:0:0 is more common" value="000000000002"/>
+      <field name="eth.src.lg" showname=".... ..0. .... .... .... .... = LG bit: Globally unique address (factory default)" size="3" pos="6" show="0" value="0" unmaskedvalue="000000"/>
+      <field name="eth.lg" showname=".... ..0. .... .... .... .... = LG bit: Globally unique address (factory default)" hide="yes" size="3" pos="6" show="0" value="0" unmaskedvalue="000000"/>
+      <field name="eth.src.ig" showname=".... ...0 .... .... .... .... = IG bit: Individual address (unicast)" size="3" pos="6" show="0" value="0" unmaskedvalue="000000"/>
+      <field name="eth.ig" showname=".... ...0 .... .... .... .... = IG bit: Individual address (unicast)" hide="yes" size="3" pos="6" show="0" value="0" unmaskedvalue="000000"/>
+    </field>
+    <field name="eth.type" showname="Type: IPv4 (0x0800)" size="2" pos="12" show="0x0800" value="0800"/>
+  </proto>
+  <proto name="ip" showname="Internet Protocol Version 4, Src: 0.0.0.0, Dst: 255.255.255.255" size="20" pos="14">
+    <field name="ip.version" showname="0100 .... = Version: 4" size="1" pos="14" show="4" value="45"/>
+    <field name="ip.hdr_len" showname=".... 0101 = Header Length: 20 bytes (5)" size="1" pos="14" show="20" value="45"/>
+    <field name="ip.dsfield" showname="Differentiated Services Field: 0x00 (DSCP: CS0, ECN: Not-ECT)" size="1" pos="15" show="0x00" value="00">
+      <field name="ip.dsfield.dscp" showname="0000 00.. = Differentiated Services Codepoint: Default (0)" size="1" pos="15" show="0" value="0" unmaskedvalue="00"/>
+      <field name="ip.dsfield.ecn" showname=".... ..00 = Explicit Congestion Notification: Not ECN-Capable Transport (0)" size="1" pos="15" show="0" value="0" unmaskedvalue="00"/>
+    </field>
+    <field name="ip.len" showname="Total Length: 328" size="2" pos="16" show="328" value="0148"/>
+    <field name="ip.id" showname="Identification: 0xb66a (46698)" size="2" pos="18" show="0xb66a" value="b66a"/>
+    <field name="ip.flags" showname="000. .... = Flags: 0x0" size="1" pos="20" show="0x00" value="0" unmaskedvalue="00">
+      <field name="ip.flags.rb" showname="0... .... = Reserved bit: Not set" size="1" pos="20" show="0" value="0" unmaskedvalue="00"/>
+      <field name="ip.flags.df" showname=".0.. .... = Don&#x27;t fragment: Not set" size="1" pos="20" show="0" value="0" unmaskedvalue="00"/>
+      <field name="ip.flags.mf" showname="..0. .... = More fragments: Not set" size="1" pos="20" show="0" value="0" unmaskedvalue="00"/>
+    </field>
+    <field name="ip.frag_offset" showname="...0 0000 0000 0000 = Fragment Offset: 0" size="2" pos="20" show="0" value="0" unmaskedvalue="0000"/>
+    <field name="ip.ttl" showname="Time to Live: 64" size="1" pos="22" show="64" value="40"/>
+    <field name="ip.proto" showname="Protocol: UDP (17)" size="1" pos="23" show="17" value="11"/>
+    <field name="ip.checksum" showname="Header Checksum: 0xc33b [validation disabled]" size="2" pos="24" show="0xc33b" value="c33b"/>
+    <field name="ip.checksum.status" showname="Header checksum status: Unverified" size="0" pos="24" show="2"/>
+    <field name="ip.src" showname="Source Address: 0.0.0.0" size="4" pos="26" show="0.0.0.0" value="00000000"/>
+    <field name="ip.addr" showname="Source or Destination Address: 0.0.0.0" hide="yes" size="4" pos="26" show="0.0.0.0" value="00000000"/>
+    <field name="ip.src_host" showname="Source Host: 0.0.0.0" hide="yes" size="4" pos="26" show="0.0.0.0" value="00000000"/>
+    <field name="ip.host" showname="Source or Destination Host: 0.0.0.0" hide="yes" size="4" pos="26" show="0.0.0.0" value="00000000"/>
+    <field name="ip.dst" showname="Destination Address: 255.255.255.255" size="4" pos="30" show="255.255.255.255" value="ffffffff"/>
+    <field name="ip.addr" showname="Source or Destination Address: 255.255.255.255" hide="yes" size="4" pos="30" show="255.255.255.255" value="ffffffff"/>
+    <field name="ip.dst_host" showname="Destination Host: 255.255.255.255" hide="yes" size="4" pos="30" show="255.255.255.255" value="ffffffff"/>
+    <field name="ip.host" showname="Source or Destination Host: 255.255.255.255" hide="yes" size="4" pos="30" show="255.255.255.255" value="ffffffff"/>
+  </proto>
+  <proto name="udp" showname="User Datagram Protocol, Src Port: 68, Dst Port: 67" size="8" pos="34">
+    <field name="udp.srcport" showname="Source Port: 68" size="2" pos="34" show="68" value="0044"/>
+    <field name="udp.dstport" showname="Destination Port: 67" size="2" pos="36" show="67" value="0043"/>
+    <field name="udp.port" showname="Source or Destination Port: 68" hide="yes" size="2" pos="34" show="68" value="0044"/>
+    <field name="udp.port" showname="Source or Destination Port: 67" hide="yes" size="2" pos="36" show="67" value="0043"/>
+    <field name="udp.length" showname="Length: 308" size="2" pos="38" show="308" value="0134"/>
+    <field name="udp.checksum" showname="Checksum: 0x50ca [unverified]" size="2" pos="40" show="0x50ca" value="50ca"/>
+    <field name="udp.checksum.status" showname="Checksum Status: Unverified" size="0" pos="40" show="2"/>
+    <field name="udp.stream" showname="Stream index: 0" size="0" pos="42" show="0"/>
+    <field name="" show="Timestamps" size="0" pos="34">
+      <field name="udp.time_relative" showname="Time since first frame: 0.015981237 seconds" size="0" pos="34" show="0.015981237"/>
+      <field name="udp.time_delta" showname="Time since previous frame: 0.015981237 seconds" size="0" pos="34" show="0.015981237"/>
+    </field>
+    <field name="udp.payload" showname="UDP payload (300 bytes)" size="300" pos="42" show="01:01:06:00:61:56:38:bd:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:02:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:63:82:53:63:32:04:0a:32:00:32:35:01:03:36:04:0a:32:00:01:37:0e:01:79:03:06:0c:0f:1a:1c:21:33:36:3a:3b:77:39:02:05:c0:3d:13:ff:00:00:00:02:00:01:00:01:32:45:6f:d4:00:00:00:00:00:02:91:01:01:ff" value="01010600615638bd0000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000006382536332040a32003235010336040a320001370e017903060c0f1a1c2133363a3b77390205c03d13ff000000020001000132456fd4000000000002910101ff"/>
+  </proto>
+  <proto name="dhcp" showname="Dynamic Host Configuration Protocol (Request)" size="300" pos="42">
+    <field name="dhcp.type" showname="Message type: Boot Request (1)" size="1" pos="42" show="1" value="01"/>
+    <field name="dhcp.hw.type" showname="Hardware type: Ethernet (0x01)" size="1" pos="43" show="0x01" value="01"/>
+    <field name="dhcp.hw.len" showname="Hardware address length: 6" size="1" pos="44" show="6" value="06"/>
+    <field name="dhcp.hops" showname="Hops: 0" size="1" pos="45" show="0" value="00"/>
+    <field name="dhcp.id" showname="Transaction ID: 0x615638bd" size="4" pos="46" show="0x615638bd" value="615638bd"/>
+    <field name="dhcp.secs" showname="Seconds elapsed: 0" size="2" pos="50" show="0" value="0000"/>
+    <field name="dhcp.flags" showname="Bootp flags: 0x0000 (Unicast)" size="2" pos="52" show="0x0000" value="0000">
+      <field name="dhcp.flags.bc" showname="0... .... .... .... = Broadcast flag: Unicast" size="2" pos="52" show="0" value="0" unmaskedvalue="0000"/>
+      <field name="dhcp.flags.reserved" showname=".000 0000 0000 0000 = Reserved flags: 0x0000" size="2" pos="52" show="0x0000" value="0" unmaskedvalue="0000"/>
+    </field>
+    <field name="dhcp.ip.client" showname="Client IP address: 0.0.0.0" size="4" pos="54" show="0.0.0.0" value="00000000"/>
+    <field name="dhcp.ip.your" showname="Your (client) IP address: 0.0.0.0" size="4" pos="58" show="0.0.0.0" value="00000000"/>
+    <field name="dhcp.ip.server" showname="Next server IP address: 0.0.0.0" size="4" pos="62" show="0.0.0.0" value="00000000"/>
+    <field name="dhcp.ip.relay" showname="Relay agent IP address: 0.0.0.0" size="4" pos="66" show="0.0.0.0" value="00000000"/>
+    <field name="dhcp.hw.mac_addr" showname="Client MAC address: 00:00:00:00:00:02" size="6" pos="70" show="00:00:00:00:00:02" value="000000000002"/>
+    <field name="dhcp.hw.addr_padding" showname="Client hardware address padding: 00000000000000000000" size="10" pos="76" show="00:00:00:00:00:00:00:00:00:00" value="00000000000000000000"/>
+    <field name="dhcp.server" showname="Server host name not given" size="64" pos="86" show="" value="00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"/>
+    <field name="dhcp.file" showname="Boot file name not given" size="128" pos="150" show="" value="0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"/>
+    <field name="dhcp.cookie" showname="Magic cookie: DHCP" size="4" pos="278" show="99.130.83.99" value="63825363"/>
+    <field name="dhcp.option.type" showname="Option: (50) Requested IP Address (10.50.0.50)" size="6" pos="282" show="50" value="32040a320032">
+      <field name="dhcp.option.length" showname="Length: 4" size="1" pos="283" show="4" value="04"/>
+      <field name="dhcp.option.value" showname="Value: 0a320032" hide="yes" size="4" pos="284" show="0a:32:00:32" value="0a320032"/>
+      <field name="dhcp.option.requested_ip_address" showname="Requested IP Address: 10.50.0.50" size="4" pos="284" show="10.50.0.50" value="0a320032"/>
+    </field>
+    <field name="dhcp.option.type" showname="Option: (53) DHCP Message Type (Request)" size="3" pos="288" show="53" value="350103">
+      <field name="dhcp.option.length" showname="Length: 1" size="1" pos="289" show="1" value="01"/>
+      <field name="dhcp.option.value" showname="Value: 03" hide="yes" size="1" pos="290" show="03" value="03"/>
+      <field name="dhcp.option.dhcp" showname="DHCP: Request (3)" size="1" pos="290" show="3" value="03"/>
+    </field>
+    <field name="dhcp.option.type" showname="Option: (54) DHCP Server Identifier (10.50.0.1)" size="6" pos="291" show="54" value="36040a320001">
+      <field name="dhcp.option.length" showname="Length: 4" size="1" pos="292" show="4" value="04"/>
+      <field name="dhcp.option.value" showname="Value: 0a320001" hide="yes" size="4" pos="293" show="0a:32:00:01" value="0a320001"/>
+      <field name="dhcp.option.dhcp_server_id" showname="DHCP Server Identifier: 10.50.0.1" size="4" pos="293" show="10.50.0.1" value="0a320001"/>
+    </field>
+    <field name="dhcp.option.type" showname="Option: (55) Parameter Request List" size="16" pos="297" show="55" value="370e017903060c0f1a1c2133363a3b77">
+      <field name="dhcp.option.length" showname="Length: 14" size="1" pos="298" show="14" value="0e"/>
+      <field name="dhcp.option.value" showname="Value: 017903060c0f1a1c2133363a3b77" hide="yes" size="14" pos="299" show="01:79:03:06:0c:0f:1a:1c:21:33:36:3a:3b:77" value="017903060c0f1a1c2133363a3b77"/>
+      <field name="dhcp.option.request_list_item" showname="Parameter Request List Item: (1) Subnet Mask" size="1" pos="299" show="1" value="01"/>
+      <field name="dhcp.option.request_list_item" showname="Parameter Request List Item: (121) Classless Static Route" size="1" pos="300" show="121" value="79"/>
+      <field name="dhcp.option.request_list_item" showname="Parameter Request List Item: (3) Router" size="1" pos="301" show="3" value="03"/>
+      <field name="dhcp.option.request_list_item" showname="Parameter Request List Item: (6) Domain Name Server" size="1" pos="302" show="6" value="06"/>
+      <field name="dhcp.option.request_list_item" showname="Parameter Request List Item: (12) Host Name" size="1" pos="303" show="12" value="0c"/>
+      <field name="dhcp.option.request_list_item" showname="Parameter Request List Item: (15) Domain Name" size="1" pos="304" show="15" value="0f"/>
+      <field name="dhcp.option.request_list_item" showname="Parameter Request List Item: (26) Interface MTU" size="1" pos="305" show="26" value="1a"/>
+      <field name="dhcp.option.request_list_item" showname="Parameter Request List Item: (28) Broadcast Address" size="1" pos="306" show="28" value="1c"/>
+      <field name="dhcp.option.request_list_item" showname="Parameter Request List Item: (33) Static Route" size="1" pos="307" show="33" value="21"/>
+      <field name="dhcp.option.request_list_item" showname="Parameter Request List Item: (51) IP Address Lease Time" size="1" pos="308" show="51" value="33"/>
+      <field name="dhcp.option.request_list_item" showname="Parameter Request List Item: (54) DHCP Server Identifier" size="1" pos="309" show="54" value="36"/>
+      <field name="dhcp.option.request_list_item" showname="Parameter Request List Item: (58) Renewal Time Value" size="1" pos="310" show="58" value="3a"/>
+      <field name="dhcp.option.request_list_item" showname="Parameter Request List Item: (59) Rebinding Time Value" size="1" pos="311" show="59" value="3b"/>
+      <field name="dhcp.option.request_list_item" showname="Parameter Request List Item: (119) Domain Search" size="1" pos="312" show="119" value="77"/>
+    </field>
+    <field name="dhcp.option.type" showname="Option: (57) Maximum DHCP Message Size" size="4" pos="313" show="57" value="390205c0">
+      <field name="dhcp.option.length" showname="Length: 2" size="1" pos="314" show="2" value="02"/>
+      <field name="dhcp.option.value" showname="Value: 05c0" hide="yes" size="2" pos="315" show="05:c0" value="05c0"/>
+      <field name="dhcp.option.dhcp_max_message_size" showname="Maximum DHCP Message Size: 1472" size="2" pos="315" show="1472" value="05c0"/>
+    </field>
+    <field name="dhcp.option.type" showname="Option: (61) Client identifier" size="21" pos="317" show="61" value="3d13ff000000020001000132456fd4000000000002">
+      <field name="dhcp.option.length" showname="Length: 19" size="1" pos="318" show="19" value="13"/>
+      <field name="dhcp.option.value" showname="Value: ff000000020001000132456fd4000000000002" hide="yes" size="19" pos="319" show="ff:00:00:00:02:00:01:00:01:32:45:6f:d4:00:00:00:00:00:02" value="ff000000020001000132456fd4000000000002"/>
+      <field name="dhcp.client_id.iaid" showname="IAID: 00000002" size="4" pos="320" show="00000002" value="00000002"/>
+      <field name="dhcp.client_id.duid_type" showname="DUID Type: link-layer address plus time (1)" size="2" pos="324" show="1" value="0001"/>
+      <field name="dhcp.client_id.duid_llt_hw_type" showname="Hardware type: Ethernet (1)" size="2" pos="326" show="1" value="0001"/>
+      <field name="dhcp.client_id.time" showname="Time: 843411412" size="4" pos="328" show="843411412" value="32456fd4"/>
+      <field name="dhcp.client_id.link_layer_address" showname="Link layer address: 00:00:00:00:00:02" size="6" pos="332" show="00:00:00:00:00:02" value="000000000002"/>
+    </field>
+    <field name="dhcp.option.type" showname="Option: (145) Forcerenew Nonce Capable" size="3" pos="338" show="145" value="910101">
+      <field name="dhcp.option.length" showname="Length: 1" size="1" pos="339" show="1" value="01"/>
+      <field name="dhcp.option.value" showname="Value: 01" hide="yes" size="1" pos="340" show="01" value="01"/>
+      <field name="dhcp.option.forcerenew_nonce.algorithm" showname="Algorithm: HMAC-MD5 (1)" size="1" pos="340" show="1" value="01"/>
+    </field>
+    <field name="dhcp.option.type" showname="Option: (255) End" size="1" pos="341" show="0" value="ff">
+      <field name="dhcp.option.end" showname="Option End: 255" size="1" pos="341" show="255" value="ff"/>
+    </field>
+  </proto>
+</packet>
+<packet>
+  <proto name="geninfo" pos="0" showname="General information" size="341">
+    <field name="num" pos="0" show="4" showname="Number" value="4" size="341"/>
+    <field name="len" pos="0" show="341" showname="Frame Length" value="155" size="341"/>
+    <field name="caplen" pos="0" show="341" showname="Captured Length" value="155" size="341"/>
+    <field name="timestamp" pos="0" show="Sep 22, 2026 16:56:53.779374115 UTC" showname="Captured Time" value="1790096213.779374115" size="341"/>
+  </proto>
+  <proto name="frame" showname="Frame 4: 341 bytes on wire (2728 bits), 341 bytes captured (2728 bits) on interface r1-eth0, id 0" size="341" pos="0">
+    <field name="frame.section_number" showname="Section number: 1" size="0" pos="0" show="1"/>
+    <field name="frame.interface_id" showname="Interface id: 0 (r1-eth0)" size="0" pos="0" show="0">
+      <field name="frame.interface_name" showname="Interface name: r1-eth0" size="0" pos="0" show="r1-eth0"/>
+    </field>
+    <field name="frame.encap_type" showname="Encapsulation type: Ethernet (1)" size="0" pos="0" show="1"/>
+    <field name="frame.time" showname="Arrival Time: Sep 22, 2026 16:56:53.779374115 UTC" size="0" pos="0" show="Sep 22, 2026 16:56:53.779374115 UTC"/>
+    <field name="frame.offset_shift" showname="Time shift for this packet: 0.000000000 seconds" size="0" pos="0" show="0.000000000"/>
+    <field name="frame.time_epoch" showname="Epoch Time: 1790096213.779374115 seconds" size="0" pos="0" show="1790096213.779374115"/>
+    <field name="frame.time_delta" showname="Time delta from previous captured frame: 0.002647150 seconds" size="0" pos="0" show="0.002647150"/>
+    <field name="frame.time_delta_displayed" showname="Time delta from previous displayed frame: 0.002647150 seconds" size="0" pos="0" show="0.002647150"/>
+    <field name="frame.time_relative" showname="Time since reference or first frame: 0.018628387 seconds" size="0" pos="0" show="0.018628387"/>
+    <field name="frame.number" showname="Frame Number: 4" size="0" pos="0" show="4"/>
+    <field name="frame.len" showname="Frame Length: 341 bytes (2728 bits)" size="0" pos="0" show="341"/>
+    <field name="frame.cap_len" showname="Capture Length: 341 bytes (2728 bits)" size="0" pos="0" show="341"/>
+    <field name="frame.marked" showname="Frame is marked: False" size="0" pos="0" show="0"/>
+    <field name="frame.ignored" showname="Frame is ignored: False" size="0" pos="0" show="0"/>
+    <field name="frame.protocols" showname="Protocols in frame: eth:ethertype:ip:udp:dhcp" size="0" pos="0" show="eth:ethertype:ip:udp:dhcp"/>
+  </proto>
+  <proto name="eth" showname="Ethernet II, Src: 00:00:00:00:00:01, Dst: 00:00:00:00:00:02" size="14" pos="0">
+    <field name="eth.dst" showname="Destination: 00:00:00:00:00:02" size="6" pos="0" show="00:00:00:00:00:02" value="000000000002">
+      <field name="eth.dst_resolved" showname="Destination (resolved): 00:00:00:00:00:02" hide="yes" size="6" pos="0" show="00:00:00:00:00:02" value="000000000002"/>
+      <field name="eth.dst.oui" showname="Destination OUI: 00:00:00 (Officially Xerox, but" hide="yes" size="3" pos="0" show="0" value="000000"/>
+      <field name="eth.dst.oui_resolved" showname="Destination OUI (resolved): Officially Xerox, but 0:0:0:0:0:0 is more common" hide="yes" size="6" pos="0" show="Officially Xerox, but 0:0:0:0:0:0 is more common" value="000000000002"/>
+      <field name="eth.addr" showname="Address: 00:00:00:00:00:02" size="6" pos="0" show="00:00:00:00:00:02" value="000000000002"/>
+      <field name="eth.addr_resolved" showname="Address (resolved): 00:00:00:00:00:02" hide="yes" size="6" pos="0" show="00:00:00:00:00:02" value="000000000002"/>
+      <field name="eth.addr.oui" showname="Address OUI: 00:00:00 (Officially Xerox, but" hide="yes" size="3" pos="0" show="0" value="000000"/>
+      <field name="eth.addr.oui_resolved" showname="Address OUI (resolved): Officially Xerox, but 0:0:0:0:0:0 is more common" hide="yes" size="6" pos="0" show="Officially Xerox, but 0:0:0:0:0:0 is more common" value="000000000002"/>
+      <field name="eth.dst.lg" showname=".... ..0. .... .... .... .... = LG bit: Globally unique address (factory default)" size="3" pos="0" show="0" value="0" unmaskedvalue="000000"/>
+      <field name="eth.lg" showname=".... ..0. .... .... .... .... = LG bit: Globally unique address (factory default)" hide="yes" size="3" pos="0" show="0" value="0" unmaskedvalue="000000"/>
+      <field name="eth.dst.ig" showname=".... ...0 .... .... .... .... = IG bit: Individual address (unicast)" size="3" pos="0" show="0" value="0" unmaskedvalue="000000"/>
+      <field name="eth.ig" showname=".... ...0 .... .... .... .... = IG bit: Individual address (unicast)" hide="yes" size="3" pos="0" show="0" value="0" unmaskedvalue="000000"/>
+    </field>
+    <field name="eth.src" showname="Source: 00:00:00:00:00:01" size="6" pos="6" show="00:00:00:00:00:01" value="000000000001">
+      <field name="eth.src_resolved" showname="Source (resolved): 00:00:00:00:00:01" hide="yes" size="6" pos="6" show="00:00:00:00:00:01" value="000000000001"/>
+      <field name="eth.src.oui" showname="Source OUI: 00:00:00 (Officially Xerox, but" hide="yes" size="3" pos="6" show="0" value="000000"/>
+      <field name="eth.src.oui_resolved" showname="Source OUI (resolved): Officially Xerox, but 0:0:0:0:0:0 is more common" hide="yes" size="6" pos="6" show="Officially Xerox, but 0:0:0:0:0:0 is more common" value="000000000001"/>
+      <field name="eth.addr" showname="Address: 00:00:00:00:00:01" size="6" pos="6" show="00:00:00:00:00:01" value="000000000001"/>
+      <field name="eth.addr_resolved" showname="Address (resolved): 00:00:00:00:00:01" hide="yes" size="6" pos="6" show="00:00:00:00:00:01" value="000000000001"/>
+      <field name="eth.addr.oui" showname="Address OUI: 00:00:00 (Officially Xerox, but" hide="yes" size="3" pos="6" show="0" value="000000"/>
+      <field name="eth.addr.oui_resolved" showname="Address OUI (resolved): Officially Xerox, but 0:0:0:0:0:0 is more common" hide="yes" size="6" pos="6" show="Officially Xerox, but 0:0:0:0:0:0 is more common" value="000000000001"/>
+      <field name="eth.src.lg" showname=".... ..0. .... .... .... .... = LG bit: Globally unique address (factory default)" size="3" pos="6" show="0" value="0" unmaskedvalue="000000"/>
+      <field name="eth.lg" showname=".... ..0. .... .... .... .... = LG bit: Globally unique address (factory default)" hide="yes" size="3" pos="6" show="0" value="0" unmaskedvalue="000000"/>
+      <field name="eth.src.ig" showname=".... ...0 .... .... .... .... = IG bit: Individual address (unicast)" size="3" pos="6" show="0" value="0" unmaskedvalue="000000"/>
+      <field name="eth.ig" showname=".... ...0 .... .... .... .... = IG bit: Individual address (unicast)" hide="yes" size="3" pos="6" show="0" value="0" unmaskedvalue="000000"/>
+    </field>
+    <field name="eth.type" showname="Type: IPv4 (0x0800)" size="2" pos="12" show="0x0800" value="0800"/>
+  </proto>
+  <proto name="ip" showname="Internet Protocol Version 4, Src: 10.50.0.1, Dst: 10.50.0.50" size="20" pos="14">
+    <field name="ip.version" showname="0100 .... = Version: 4" size="1" pos="14" show="4" value="45"/>
+    <field name="ip.hdr_len" showname=".... 0101 = Header Length: 20 bytes (5)" size="1" pos="14" show="20" value="45"/>
+    <field name="ip.dsfield" showname="Differentiated Services Field: 0x10 (DSCP: Unknown, ECN: Not-ECT)" size="1" pos="15" show="0x10" value="10">
+      <field name="ip.dsfield.dscp" showname="0001 00.. = Differentiated Services Codepoint: Unknown (4)" size="1" pos="15" show="4" value="4" unmaskedvalue="10"/>
+      <field name="ip.dsfield.ecn" showname=".... ..00 = Explicit Congestion Notification: Not ECN-Capable Transport (0)" size="1" pos="15" show="0" value="0" unmaskedvalue="10"/>
+    </field>
+    <field name="ip.len" showname="Total Length: 327" size="2" pos="16" show="327" value="0147"/>
+    <field name="ip.id" showname="Identification: 0x0000 (0)" size="2" pos="18" show="0x0000" value="0000"/>
+    <field name="ip.flags" showname="010. .... = Flags: 0x2, Don&#x27;t fragment" size="1" pos="20" show="0x02" value="2" unmaskedvalue="40">
+      <field name="ip.flags.rb" showname="0... .... = Reserved bit: Not set" size="1" pos="20" show="0" value="0" unmaskedvalue="40"/>
+      <field name="ip.flags.df" showname=".1.. .... = Don&#x27;t fragment: Set" size="1" pos="20" show="1" value="1" unmaskedvalue="40"/>
+      <field name="ip.flags.mf" showname="..0. .... = More fragments: Not set" size="1" pos="20" show="0" value="0" unmaskedvalue="40"/>
+    </field>
+    <field name="ip.frag_offset" showname="...0 0000 0000 0000 = Fragment Offset: 0" size="2" pos="20" show="0" value="0" unmaskedvalue="4000"/>
+    <field name="ip.ttl" showname="Time to Live: 128" size="1" pos="22" show="128" value="80"/>
+    <field name="ip.proto" showname="Protocol: UDP (17)" size="1" pos="23" show="17" value="11"/>
+    <field name="ip.checksum" showname="Header Checksum: 0xe4ff [validation disabled]" size="2" pos="24" show="0xe4ff" value="e4ff"/>
+    <field name="ip.checksum.status" showname="Header checksum status: Unverified" size="0" pos="24" show="2"/>
+    <field name="ip.src" showname="Source Address: 10.50.0.1" size="4" pos="26" show="10.50.0.1" value="0a320001"/>
+    <field name="ip.addr" showname="Source or Destination Address: 10.50.0.1" hide="yes" size="4" pos="26" show="10.50.0.1" value="0a320001"/>
+    <field name="ip.src_host" showname="Source Host: 10.50.0.1" hide="yes" size="4" pos="26" show="10.50.0.1" value="0a320001"/>
+    <field name="ip.host" showname="Source or Destination Host: 10.50.0.1" hide="yes" size="4" pos="26" show="10.50.0.1" value="0a320001"/>
+    <field name="ip.dst" showname="Destination Address: 10.50.0.50" size="4" pos="30" show="10.50.0.50" value="0a320032"/>
+    <field name="ip.addr" showname="Source or Destination Address: 10.50.0.50" hide="yes" size="4" pos="30" show="10.50.0.50" value="0a320032"/>
+    <field name="ip.dst_host" showname="Destination Host: 10.50.0.50" hide="yes" size="4" pos="30" show="10.50.0.50" value="0a320032"/>
+    <field name="ip.host" showname="Source or Destination Host: 10.50.0.50" hide="yes" size="4" pos="30" show="10.50.0.50" value="0a320032"/>
+  </proto>
+  <proto name="udp" showname="User Datagram Protocol, Src Port: 67, Dst Port: 68" size="8" pos="34">
+    <field name="udp.srcport" showname="Source Port: 67" size="2" pos="34" show="67" value="0043"/>
+    <field name="udp.dstport" showname="Destination Port: 68" size="2" pos="36" show="68" value="0044"/>
+    <field name="udp.port" showname="Source or Destination Port: 67" hide="yes" size="2" pos="34" show="67" value="0043"/>
+    <field name="udp.port" showname="Source or Destination Port: 68" hide="yes" size="2" pos="36" show="68" value="0044"/>
+    <field name="udp.length" showname="Length: 307" size="2" pos="38" show="307" value="0133"/>
+    <field name="udp.checksum" showname="Checksum: 0x5ea1 [unverified]" size="2" pos="40" show="0x5ea1" value="5ea1"/>
+    <field name="udp.checksum.status" showname="Checksum Status: Unverified" size="0" pos="40" show="2"/>
+    <field name="udp.stream" showname="Stream index: 1" size="0" pos="42" show="1"/>
+    <field name="" show="Timestamps" size="0" pos="34">
+      <field name="udp.time_relative" showname="Time since first frame: 0.003143238 seconds" size="0" pos="34" show="0.003143238"/>
+      <field name="udp.time_delta" showname="Time since previous frame: 0.003143238 seconds" size="0" pos="34" show="0.003143238"/>
+    </field>
+    <field name="udp.payload" showname="UDP payload (299 bytes)" size="299" pos="42" show="02:01:06:00:61:56:38:bd:00:00:00:00:00:00:00:00:0a:32:00:32:00:00:00:00:00:00:00:00:00:00:00:00:00:02:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:63:82:53:63:35:01:05:01:04:ff:ff:ff:00:03:04:0a:32:00:01:06:04:08:08:08:08:0c:02:68:31:33:04:00:00:00:78:36:04:0a:32:00:01:3d:13:ff:00:00:00:02:00:01:00:01:32:45:6f:d4:00:00:00:00:00:02:ff" value="02010600615638bd00000000000000000a320032000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000638253633501050104ffffff0003040a3200010604080808080c02683133040000007836040a3200013d13ff000000020001000132456fd4000000000002ff"/>
+  </proto>
+  <proto name="dhcp" showname="Dynamic Host Configuration Protocol (ACK)" size="299" pos="42">
+    <field name="dhcp.type" showname="Message type: Boot Reply (2)" size="1" pos="42" show="2" value="02"/>
+    <field name="dhcp.hw.type" showname="Hardware type: Ethernet (0x01)" size="1" pos="43" show="0x01" value="01"/>
+    <field name="dhcp.hw.len" showname="Hardware address length: 6" size="1" pos="44" show="6" value="06"/>
+    <field name="dhcp.hops" showname="Hops: 0" size="1" pos="45" show="0" value="00"/>
+    <field name="dhcp.id" showname="Transaction ID: 0x615638bd" size="4" pos="46" show="0x615638bd" value="615638bd"/>
+    <field name="dhcp.secs" showname="Seconds elapsed: 0" size="2" pos="50" show="0" value="0000"/>
+    <field name="dhcp.flags" showname="Bootp flags: 0x0000 (Unicast)" size="2" pos="52" show="0x0000" value="0000">
+      <field name="dhcp.flags.bc" showname="0... .... .... .... = Broadcast flag: Unicast" size="2" pos="52" show="0" value="0" unmaskedvalue="0000"/>
+      <field name="dhcp.flags.reserved" showname=".000 0000 0000 0000 = Reserved flags: 0x0000" size="2" pos="52" show="0x0000" value="0" unmaskedvalue="0000"/>
+    </field>
+    <field name="dhcp.ip.client" showname="Client IP address: 0.0.0.0" size="4" pos="54" show="0.0.0.0" value="00000000"/>
+    <field name="dhcp.ip.your" showname="Your (client) IP address: 10.50.0.50" size="4" pos="58" show="10.50.0.50" value="0a320032"/>
+    <field name="dhcp.ip.server" showname="Next server IP address: 0.0.0.0" size="4" pos="62" show="0.0.0.0" value="00000000"/>
+    <field name="dhcp.ip.relay" showname="Relay agent IP address: 0.0.0.0" size="4" pos="66" show="0.0.0.0" value="00000000"/>
+    <field name="dhcp.hw.mac_addr" showname="Client MAC address: 00:00:00:00:00:02" size="6" pos="70" show="00:00:00:00:00:02" value="000000000002"/>
+    <field name="dhcp.hw.addr_padding" showname="Client hardware address padding: 00000000000000000000" size="10" pos="76" show="00:00:00:00:00:00:00:00:00:00" value="00000000000000000000"/>
+    <field name="dhcp.server" showname="Server host name not given" size="64" pos="86" show="" value="00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"/>
+    <field name="dhcp.file" showname="Boot file name not given" size="128" pos="150" show="" value="0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"/>
+    <field name="dhcp.cookie" showname="Magic cookie: DHCP" size="4" pos="278" show="99.130.83.99" value="63825363"/>
+    <field name="dhcp.option.type" showname="Option: (53) DHCP Message Type (ACK)" size="3" pos="282" show="53" value="350105">
+      <field name="dhcp.option.length" showname="Length: 1" size="1" pos="283" show="1" value="01"/>
+      <field name="dhcp.option.value" showname="Value: 05" hide="yes" size="1" pos="284" show="05" value="05"/>
+      <field name="dhcp.option.dhcp" showname="DHCP: ACK (5)" size="1" pos="284" show="5" value="05"/>
+    </field>
+    <field name="dhcp.option.type" showname="Option: (1) Subnet Mask (255.255.255.0)" size="6" pos="285" show="1" value="0104ffffff00">
+      <field name="dhcp.option.length" showname="Length: 4" size="1" pos="286" show="4" value="04"/>
+      <field name="dhcp.option.value" showname="Value: ffffff00" hide="yes" size="4" pos="287" show="ff:ff:ff:00" value="ffffff00"/>
+      <field name="dhcp.option.subnet_mask" showname="Subnet Mask: 255.255.255.0" size="4" pos="287" show="255.255.255.0" value="ffffff00"/>
+    </field>
+    <field name="dhcp.option.type" showname="Option: (3) Router" size="6" pos="291" show="3" value="03040a320001">
+      <field name="dhcp.option.length" showname="Length: 4" size="1" pos="292" show="4" value="04"/>
+      <field name="dhcp.option.value" showname="Value: 0a320001" hide="yes" size="4" pos="293" show="0a:32:00:01" value="0a320001"/>
+      <field name="dhcp.option.router" showname="Router: 10.50.0.1" size="4" pos="293" show="10.50.0.1" value="0a320001"/>
+    </field>
+    <field name="dhcp.option.type" showname="Option: (6) Domain Name Server" size="6" pos="297" show="6" value="060408080808">
+      <field name="dhcp.option.length" showname="Length: 4" size="1" pos="298" show="4" value="04"/>
+      <field name="dhcp.option.value" showname="Value: 08080808" hide="yes" size="4" pos="299" show="08:08:08:08" value="08080808"/>
+      <field name="dhcp.option.domain_name_server" showname="Domain Name Server: 8.8.8.8" size="4" pos="299" show="8.8.8.8" value="08080808"/>
+    </field>
+    <field name="dhcp.option.type" showname="Option: (12) Host Name" size="4" pos="303" show="12" value="0c026831">
+      <field name="dhcp.option.length" showname="Length: 2" size="1" pos="304" show="2" value="02"/>
+      <field name="dhcp.option.value" showname="Value: 6831" hide="yes" size="2" pos="305" show="68:31" value="6831"/>
+      <field name="dhcp.option.hostname" showname="Host Name: h1" size="2" pos="305" show="h1" value="6831"/>
+    </field>
+    <field name="dhcp.option.type" showname="Option: (51) IP Address Lease Time" size="6" pos="307" show="51" value="330400000078">
+      <field name="dhcp.option.length" showname="Length: 4" size="1" pos="308" show="4" value="04"/>
+      <field name="dhcp.option.value" showname="Value: 00000078" hide="yes" size="4" pos="309" show="00:00:00:78" value="00000078"/>
+      <field name="dhcp.option.ip_address_lease_time" showname="IP Address Lease Time: (120s) 2 minutes" size="4" pos="309" show="120" value="00000078"/>
+    </field>
+    <field name="dhcp.option.type" showname="Option: (54) DHCP Server Identifier (10.50.0.1)" size="6" pos="313" show="54" value="36040a320001">
+      <field name="dhcp.option.length" showname="Length: 4" size="1" pos="314" show="4" value="04"/>
+      <field name="dhcp.option.value" showname="Value: 0a320001" hide="yes" size="4" pos="315" show="0a:32:00:01" value="0a320001"/>
+      <field name="dhcp.option.dhcp_server_id" showname="DHCP Server Identifier: 10.50.0.1" size="4" pos="315" show="10.50.0.1" value="0a320001"/>
+    </field>
+    <field name="dhcp.option.type" showname="Option: (61) Client identifier" size="21" pos="319" show="61" value="3d13ff000000020001000132456fd4000000000002">
+      <field name="dhcp.option.length" showname="Length: 19" size="1" pos="320" show="19" value="13"/>
+      <field name="dhcp.option.value" showname="Value: ff000000020001000132456fd4000000000002" hide="yes" size="19" pos="321" show="ff:00:00:00:02:00:01:00:01:32:45:6f:d4:00:00:00:00:00:02" value="ff000000020001000132456fd4000000000002"/>
+      <field name="dhcp.client_id.iaid" showname="IAID: 00000002" size="4" pos="322" show="00000002" value="00000002"/>
+      <field name="dhcp.client_id.duid_type" showname="DUID Type: link-layer address plus time (1)" size="2" pos="326" show="1" value="0001"/>
+      <field name="dhcp.client_id.duid_llt_hw_type" showname="Hardware type: Ethernet (1)" size="2" pos="328" show="1" value="0001"/>
+      <field name="dhcp.client_id.time" showname="Time: 843411412" size="4" pos="330" show="843411412" value="32456fd4"/>
+      <field name="dhcp.client_id.link_layer_address" showname="Link layer address: 00:00:00:00:00:02" size="6" pos="334" show="00:00:00:00:00:02" value="000000000002"/>
+    </field>
+    <field name="dhcp.option.type" showname="Option: (255) End" size="1" pos="340" show="0" value="ff">
+      <field name="dhcp.option.end" showname="Option End: 255" size="1" pos="340" show="255" value="ff"/>
+    </field>
+  </proto>
+</packet>
+</pdml>

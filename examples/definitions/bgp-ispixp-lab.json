@@ -1,0 +1,702 @@
+{
+  "schema_version": 3,
+  "address_family": "ipv4",
+  "persistent_config": true,
+  "example": "bgp-ispixp-lab",
+  "seeds": "frr-config/bgp-ispixp",
+  "topology": {
+    "nodes": [
+      {
+        "id": "rxp",
+        "name": "rxp",
+        "type": "router",
+        "protocols": [
+          "BGP"
+        ],
+        "fast_timers": false,
+        "startup": []
+      },
+      {
+        "id": "rp1",
+        "name": "rp1",
+        "type": "router",
+        "protocols": [
+          "BGP"
+        ],
+        "fast_timers": false,
+        "startup": []
+      },
+      {
+        "id": "rp2",
+        "name": "rp2",
+        "type": "router",
+        "protocols": [
+          "BGP"
+        ],
+        "fast_timers": false,
+        "startup": []
+      },
+      {
+        "id": "up1",
+        "name": "up1",
+        "type": "router",
+        "protocols": [
+          "BGP"
+        ],
+        "fast_timers": false,
+        "startup": []
+      },
+      {
+        "id": "up2",
+        "name": "up2",
+        "type": "router",
+        "protocols": [
+          "BGP"
+        ],
+        "fast_timers": false,
+        "startup": []
+      },
+      {
+        "id": "rc1",
+        "name": "rc1",
+        "type": "router",
+        "protocols": [
+          "BGP"
+        ],
+        "fast_timers": false,
+        "startup": []
+      },
+      {
+        "id": "rc2",
+        "name": "rc2",
+        "type": "router",
+        "protocols": [
+          "BGP"
+        ],
+        "fast_timers": false,
+        "startup": []
+      },
+      {
+        "id": "rc3",
+        "name": "rc3",
+        "type": "router",
+        "protocols": [
+          "BGP"
+        ],
+        "fast_timers": false,
+        "startup": []
+      },
+      {
+        "id": "rc4",
+        "name": "rc4",
+        "type": "router",
+        "protocols": [
+          "BGP"
+        ],
+        "fast_timers": false,
+        "startup": []
+      },
+      {
+        "id": "hup1",
+        "name": "hup1",
+        "type": "host",
+        "ipv4_gateway": "10.100.1.1",
+        "ipv6_gateway": "",
+        "startup": []
+      },
+      {
+        "id": "hup2",
+        "name": "hup2",
+        "type": "host",
+        "ipv4_gateway": "10.100.2.1",
+        "ipv6_gateway": "",
+        "startup": []
+      },
+      {
+        "id": "hp1",
+        "name": "hp1",
+        "type": "host",
+        "ipv4_gateway": "10.200.1.1",
+        "ipv6_gateway": "",
+        "startup": []
+      },
+      {
+        "id": "hp2",
+        "name": "hp2",
+        "type": "host",
+        "ipv4_gateway": "10.200.2.1",
+        "ipv6_gateway": "",
+        "startup": []
+      },
+      {
+        "id": "hc1",
+        "name": "hc1",
+        "type": "host",
+        "ipv4_gateway": "10.10.1.1",
+        "ipv6_gateway": "",
+        "startup": []
+      },
+      {
+        "id": "hc2",
+        "name": "hc2",
+        "type": "host",
+        "ipv4_gateway": "10.10.2.1",
+        "ipv6_gateway": "",
+        "startup": []
+      },
+      {
+        "id": "hc3",
+        "name": "hc3",
+        "type": "host",
+        "ipv4_gateway": "10.10.3.1",
+        "ipv6_gateway": "",
+        "startup": []
+      },
+      {
+        "id": "hc4",
+        "name": "hc4",
+        "type": "host",
+        "ipv4_gateway": "10.10.4.1",
+        "ipv6_gateway": "",
+        "startup": []
+      },
+      {
+        "id": "tr1",
+        "name": "tr1",
+        "type": "speaker",
+        "local_as": 3356,
+        "routes": [],
+        "neighbors": [
+          {
+            "peer": "10.0.5.1",
+            "local_address": "10.0.5.2",
+            "local_as": 3356,
+            "peer_as": 4788,
+            "hold_time": null,
+            "routes": [],
+            "route_generator": {
+              "count": 8,
+              "sub_prefixes": 2,
+              "prefix_seed": 42,
+              "as_path_seed": 88
+            }
+          },
+          {
+            "peer": "10.0.6.1",
+            "local_address": "10.0.6.2",
+            "local_as": 3356,
+            "peer_as": 9002,
+            "hold_time": null,
+            "routes": [],
+            "route_generator": {
+              "count": 8,
+              "sub_prefixes": 2,
+              "prefix_seed": 42,
+              "as_path_seed": 84
+            }
+          }
+        ],
+        "startup": []
+      },
+      {
+        "id": "tr2",
+        "name": "tr2",
+        "type": "speaker",
+        "local_as": 1299,
+        "routes": [],
+        "neighbors": [
+          {
+            "peer": "10.0.7.1",
+            "local_address": "10.0.7.2",
+            "local_as": 1299,
+            "peer_as": 4788,
+            "hold_time": null,
+            "routes": [],
+            "route_generator": {
+              "count": 8,
+              "sub_prefixes": 2,
+              "prefix_seed": 43,
+              "as_path_seed": 84
+            }
+          },
+          {
+            "peer": "10.0.8.1",
+            "local_address": "10.0.8.2",
+            "local_as": 1299,
+            "peer_as": 9002,
+            "hold_time": null,
+            "routes": [],
+            "route_generator": {
+              "count": 8,
+              "sub_prefixes": 2,
+              "prefix_seed": 43,
+              "as_path_seed": 88
+            }
+          }
+        ],
+        "startup": []
+      },
+      {
+        "id": "nat1",
+        "name": "nat1",
+        "type": "transit",
+        "subnet": "10.0.50.0/30",
+        "ip": "10.0.50.1/30",
+        "downstream_ids": [
+          "up1",
+          "up2"
+        ]
+      },
+      {
+        "id": "nat2",
+        "name": "nat2",
+        "type": "transit",
+        "subnet": "10.0.50.4/30",
+        "ip": "10.0.50.5/30",
+        "downstream_ids": [
+          "up1",
+          "up2"
+        ]
+      }
+    ],
+    "links": [
+      {
+        "id": "rp1-rxp-1",
+        "ends": [
+          {
+            "node_id": "rp1",
+            "interface_id": "if-000000000001",
+            "port": 0,
+            "ipv4": "10.0.1.2/30",
+            "ipv6": ""
+          },
+          {
+            "node_id": "rxp",
+            "interface_id": "if-000000000002",
+            "port": 0,
+            "ipv4": "10.0.1.1/30",
+            "ipv6": ""
+          }
+        ]
+      },
+      {
+        "id": "rp2-rxp-2",
+        "ends": [
+          {
+            "node_id": "rp2",
+            "interface_id": "if-000000000003",
+            "port": 0,
+            "ipv4": "10.0.2.2/30",
+            "ipv6": ""
+          },
+          {
+            "node_id": "rxp",
+            "interface_id": "if-000000000004",
+            "port": 1,
+            "ipv4": "10.0.2.1/30",
+            "ipv6": ""
+          }
+        ]
+      },
+      {
+        "id": "rp1-up1-3",
+        "ends": [
+          {
+            "node_id": "rp1",
+            "interface_id": "if-000000000005",
+            "port": 1,
+            "ipv4": "10.0.3.1/30",
+            "ipv6": ""
+          },
+          {
+            "node_id": "up1",
+            "interface_id": "if-000000000006",
+            "port": 0,
+            "ipv4": "10.0.3.2/30",
+            "ipv6": ""
+          }
+        ]
+      },
+      {
+        "id": "rp2-up2-4",
+        "ends": [
+          {
+            "node_id": "rp2",
+            "interface_id": "if-000000000007",
+            "port": 1,
+            "ipv4": "10.0.4.2/30",
+            "ipv6": ""
+          },
+          {
+            "node_id": "up2",
+            "interface_id": "if-000000000008",
+            "port": 0,
+            "ipv4": "10.0.4.1/30",
+            "ipv6": ""
+          }
+        ]
+      },
+      {
+        "id": "tr1-up1-5",
+        "ends": [
+          {
+            "node_id": "tr1",
+            "interface_id": "if-000000000009",
+            "port": 0,
+            "ipv4": "10.0.5.2/30",
+            "ipv6": ""
+          },
+          {
+            "node_id": "up1",
+            "interface_id": "if-000000000010",
+            "port": 1,
+            "ipv4": "10.0.5.1/30",
+            "ipv6": ""
+          }
+        ]
+      },
+      {
+        "id": "tr1-up2-6",
+        "ends": [
+          {
+            "node_id": "tr1",
+            "interface_id": "if-000000000011",
+            "port": 1,
+            "ipv4": "10.0.6.2/30",
+            "ipv6": ""
+          },
+          {
+            "node_id": "up2",
+            "interface_id": "if-000000000012",
+            "port": 1,
+            "ipv4": "10.0.6.1/30",
+            "ipv6": ""
+          }
+        ]
+      },
+      {
+        "id": "tr2-up1-7",
+        "ends": [
+          {
+            "node_id": "tr2",
+            "interface_id": "if-000000000013",
+            "port": 0,
+            "ipv4": "10.0.7.2/30",
+            "ipv6": ""
+          },
+          {
+            "node_id": "up1",
+            "interface_id": "if-000000000014",
+            "port": 2,
+            "ipv4": "10.0.7.1/30",
+            "ipv6": ""
+          }
+        ]
+      },
+      {
+        "id": "tr2-up2-8",
+        "ends": [
+          {
+            "node_id": "tr2",
+            "interface_id": "if-000000000015",
+            "port": 1,
+            "ipv4": "10.0.8.2/30",
+            "ipv6": ""
+          },
+          {
+            "node_id": "up2",
+            "interface_id": "if-000000000016",
+            "port": 2,
+            "ipv4": "10.0.8.1/30",
+            "ipv6": ""
+          }
+        ]
+      },
+      {
+        "id": "nat1-tr1-9",
+        "ends": [
+          {
+            "node_id": "nat1",
+            "interface_id": "if-000000000017",
+            "port": 0,
+            "ipv4": "",
+            "ipv6": ""
+          },
+          {
+            "node_id": "tr1",
+            "interface_id": "if-000000000018",
+            "port": 2,
+            "ipv4": "10.0.50.2/30",
+            "ipv6": ""
+          }
+        ]
+      },
+      {
+        "id": "nat2-tr2-10",
+        "ends": [
+          {
+            "node_id": "nat2",
+            "interface_id": "if-000000000019",
+            "port": 0,
+            "ipv4": "",
+            "ipv6": ""
+          },
+          {
+            "node_id": "tr2",
+            "interface_id": "if-000000000020",
+            "port": 2,
+            "ipv4": "10.0.50.6/30",
+            "ipv6": ""
+          }
+        ]
+      },
+      {
+        "id": "up1-up2-11",
+        "ends": [
+          {
+            "node_id": "up1",
+            "interface_id": "if-000000000021",
+            "port": 3,
+            "ipv4": "10.0.9.1/30",
+            "ipv6": ""
+          },
+          {
+            "node_id": "up2",
+            "interface_id": "if-000000000022",
+            "port": 3,
+            "ipv4": "10.0.9.2/30",
+            "ipv6": ""
+          }
+        ]
+      },
+      {
+        "id": "rc1-rp1-12",
+        "ends": [
+          {
+            "node_id": "rc1",
+            "interface_id": "if-000000000023",
+            "port": 0,
+            "ipv4": "10.0.11.2/30",
+            "ipv6": ""
+          },
+          {
+            "node_id": "rp1",
+            "interface_id": "if-000000000024",
+            "port": 2,
+            "ipv4": "10.0.11.1/30",
+            "ipv6": ""
+          }
+        ]
+      },
+      {
+        "id": "rc2-rp1-13",
+        "ends": [
+          {
+            "node_id": "rc2",
+            "interface_id": "if-000000000025",
+            "port": 0,
+            "ipv4": "10.0.12.2/30",
+            "ipv6": ""
+          },
+          {
+            "node_id": "rp1",
+            "interface_id": "if-000000000026",
+            "port": 3,
+            "ipv4": "10.0.12.1/30",
+            "ipv6": ""
+          }
+        ]
+      },
+      {
+        "id": "rc3-rp2-14",
+        "ends": [
+          {
+            "node_id": "rc3",
+            "interface_id": "if-000000000027",
+            "port": 0,
+            "ipv4": "10.0.13.2/30",
+            "ipv6": ""
+          },
+          {
+            "node_id": "rp2",
+            "interface_id": "if-000000000028",
+            "port": 2,
+            "ipv4": "10.0.13.1/30",
+            "ipv6": ""
+          }
+        ]
+      },
+      {
+        "id": "rc4-rp2-15",
+        "ends": [
+          {
+            "node_id": "rc4",
+            "interface_id": "if-000000000029",
+            "port": 0,
+            "ipv4": "10.0.14.2/30",
+            "ipv6": ""
+          },
+          {
+            "node_id": "rp2",
+            "interface_id": "if-000000000030",
+            "port": 3,
+            "ipv4": "10.0.14.1/30",
+            "ipv6": ""
+          }
+        ]
+      },
+      {
+        "id": "hup1-up1-16",
+        "ends": [
+          {
+            "node_id": "hup1",
+            "interface_id": "if-000000000031",
+            "port": 0,
+            "ipv4": "10.100.1.2/24",
+            "ipv6": ""
+          },
+          {
+            "node_id": "up1",
+            "interface_id": "if-000000000032",
+            "port": 4,
+            "ipv4": "10.100.1.1/24",
+            "ipv6": ""
+          }
+        ]
+      },
+      {
+        "id": "hup2-up2-17",
+        "ends": [
+          {
+            "node_id": "hup2",
+            "interface_id": "if-000000000033",
+            "port": 0,
+            "ipv4": "10.100.2.2/24",
+            "ipv6": ""
+          },
+          {
+            "node_id": "up2",
+            "interface_id": "if-000000000034",
+            "port": 4,
+            "ipv4": "10.100.2.1/24",
+            "ipv6": ""
+          }
+        ]
+      },
+      {
+        "id": "hp1-rp1-18",
+        "ends": [
+          {
+            "node_id": "hp1",
+            "interface_id": "if-000000000035",
+            "port": 0,
+            "ipv4": "10.200.1.2/24",
+            "ipv6": ""
+          },
+          {
+            "node_id": "rp1",
+            "interface_id": "if-000000000036",
+            "port": 4,
+            "ipv4": "10.200.1.1/24",
+            "ipv6": ""
+          }
+        ]
+      },
+      {
+        "id": "hp2-rp2-19",
+        "ends": [
+          {
+            "node_id": "hp2",
+            "interface_id": "if-000000000037",
+            "port": 0,
+            "ipv4": "10.200.2.2/24",
+            "ipv6": ""
+          },
+          {
+            "node_id": "rp2",
+            "interface_id": "if-000000000038",
+            "port": 4,
+            "ipv4": "10.200.2.1/24",
+            "ipv6": ""
+          }
+        ]
+      },
+      {
+        "id": "hc1-rc1-20",
+        "ends": [
+          {
+            "node_id": "hc1",
+            "interface_id": "if-000000000039",
+            "port": 0,
+            "ipv4": "10.10.1.2/24",
+            "ipv6": ""
+          },
+          {
+            "node_id": "rc1",
+            "interface_id": "if-000000000040",
+            "port": 1,
+            "ipv4": "10.10.1.1/24",
+            "ipv6": ""
+          }
+        ]
+      },
+      {
+        "id": "hc2-rc2-21",
+        "ends": [
+          {
+            "node_id": "hc2",
+            "interface_id": "if-000000000041",
+            "port": 0,
+            "ipv4": "10.10.2.2/24",
+            "ipv6": ""
+          },
+          {
+            "node_id": "rc2",
+            "interface_id": "if-000000000042",
+            "port": 1,
+            "ipv4": "10.10.2.1/24",
+            "ipv6": ""
+          }
+        ]
+      },
+      {
+        "id": "hc3-rc3-22",
+        "ends": [
+          {
+            "node_id": "hc3",
+            "interface_id": "if-000000000043",
+            "port": 0,
+            "ipv4": "10.10.3.2/24",
+            "ipv6": ""
+          },
+          {
+            "node_id": "rc3",
+            "interface_id": "if-000000000044",
+            "port": 1,
+            "ipv4": "10.10.3.1/24",
+            "ipv6": ""
+          }
+        ]
+      },
+      {
+        "id": "hc4-rc4-23",
+        "ends": [
+          {
+            "node_id": "hc4",
+            "interface_id": "if-000000000045",
+            "port": 0,
+            "ipv4": "10.10.4.2/24",
+            "ipv6": ""
+          },
+          {
+            "node_id": "rc4",
+            "interface_id": "if-000000000046",
+            "port": 1,
+            "ipv4": "10.10.4.1/24",
+            "ipv6": ""
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,299 @@
+/* Network Tools & Link Config Modal Styles */
+
+/* Tools Modal Specific Layout (Draggable & See-through) */
+#tools-modal.modal-overlay {
+    background: transparent;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    pointer-events: none; /* Let clicks pass through */
+    align-items: flex-start;
+    justify-content: flex-end; /* Top Right by default */
+}
+
+#tools-modal .modal-content {
+    pointer-events: auto; /* Re-enable clicks */
+    position: absolute;
+    top: 80px;
+    right: 20px;
+    margin: 0;
+    max-width: 500px;
+    animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+#tools-modal .modal-header {
+    cursor: move; /* Indicate draggable */
+}
+
+/* The left and bottom edges resize the dialog (network-tools.js). As the
+   Pane separators: an 8px grabbable strip that shows a 2px line. */
+.tools-resize {
+    position: absolute;
+    z-index: 2;
+    touch-action: none;
+}
+
+.tools-resize-width {
+    top: 0;
+    left: 0;
+    width: 8px;
+    height: 100%;
+    cursor: col-resize;
+}
+
+.tools-resize-height {
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 8px;
+    cursor: row-resize;
+}
+
+.tools-resize::after {
+    content: "";
+    position: absolute;
+    background: transparent;
+    transition: background .15s ease;
+}
+
+.tools-resize-width::after {
+    left: 3px;
+    width: 2px;
+    top: 0;
+    bottom: 0;
+}
+
+.tools-resize-height::after {
+    top: 3px;
+    height: 2px;
+    left: 0;
+    right: 0;
+}
+
+.tools-resize:is(:hover, :focus-visible, [data-resizing])::after {
+    background: var(--primary-color);
+}
+
+.tools-resize:focus-visible {
+    outline: 2px solid var(--focus-color);
+    outline-offset: -2px;
+}
+
+/* A size set by hand replaces the default caps, but a window made smaller
+   afterwards still holds the whole dialog. */
+#tools-modal .modal-content.has-set-width {
+    max-width: calc(100vw - 16px);
+}
+
+#tools-modal .modal-content.has-set-height {
+    max-height: calc(100vh - 16px);
+}
+
+/* Once heightened, the open tab's output takes the height it was given. */
+#tools-modal .modal-content.has-set-height .modal-body {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    min-height: 0;
+}
+
+#tools-modal .modal-content.has-set-height .tools-content.active {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    min-height: 0;
+}
+
+#tools-modal .modal-content.has-set-height .console-output {
+    flex: 1 1 auto;
+    height: auto;
+    max-height: none;
+}
+
+/* Modal Sizing & Layout */
+.tools-modal,
+.link-modal {
+    max-width: 500px; /* Match standard modal size */
+}
+
+/* Compact Tabs */
+.tools-tabs {
+    display: flex;
+    border-bottom: 1px solid var(--border-color);
+    margin-bottom: 0.75rem;
+    gap: 0.25rem;
+}
+
+.tools-tab {
+    min-height: 2rem;
+    padding: 0.25rem 0.75rem;
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    border-radius: var(--radius) var(--radius) 0 0;
+}
+
+.tools-tab:hover {
+    color: var(--text-color);
+    background: var(--surface-hover);
+}
+
+.tools-tab.active {
+    color: var(--primary-color);
+    border-bottom-color: var(--primary-color);
+    background: var(--surface-hover);
+}
+
+.tools-content {
+    display: none;
+    animation: fadeIn 0.2s ease;
+}
+
+.tools-content.active {
+    display: block;
+}
+
+/* Grid Layout for Forms (Space Saving) */
+.tools-modal .form-group,
+.link-modal .form-group {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+    margin-bottom: 0; /* Remove default margin for compacter look */
+}
+
+/* Form Items */
+.form-row {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.form-row label {
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--text-muted);
+}
+
+.form-row .form-control {
+    font-size: 0.9rem;
+    padding: 0.4rem 0.5rem; /* Slightly compact input */
+}
+
+/* A short note under a field, such as the default a blank field means */
+.form-row-help {
+    margin: 0;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+/* Full Width Elements (Buttons, Checkboxes) */
+.tools-modal .btn-full,
+.link-modal .btn-full,
+.tools-modal .form-actions,
+.link-modal .form-actions,
+.form-row-full {
+    grid-column: 1 / -1;
+    margin-top: 0.25rem;
+}
+
+.form-row-inline {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.form-row-inline .form-control-count {
+    flex: 0 0 5.5rem;
+    width: 5.5rem;
+}
+
+.form-row-inline .form-row-checkbox {
+    white-space: nowrap;
+}
+
+.form-row-checkboxes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.5rem;
+}
+
+.form-row-checkbox {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+}
+
+.form-row-checkbox input[type="checkbox"] {
+    margin: 0;
+    width: 1rem;
+    height: 1rem;
+}
+
+.form-row-checkbox span {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--text-color);
+}
+
+/* Routing Tab Specifics */
+.form-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+/* Console Output Box */
+.console-output {
+    margin-top: 0.75rem;
+    padding: 0.75rem;
+    background: var(--console-bg);
+    border: 1px solid var(--border-color);
+    color: var(--console-fg);
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    font-size: 0.8rem;
+    border-radius: var(--radius);
+    min-height: 100px;
+    max-height: 250px;
+    overflow-y: auto;
+    white-space: pre-wrap;
+    word-break: break-all;
+}
+
+.console-output:empty {
+    display: none;
+}
+
+/* Link Visualizations */
+.link {
+    transition: stroke 0.3s ease, stroke-width 0.3s ease, stroke-dasharray 0.3s ease;
+}
+
+.link.status-down {
+    stroke: var(--error-color) !important;
+    stroke-dasharray: 6, 6;
+    stroke-opacity: 0.8;
+    stroke-width: 2px;
+}
+
+/* Context Controls Animation */
+.context-controls {
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateX(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}

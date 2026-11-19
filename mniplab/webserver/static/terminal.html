@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terminal - Mininet-IPLab</title>
+    <link rel="stylesheet" href="/static/css/main.css">
+    <script>
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+
+        // Extract node name from URL and redirect to main page
+        const params = new URLSearchParams(window.location.search);
+        const nodeName = params.get('node');
+
+        if (nodeName) {
+            // Store node name to auto-open in main page
+            sessionStorage.setItem('mniplab-auto-open-node', nodeName);
+        }
+
+        // Redirect to main page
+        window.location.replace('/');
+    </script>
+</head>
+
+<body>
+    <noscript>
+        <p>JavaScript is required. <a href="/">Go to main page</a></p>
+    </noscript>
+    <p class="text-center p-8">Redirecting to main page...</p>

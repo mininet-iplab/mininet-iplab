@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light dark">
+    <title>Lab Guide - Mininet-IPLab</title>
+    <link rel="icon" type="image/svg+xml" href="/static/img/favicon.svg">
+    <link rel="stylesheet" href="/static/css/main.css?v=3">
+    <script>
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+    </script>
+    <style>
+        html, body {
+            height: auto;
+            min-height: 100vh;
+            overflow: auto;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            /* Keep the document as the sticky header's scroll container. */
+            overflow: visible;
+            background: var(--bg-color);
+            color: var(--text-color);
+            font-family: var(--font-family, system-ui, sans-serif);
+        }
+
+        .guide-page-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            background: var(--surface-color);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .guide-page-header h1 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin: 0;
+            color: var(--text-color);
+            flex: 1;
+            min-width: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .guide-page-main {
+            display: block;
+            flex: none;
+            overflow: visible;
+            padding: 2rem 1.5rem;
+            max-width: 860px;
+            width: 100%;
+            box-sizing: border-box;
+            margin: 0 auto;
+        }
+
+        .guide-page-status {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            padding: 1rem 0;
+        }
+
+        /* Expand .lab-guide-content styles for full-page view */
+        .lab-guide-content {
+            border: none;
+            border-radius: 0;
+            padding: 0;
+            font-size: 1rem;
+            line-height: 1.65;
+        }
+
+        .lab-guide-content h1 { font-size: 1.75rem; }
+        .lab-guide-content h2 { font-size: 1.4rem; }
+        .lab-guide-content h3 { font-size: 1.15rem; }
+        .lab-guide-content h4 { font-size: 1rem; }
+
+        .guide-theme-toggle {
+            background: none;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            cursor: pointer;
+            color: var(--text-color);
+            padding: 0.3rem 0.6rem;
+            font-size: 0.85rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+        }
+
+        .guide-theme-toggle:hover {
+            background: var(--surface-hover);
+        }
+
+        .guide-theme-toggle:focus-visible {
+            outline: 2px solid var(--focus-color);
+            outline-offset: 2px;
+        }
+    </style>
+</head>
+
+<body>
+    <header class="guide-page-header" role="banner">
+        <h1 id="guide-page-title">Lab Guide</h1>
+        <button class="guide-theme-toggle" id="guide-theme-toggle" type="button"
+            aria-label="Toggle light/dark theme">
+            <svg id="guide-theme-icon" aria-hidden="true" focusable="false" width="16" height="16"
+                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="5"></circle>
+                <line x1="12" y1="1" x2="12" y2="3"></line>
+                <line x1="12" y1="21" x2="12" y2="23"></line>
+                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                <line x1="1" y1="12" x2="3" y2="12"></line>
+                <line x1="21" y1="12" x2="23" y2="12"></line>
+                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+            </svg>
+            <span id="guide-theme-label">Light</span>
+        </button>
+    </header>
+
+    <main id="guide-main" class="guide-page-main" role="main">
+        <p id="guide-status" class="guide-page-status" aria-live="polite" aria-atomic="true">Loading guide…</p>
+        <article id="guide-content" class="lab-guide-content" aria-label="Lab guide content"></article>
+    </main>
+
+    <script src="/static/js/lib/marked.umd.js"></script>
+    <script src="/static/js/lib/purify.min.js"></script>
+    <script type="module">
+        import { normalizeGuideMarkdown } from '/static/js/utils/markdown.js';
+
+        (function () {
+            'use strict';
+
+            // ── Theme ────────────────────────────────────────────────────────
+            function applyTheme(theme) {
+                document.documentElement.setAttribute('data-theme', theme);
+                localStorage.setItem('theme', theme);
+                const label = document.getElementById('guide-theme-label');
+                const icon = document.getElementById('guide-theme-icon');
+                if (label) label.textContent = theme === 'dark' ? 'Dark' : 'Light';
+                if (icon) {
+                    if (theme === 'dark') {
+                        icon.innerHTML = `<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>`;
+                    } else {
+                        icon.innerHTML = `
+                            <circle cx="12" cy="12" r="5"></circle>
+                            <line x1="12" y1="1" x2="12" y2="3"></line>
+                            <line x1="12" y1="21" x2="12" y2="23"></line>
+                            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                            <line x1="1" y1="12" x2="3" y2="12"></line>
+                            <line x1="21" y1="12" x2="23" y2="12"></line>
+                            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>`;
+                    }
+                }
+            }
+
+            const toggleBtn = document.getElementById('guide-theme-toggle');
+            if (toggleBtn) {
+                toggleBtn.addEventListener('click', () => {
+                    const current = document.documentElement.getAttribute('data-theme') || 'light';
+                    applyTheme(current === 'dark' ? 'light' : 'dark');
+                });
+            }
+
+            // Apply initial theme label/icon
+            applyTheme(localStorage.getItem('theme') || 'light');
+
+            // ── Markdown render ──────────────────────────────────────────────
+            function renderMarkdown(markdown) {
+                if (!window.marked || !window.DOMPurify) return null;
+                // Shared with the in-app Guide panel: among other things this
+                // demotes the guide's own leading `# Title`, which is already
+                // promoted into this page's <h1> and document.title below.
+                const parsed = window.marked.parse(normalizeGuideMarkdown(markdown));
+                return window.DOMPurify.sanitize(parsed, {
+                    ADD_ATTR: ['target', 'rel'],
+                    FORBID_TAGS: ['script', 'style'],
+                });
+            }
+
+            // ── Load guide ───────────────────────────────────────────────────
+            async function loadGuide() {
+                const params = new URLSearchParams(window.location.search);
+                const example = params.get('example') || '';
+
+                const statusEl = document.getElementById('guide-status');
+                const contentEl = document.getElementById('guide-content');
+                const titleEl = document.getElementById('guide-page-title');
+
+                if (!example) {
+                    if (statusEl) statusEl.textContent = 'No guide specified.';
+                    return;
+                }
+
+                const key = params.get('key');
+                const guideApiUrl = `/api/load_guide?example=${encodeURIComponent(example)}`
+                    + (key ? `&key=${encodeURIComponent(key)}` : '');
+
+                try {
+                    const metadataUrl = key ? `/api/labs/${encodeURIComponent(key)}` : '/api/examples';
+                    const metadata = await fetch(metadataUrl, { cache: 'no-store' });
+                    if (metadata.status === 401 || metadata.status === 403) {
+                        window.location.replace('/');
+                        return;
+                    }
+                    if (!metadata.ok) throw new Error('Failed to load Guide metadata');
+                    const data = await metadata.json();
+                    const hasGuide = key ? (data.example === example ? data.has_guide : undefined)
+                        : data.examples?.find(item => item.id === example)?.has_guide;
+                    if (hasGuide === false) {
+                        if (statusEl) statusEl.textContent = 'No Guide provided for this Lab.';
+                        return;
+                    }
+                    const res = await fetch(guideApiUrl, { cache: 'no-store' });
+
+                    if (res.status === 401 || res.status === 403) {
+                        // Not authenticated — redirect to login
+                        window.location.replace('/');
+                        return;
+                    }
+
+                    if (!res.ok) {
+                        throw new Error('Failed to load Guide');
+                    }
+
+                    const markdown = await res.text();
+                    if (!markdown.trim()) {
+                        if (statusEl) statusEl.textContent = 'No Guide provided for this Lab.';
+                        return;
+                    }
+                    const safeHtml = renderMarkdown(markdown);
+
+                    // Update page title from first H1 in the guide, or use example name
+                    const firstH1 = markdown.match(/^#\s+(.+)/m);
+                    const guideTitle = firstH1
+                        ? firstH1[1].trim()
+                        : example.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+
+                    document.title = `${guideTitle} - Lab Guide - Mininet-IPLab`;
+                    if (titleEl) titleEl.textContent = guideTitle;
+
+                    if (safeHtml === null) {
+                        // Fallback: display as plain text
+                        if (contentEl) contentEl.textContent = markdown;
+                        if (statusEl) statusEl.textContent = 'Guide loaded (plain text fallback).';
+                    } else {
+                        if (contentEl) contentEl.innerHTML = safeHtml;
+                        // Open external links in a new tab safely
+                        if (contentEl) {
+                            contentEl.querySelectorAll('a[href]').forEach(a => {
+                                if (a.hostname && a.hostname !== window.location.hostname) {
+                                    a.setAttribute('target', '_blank');
+                                    a.setAttribute('rel', 'noopener noreferrer');
+                                }
+                            });
+                        }
+                        if (statusEl) statusEl.textContent = '';
+                    }
+                } catch (_) {
+                    if (statusEl) statusEl.textContent = 'Failed to load Guide. Please try again.';
+                }
+            }
+
+            loadGuide();
+        })();
+    </script>
+</body>
+
+</html>

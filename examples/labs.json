@@ -1,0 +1,249 @@
+[
+  {
+    "id": "bgp-dc-lab",
+    "area": "Data Center",
+    "name": "BGP Data Center Lab",
+    "description": "A lab with data center fabric and BGP route servers in a leaf-spine topology.",
+    "file": "bgp-dc-lab.py",
+    "protocols": ["BGP"],
+    "node_count": 10,
+    "persistent_config": true,
+    "assets": [
+      "frr-config/bgp-dc-lab/isp1/frr.conf",
+      "frr-config/bgp-dc-lab/isp2/frr.conf",
+      "frr-config/bgp-dc-lab/rl1/frr.conf",
+      "frr-config/bgp-dc-lab/rl2/frr.conf",
+      "frr-config/bgp-dc-lab/rl3/frr.conf",
+      "frr-config/bgp-dc-lab/rs1/frr.conf",
+      "frr-config/bgp-dc-lab/rs2/frr.conf"
+    ],
+    "guide": "examples/guides/bgp-dc-lab.md",
+    "layout": "examples/layouts/bgp-dc-lab.json"
+  },
+  {
+    "id": "bgp-lab",
+    "area": "Inter-domain",
+    "name": "BGP Lab (3 AS)",
+    "description": "A lab consists of 3 AS, each with 2 eBGP sessions and iBGP sessions. Learning BGP fundamentals.",
+    "file": "bgp-lab.py",
+    "protocols": ["BGP", "OSPF"],
+    "node_count": 15,
+    "persistent_config": true,
+    "assets": [
+      "frr-config/bgp-lab/r11/frr.conf",
+      "frr-config/bgp-lab/r12/frr.conf",
+      "frr-config/bgp-lab/r13/frr.conf",
+      "frr-config/bgp-lab/r14/frr.conf",
+      "frr-config/bgp-lab/r21/frr.conf",
+      "frr-config/bgp-lab/r22/frr.conf",
+      "frr-config/bgp-lab/r23/frr.conf",
+      "frr-config/bgp-lab/r24/frr.conf",
+      "frr-config/bgp-lab/r31/frr.conf",
+      "frr-config/bgp-lab/r32/frr.conf",
+      "frr-config/bgp-lab/r33/frr.conf",
+      "frr-config/bgp-lab/r34/frr.conf"
+    ],
+    "guide": "examples/guides/bgp-lab.md",
+    "layout": "examples/layouts/bgp-lab.json"
+  },
+  {
+    "id": "bgp-path-lab",
+    "area": "Inter-domain",
+    "name": "BGP Path Selection Lab",
+    "description": "A diamond of three ASes teaching BGP best path, LOCAL_PREF, MED and multipath.",
+    "file": "bgp-path-lab.py",
+    "protocols": ["BGP"],
+    "node_count": 8,
+    "persistent_config": true,
+    "assets": [
+      "frr-config/bgp-path-lab/r1/frr.conf",
+      "frr-config/bgp-path-lab/r2/frr.conf",
+      "frr-config/bgp-path-lab/r3/frr.conf",
+      "frr-config/bgp-path-lab/r4/frr.conf"
+    ],
+    "guide": "examples/guides/bgp-path-lab.md",
+    "layout": "examples/layouts/bgp-path-lab.json"
+  },
+  {
+    "id": "bgp-isp-lab",
+    "area": "Inter-domain",
+    "name": "BGP 2 ISP Lab",
+    "description": "A lab with 2 ISPs exchange its customer networks. Internet is emulated via NAT at each ISP's node.",
+    "file": "bgp-isp-lab.py",
+    "protocols": ["BGP", "OSPF", "ExaBGP"],
+    "node_count": 16,
+    "persistent_config": true,
+    "assets": [
+      "frr-config/bgp-isp/isp1/frr.conf",
+      "frr-config/bgp-isp/isp2/frr.conf",
+      "frr-config/bgp-isp/r1/frr.conf",
+      "frr-config/bgp-isp/r11/frr.conf",
+      "frr-config/bgp-isp/r12/frr.conf",
+      "frr-config/bgp-isp/r2/frr.conf",
+      "frr-config/bgp-isp/r21/frr.conf",
+      "frr-config/bgp-isp/r22/frr.conf"
+    ],
+    "guide": "examples/guides/bgp-isp-lab.md",
+    "layout": "examples/layouts/bgp-isp-lab.json"
+  },
+  {
+    "id": "bgp-ispixp-lab",
+    "area": "Inter-domain",
+    "name": "BGP ISP / IXP Lab",
+    "description": "A lab with ISP topology and an internet exchange point (IXP), route servers, and tier-ISP (ExaBGP speakers).",
+    "file": "bgp-ispixp-lab.py",
+    "protocols": ["BGP", "ExaBGP"],
+    "node_count": 21,
+    "persistent_config": true,
+    "assets": [
+      "frr-config/bgp-ispixp/rc1/frr.conf",
+      "frr-config/bgp-ispixp/rc2/frr.conf",
+      "frr-config/bgp-ispixp/rc3/frr.conf",
+      "frr-config/bgp-ispixp/rc4/frr.conf",
+      "frr-config/bgp-ispixp/rp1/frr.conf",
+      "frr-config/bgp-ispixp/rp2/frr.conf",
+      "frr-config/bgp-ispixp/rxp/frr.conf",
+      "frr-config/bgp-ispixp/up1/frr.conf",
+      "frr-config/bgp-ispixp/up2/frr.conf"
+    ],
+    "guide": "examples/guides/bgp-ispixp-lab.md",
+    "layout": "examples/layouts/bgp-ispixp-lab.json"
+  },
+  {
+    "id": "secure-bgp-lab",
+    "area": "Inter-domain",
+    "name": "Secure BGP Lab",
+    "description": "An origin hijack, a forged-origin sub-prefix through a loose maxLength and a route leak, each seen first and then stopped with Route Origin Validation (an RPKI CA and a Validator) and BGP Roles.",
+    "file": "secure-bgp-lab.py",
+    "protocols": ["BGP", "ExaBGP", "RPKI"],
+    "node_count": 8,
+    "persistent_config": true,
+    "assets": [
+      "frr-config/secure-bgp-lab/r1/frr.conf",
+      "frr-config/secure-bgp-lab/r2/frr.conf",
+      "frr-config/secure-bgp-lab/r4/frr.conf"
+    ],
+    "guide": "examples/guides/secure-bgp-lab.md",
+    "layout": "examples/layouts/secure-bgp-lab.json"
+  },
+  {
+    "id": "ospf-lab",
+    "area": "Intra-domain",
+    "name": "OSPF Routing Lab",
+    "description": "A lab with 3 areas, area border routers, and 9 routers total. Learning OSPF dynamic routing fundamentals.",
+    "file": "ospf-lab.py",
+    "protocols": ["OSPF"],
+    "node_count": 18,
+    "persistent_config": true,
+    "assets": [
+      "frr-config/ospf-lab/r1/frr.conf",
+      "frr-config/ospf-lab/r11/frr.conf",
+      "frr-config/ospf-lab/r12/frr.conf",
+      "frr-config/ospf-lab/r2/frr.conf",
+      "frr-config/ospf-lab/r21/frr.conf",
+      "frr-config/ospf-lab/r22/frr.conf",
+      "frr-config/ospf-lab/r3/frr.conf",
+      "frr-config/ospf-lab/r31/frr.conf",
+      "frr-config/ospf-lab/r32/frr.conf"
+    ],
+    "guide": "examples/guides/ospf-lab.md",
+    "layout": "examples/layouts/ospf-lab.json"
+  },
+  {
+    "id": "static-lab",
+    "area": "Static",
+    "name": "Static Routing Lab",
+    "description": "Two Routers and two Hosts teach IPv4 and IPv6 static routes side by side.",
+    "file": "static-lab.py",
+    "protocols": ["static"],
+    "node_count": 4,
+    "persistent_config": true,
+    "assets": [
+      "frr-config/static-lab/r1/frr.conf",
+      "frr-config/static-lab/r2/frr.conf"
+    ],
+    "guide": "examples/guides/static-lab.md",
+    "layout": "examples/layouts/static-lab.json"
+  },
+  {
+    "id": "static-lab-nat",
+    "area": "Static",
+    "name": "Static Routing with Internet Access",
+    "description": "One Router routes between two Host Subnets and sends everything else to the real Internet through the Internet Gateway.",
+    "file": "static-lab-nat.py",
+    "protocols": ["static"],
+    "node_count": 4,
+    "persistent_config": false,
+    "assets": [],
+    "guide": "examples/guides/static-lab-nat.md",
+    "layout": "examples/layouts/static-lab-nat.json"
+  },
+  {
+    "id": "dhcp-lab",
+    "area": "DHCP",
+    "name": "DHCP Lab",
+    "description": "One central DHCP Service with direct, relayed, IPv4-only and IPv6-only Subnets, the three Router Advertisement outcomes, and a rogue server to start and stop.",
+    "file": "dhcp-lab.py",
+    "protocols": ["DHCP", "DHCPv6", "DHCP Relay"],
+    "node_count": 10,
+    "persistent_config": false,
+    "assets": [],
+    "guide": "examples/guides/dhcp-lab.md",
+    "layout": "examples/layouts/dhcp-lab.json"
+  },
+  {
+    "id": "dns-lab",
+    "area": "DNS",
+    "name": "DNS Lab",
+    "description": "A Root, a TLD, a Primary and a Secondary nameserver, a Recursive Caching Resolver and a client, each on its own Subnet, so a lookup, a Zone Transfer, a cache and an SOA expiry are all observable.",
+    "file": "dns-lab.py",
+    "protocols": ["DNS", "Resolver"],
+    "node_count": 7,
+    "persistent_config": false,
+    "assets": [],
+    "guide": "examples/guides/dns-lab.md",
+    "layout": "examples/layouts/dns-lab.json"
+  },
+  {
+    "id": "dnssec-lab",
+    "area": "DNS",
+    "name": "DNSSEC Flagship Lab",
+    "description": "A signed Root -> TLD -> Authoritative hierarchy and a validating Resolver, so the chain of trust, the AD flag, a broken DS delegation, authenticated denial of existence, and a ZSK rollover are all observable.",
+    "file": "dnssec-lab.py",
+    "protocols": ["DNS", "DNSSEC", "Resolver"],
+    "node_count": 7,
+    "persistent_config": false,
+    "assets": [],
+    "guide": "examples/guides/dnssec-lab.md",
+    "layout": "examples/layouts/dnssec-lab.json"
+  },
+  {
+    "id": "vlan-lab",
+    "area": "Switching",
+    "name": "VLAN & Inter-VLAN Routing Lab",
+    "description": "Two VLANs across three Switches with 802.1Q trunks, router-on-a-stick routing, MAC learning, and an RSTP triangle that fails over.",
+    "file": "vlan-lab.py",
+    "protocols": ["VLAN", "RSTP", "static"],
+    "node_count": 8,
+    "persistent_config": false,
+    "assets": [],
+    "guide": "examples/guides/vlan-lab.md",
+    "layout": "examples/layouts/vlan-lab.json"
+  },
+  {
+    "id": "nat-lab",
+    "area": "NAT",
+    "name": "NAT Lab",
+    "description": "A home network behind a NAT Router: PAT, a port forward and a static 1:1 mapping, with an ISP on documentation ranges.",
+    "file": "nat-lab.py",
+    "protocols": ["static"],
+    "node_count": 9,
+    "persistent_config": true,
+    "assets": [
+      "frr-config/nat-lab/isp/frr.conf",
+      "frr-config/nat-lab/r1/frr.conf"
+    ],
+    "guide": "examples/guides/nat-lab.md",
+    "layout": "examples/layouts/nat-lab.json"
+  }
+]

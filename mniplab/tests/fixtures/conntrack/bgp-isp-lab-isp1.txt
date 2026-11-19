@@ -1,0 +1,7 @@
+udp      17 28 src=192.168.12.100 dst=203.0.113.0 sport=40000 dport=9999 [UNREPLIED] src=203.0.113.0 dst=203.0.113.1 sport=9999 dport=30075 mark=0 use=1
+tcp      6 431999 ESTABLISHED src=203.0.113.9 dst=203.0.113.8 sport=36526 dport=179 src=203.0.113.8 dst=203.0.113.9 sport=179 dport=36526 [ASSURED] mark=0 use=1
+icmp     1 28 src=192.168.11.100 dst=203.0.113.0 type=8 code=0 id=38 src=203.0.113.0 dst=203.0.113.1 type=0 code=0 id=38 mark=0 use=1
+icmp     1 28 src=192.168.12.100 dst=203.0.113.0 type=8 code=0 id=38 src=203.0.113.0 dst=203.0.113.1 type=0 code=0 id=33293 mark=0 use=1
+tcp      6 431999 ESTABLISHED src=203.0.113.1 dst=203.0.113.0 sport=40100 dport=179 src=203.0.113.0 dst=203.0.113.1 sport=179 dport=40100 [ASSURED] mark=0 use=1
+udp      17 28 src=192.168.11.100 dst=203.0.113.0 sport=40000 dport=9999 [UNREPLIED] src=203.0.113.0 dst=203.0.113.1 sport=9999 dport=40000 mark=0 use=1
+tcp      6 431999 ESTABLISHED src=203.0.113.12 dst=203.0.113.13 sport=39922 dport=179 src=203.0.113.13 dst=203.0.113.12 sport=179 dport=39922 [ASSURED] mark=0 use=1

@@ -1,0 +1,370 @@
+{
+  "schema_version": 3,
+  "address_family": "ipv4",
+  "persistent_config": true,
+  "example": "bgp-dc-lab",
+  "seeds": "frr-config/bgp-dc-lab",
+  "topology": {
+    "nodes": [
+      {
+        "id": "isp1",
+        "name": "isp1",
+        "type": "router",
+        "protocols": [
+          "BGP"
+        ],
+        "fast_timers": false,
+        "startup": []
+      },
+      {
+        "id": "isp2",
+        "name": "isp2",
+        "type": "router",
+        "protocols": [
+          "BGP"
+        ],
+        "fast_timers": false,
+        "startup": []
+      },
+      {
+        "id": "rs1",
+        "name": "rs1",
+        "type": "router",
+        "protocols": [
+          "BGP"
+        ],
+        "fast_timers": false,
+        "startup": [],
+        "vrfs": [
+          {
+            "name": "vrf-ext",
+            "table": 10
+          }
+        ]
+      },
+      {
+        "id": "rs2",
+        "name": "rs2",
+        "type": "router",
+        "protocols": [
+          "BGP"
+        ],
+        "fast_timers": false,
+        "startup": [],
+        "vrfs": [
+          {
+            "name": "vrf-ext",
+            "table": 10
+          }
+        ]
+      },
+      {
+        "id": "rl1",
+        "name": "rl1",
+        "type": "router",
+        "protocols": [
+          "BGP"
+        ],
+        "fast_timers": false,
+        "startup": []
+      },
+      {
+        "id": "rl2",
+        "name": "rl2",
+        "type": "router",
+        "protocols": [
+          "BGP"
+        ],
+        "fast_timers": false,
+        "startup": []
+      },
+      {
+        "id": "rl3",
+        "name": "rl3",
+        "type": "router",
+        "protocols": [
+          "BGP"
+        ],
+        "fast_timers": false,
+        "startup": []
+      },
+      {
+        "id": "srv1",
+        "name": "srv1",
+        "type": "host",
+        "ipv4_gateway": "172.16.1.1",
+        "ipv6_gateway": "",
+        "startup": []
+      },
+      {
+        "id": "srv2",
+        "name": "srv2",
+        "type": "host",
+        "ipv4_gateway": "172.16.2.1",
+        "ipv6_gateway": "",
+        "startup": []
+      },
+      {
+        "id": "srv3",
+        "name": "srv3",
+        "type": "host",
+        "ipv4_gateway": "172.16.3.1",
+        "ipv6_gateway": "",
+        "startup": []
+      }
+    ],
+    "links": [
+      {
+        "id": "isp1-rs1-1",
+        "ends": [
+          {
+            "node_id": "isp1",
+            "interface_id": "if-000000000001",
+            "port": 0,
+            "ipv4": "10.101.1.1/30",
+            "ipv6": ""
+          },
+          {
+            "node_id": "rs1",
+            "interface_id": "if-000000000002",
+            "port": 0,
+            "ipv4": "10.101.1.2/30",
+            "ipv6": "",
+            "vrf": "vrf-ext"
+          }
+        ]
+      },
+      {
+        "id": "isp1-rs2-2",
+        "ends": [
+          {
+            "node_id": "isp1",
+            "interface_id": "if-000000000003",
+            "port": 1,
+            "ipv4": "10.101.2.1/30",
+            "ipv6": ""
+          },
+          {
+            "node_id": "rs2",
+            "interface_id": "if-000000000004",
+            "port": 0,
+            "ipv4": "10.101.2.2/30",
+            "ipv6": "",
+            "vrf": "vrf-ext"
+          }
+        ]
+      },
+      {
+        "id": "isp2-rs1-3",
+        "ends": [
+          {
+            "node_id": "isp2",
+            "interface_id": "if-000000000005",
+            "port": 0,
+            "ipv4": "10.102.1.1/30",
+            "ipv6": ""
+          },
+          {
+            "node_id": "rs1",
+            "interface_id": "if-000000000006",
+            "port": 1,
+            "ipv4": "10.102.1.2/30",
+            "ipv6": "",
+            "vrf": "vrf-ext"
+          }
+        ]
+      },
+      {
+        "id": "isp2-rs2-4",
+        "ends": [
+          {
+            "node_id": "isp2",
+            "interface_id": "if-000000000007",
+            "port": 1,
+            "ipv4": "10.102.2.1/30",
+            "ipv6": ""
+          },
+          {
+            "node_id": "rs2",
+            "interface_id": "if-000000000008",
+            "port": 1,
+            "ipv4": "10.102.2.2/30",
+            "ipv6": "",
+            "vrf": "vrf-ext"
+          }
+        ]
+      },
+      {
+        "id": "rl1-rs1-5",
+        "ends": [
+          {
+            "node_id": "rl1",
+            "interface_id": "if-000000000009",
+            "port": 0,
+            "ipv4": "10.11.1.2/30",
+            "ipv6": ""
+          },
+          {
+            "node_id": "rs1",
+            "interface_id": "if-000000000010",
+            "port": 2,
+            "ipv4": "10.11.1.1/30",
+            "ipv6": ""
+          }
+        ]
+      },
+      {
+        "id": "rl1-rs2-6",
+        "ends": [
+          {
+            "node_id": "rl1",
+            "interface_id": "if-000000000011",
+            "port": 1,
+            "ipv4": "10.12.1.2/30",
+            "ipv6": ""
+          },
+          {
+            "node_id": "rs2",
+            "interface_id": "if-000000000012",
+            "port": 2,
+            "ipv4": "10.12.1.1/30",
+            "ipv6": ""
+          }
+        ]
+      },
+      {
+        "id": "rl2-rs1-7",
+        "ends": [
+          {
+            "node_id": "rl2",
+            "interface_id": "if-000000000013",
+            "port": 0,
+            "ipv4": "10.11.2.2/30",
+            "ipv6": ""
+          },
+          {
+            "node_id": "rs1",
+            "interface_id": "if-000000000014",
+            "port": 3,
+            "ipv4": "10.11.2.1/30",
+            "ipv6": ""
+          }
+        ]
+      },
+      {
+        "id": "rl2-rs2-8",
+        "ends": [
+          {
+            "node_id": "rl2",
+            "interface_id": "if-000000000015",
+            "port": 1,
+            "ipv4": "10.12.2.2/30",
+            "ipv6": ""
+          },
+          {
+            "node_id": "rs2",
+            "interface_id": "if-000000000016",
+            "port": 3,
+            "ipv4": "10.12.2.1/30",
+            "ipv6": ""
+          }
+        ]
+      },
+      {
+        "id": "rl3-rs1-9",
+        "ends": [
+          {
+            "node_id": "rl3",
+            "interface_id": "if-000000000017",
+            "port": 0,
+            "ipv4": "10.11.3.2/30",
+            "ipv6": ""
+          },
+          {
+            "node_id": "rs1",
+            "interface_id": "if-000000000018",
+            "port": 4,
+            "ipv4": "10.11.3.1/30",
+            "ipv6": ""
+          }
+        ]
+      },
+      {
+        "id": "rl3-rs2-10",
+        "ends": [
+          {
+            "node_id": "rl3",
+            "interface_id": "if-000000000019",
+            "port": 1,
+            "ipv4": "10.12.3.2/30",
+            "ipv6": ""
+          },
+          {
+            "node_id": "rs2",
+            "interface_id": "if-000000000020",
+            "port": 4,
+            "ipv4": "10.12.3.1/30",
+            "ipv6": ""
+          }
+        ]
+      },
+      {
+        "id": "srv1-rl1-11",
+        "ends": [
+          {
+            "node_id": "srv1",
+            "interface_id": "if-000000000021",
+            "port": 0,
+            "ipv4": "172.16.1.2/24",
+            "ipv6": ""
+          },
+          {
+            "node_id": "rl1",
+            "interface_id": "if-000000000022",
+            "port": 2,
+            "ipv4": "172.16.1.1/24",
+            "ipv6": ""
+          }
+        ]
+      },
+      {
+        "id": "srv2-rl2-12",
+        "ends": [
+          {
+            "node_id": "srv2",
+            "interface_id": "if-000000000023",
+            "port": 0,
+            "ipv4": "172.16.2.2/24",
+            "ipv6": ""
+          },
+          {
+            "node_id": "rl2",
+            "interface_id": "if-000000000024",
+            "port": 2,
+            "ipv4": "172.16.2.1/24",
+            "ipv6": ""
+          }
+        ]
+      },
+      {
+        "id": "srv3-rl3-13",
+        "ends": [
+          {
+            "node_id": "srv3",
+            "interface_id": "if-000000000025",
+            "port": 0,
+            "ipv4": "172.16.3.2/24",
+            "ipv6": ""
+          },
+          {
+            "node_id": "rl3",
+            "interface_id": "if-000000000026",
+            "port": 2,
+            "ipv4": "172.16.3.1/24",
+            "ipv6": ""
+          }
+        ]
+      }
+    ]
+  }
+}

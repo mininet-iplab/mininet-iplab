@@ -1,0 +1,7 @@
+tcp      6 431999 ESTABLISHED src=203.0.113.1 dst=203.0.113.0 sport=40100 dport=179 src=203.0.113.0 dst=203.0.113.1 sport=179 dport=40100 [ASSURED] mark=0 use=1
+udp      17 28 src=203.0.113.1 dst=203.0.113.0 sport=40000 dport=9999 [UNREPLIED] src=203.0.113.0 dst=203.0.113.1 sport=9999 dport=40000 mark=0 use=1
+icmp     1 28 src=203.0.113.1 dst=203.0.113.0 type=8 code=0 id=38 src=203.0.113.0 dst=203.0.113.1 type=0 code=0 id=38 mark=0 use=1
+udp      17 13 src=192.168.0.2 dst=0.250.250.200 sport=41764 dport=53 src=0.250.250.200 dst=192.168.0.2 sport=53 dport=41764 mark=0 use=1
+udp      17 28 src=203.0.113.1 dst=203.0.113.0 sport=30075 dport=9999 [UNREPLIED] src=203.0.113.0 dst=203.0.113.1 sport=9999 dport=30075 mark=0 use=1
+icmp     1 28 src=203.0.113.1 dst=203.0.113.0 type=8 code=0 id=33293 src=203.0.113.0 dst=203.0.113.1 type=0 code=0 id=33293 mark=0 use=1
+udp      17 13 src=192.168.0.2 dst=0.250.250.200 sport=40135 dport=53 src=0.250.250.200 dst=192.168.0.2 sport=53 dport=40135 mark=0 use=1

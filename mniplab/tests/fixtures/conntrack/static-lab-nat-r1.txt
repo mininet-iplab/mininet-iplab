@@ -1,0 +1,5 @@
+icmp     1 28 src=100.64.1.2 dst=100.64.2.2 type=8 code=0 id=40 src=100.64.2.2 dst=100.64.1.2 type=0 code=0 id=40 mark=0 use=1
+tcp      6 431998 ESTABLISHED src=100.64.1.2 dst=100.64.0.1 sport=51936 dport=18081 src=100.64.0.1 dst=100.64.0.2 sport=18081 dport=51936 [ASSURED] mark=0 use=1
+udp      17 28 src=100.64.1.2 dst=100.64.0.1 sport=51330 dport=9999 [UNREPLIED] src=100.64.0.1 dst=100.64.0.2 sport=9999 dport=51330 mark=0 use=1
+icmp     1 28 src=100.64.1.2 dst=100.64.0.1 type=8 code=0 id=39 src=100.64.0.1 dst=100.64.0.2 type=0 code=0 id=39 mark=0 use=1
+tcp      6 118 TIME_WAIT src=100.64.1.2 dst=100.64.0.1 sport=48072 dport=18080 src=100.64.0.1 dst=100.64.0.2 sport=18080 dport=48072 [ASSURED] mark=0 use=1
