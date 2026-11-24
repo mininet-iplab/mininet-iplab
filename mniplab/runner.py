@@ -3,17 +3,21 @@
 import argparse
 import importlib.util
 import os
+import signal
 import sys
+import threading
 from types import ModuleType
-from typing import TYPE_CHECKING, Dict, Optional
+from typing import TYPE_CHECKING, Any, Callable, Dict, Optional, Tuple
 
 from dotenv import load_dotenv
 from mininet.log import info, setLogLevel
 from mniplab.constants import MNIPLAB_WEB_LOG_FILE, env_file_path
-from mniplab.logging import setup_logging as setup_mniplab_logging
+from mniplab.logging import get_logger, setup_logging as setup_mniplab_logging
 
 if TYPE_CHECKING:
     from mininet.net import Mininet
+
+logger = get_logger(__name__)
 
 # Default paths, taken from the constants a Lab actually binds so an
 # environment override reaches the CLI and cleanup alike.
@@ -21,6 +25,9 @@ DEFAULT_WEB_LOG_FILE = MNIPLAB_WEB_LOG_FILE
 DEFAULT_WEB_HOST = '0.0.0.0'
 DEFAULT_WEB_PORT = 8050
 DEFAULT_IPERF_DURATION = 10
+
+# ioctl(2) that hangs up a terminal (Linux); needs CAP_SYS_ADMIN, as a Lab does.
+TIOCVHANGUP = 0x5437
 
 # Valid values
 VALID_LOG_LEVELS = ['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL']
@@ -170,6 +177,94 @@ def parse_lab_args(description: str = 'mnIPLab Network') -> argparse.Namespace:
     return args
 
 
+class StopSignal(BaseException):
+    """SIGTERM or SIGHUP, raised to end the Lab Prompt as ``exit`` does.
+
+    Not a ``KeyboardInterrupt``, which the Lab Prompt catches to stay open.
+
+    Attributes:
+        signum: The signal that arrived.
+    """
+
+    def __init__(self, signum: int) -> None:
+        super().__init__(signum)
+        self.signum = signum
+
+
+class _LabSignals:
+    """What one ``run_lab`` does with SIGINT, SIGTERM and SIGHUP.
+
+    While the Lab runs, SIGTERM and SIGHUP raise :class:`StopSignal`. From
+    the moment the prompt has returned until the Lab has stopped, none of
+    the three raises, and afterwards every handler is put back. Signal
+    handlers belong to the main thread, so run elsewhere this changes
+    nothing.
+    """
+
+    # The signals that stop the Lab as ``exit`` does.
+    _STOPPING = (signal.SIGTERM, signal.SIGHUP)
+    _HELD = (signal.SIGINT, signal.SIGTERM, signal.SIGHUP)
+
+    def __init__(self) -> None:
+        self._previous: Dict[int, Any] = {}
+        self._active = threading.current_thread() is threading.main_thread()
+
+    def install(self) -> None:
+        """Have SIGTERM and SIGHUP end the Lab Prompt."""
+        if self._active:
+            for signum in self._STOPPING:
+                self._previous[signum] = signal.signal(signum, self._end_prompt)
+
+    @staticmethod
+    def _end_prompt(signum: int, frame: Any) -> None:
+        """End the Lab Prompt, from the main thread it runs on."""
+        raise StopSignal(signum)
+
+    def hold(self) -> None:
+        """Ignore all three signals, keeping the first handler seen for each.
+
+        Called as soon as the prompt has returned, so nothing before the
+        shutdown's first step can be interrupted either.
+
+        Ignored rather than caught: the commands the Lab stop runs, in the
+        terminal's process group, inherit the disposition, so a Ctrl+C at
+        the terminal cannot kill one halfway through removing a switch.
+        """
+        if self._active:
+            for signum in self._HELD:
+                self._previous.setdefault(signum, signal.signal(signum, signal.SIG_IGN))
+
+    def shut_down(self, *steps: Callable[[], None]) -> None:
+        """Run every step in order, none skipped by a signal or a failing step.
+
+        Signals are held before each step, so one that lands before the
+        first hold took effect can still skip only the step it lands in.
+        A step's error is raised once the later steps have run. A previous
+        handler not set from Python, which reads as ``None``, comes back as
+        ``SIG_DFL``.
+
+        Args:
+            steps: The shutdown, in order.
+        """
+        try:
+            self._run(steps)
+        finally:
+            for signum, handler in self._previous.items():
+                signal.signal(signum, signal.SIG_DFL if handler is None else handler)
+
+    def _run(self, steps: Tuple[Callable[[], None], ...]) -> None:
+        """Run the first step, holding signals, then the rest even if it raised."""
+        if not steps:
+            return
+        # Recursion, not a loop: each later step runs in a finally, so every
+        # step's error is chained and none stops the steps after it.
+        try:
+            self.hold()
+            steps[0]()
+        finally:
+            self._run(steps[1:])
+
+
 def run_lab(net: 'Mininet', enable_web: bool = False, web_host: Optional[str] = None,
             web_port: Optional[int] = None, log_level: str = 'info',
             start_network: bool = True) -> None:
@@ -179,10 +274,32 @@ def run_lab(net: 'Mininet', enable_web: bool = False, web_host: Optional[str] = 
     before the network is brought up. A ``web_host`` or ``web_port`` left
     unset is taken from ``MNIPLAB_HOST`` / ``MNIPLAB_PORT``, else the
     defaults.
-    """
-    # Local import to avoid circular dependency with cli.py
-    from mniplab.cli import mnIPLabCLI
 
+    SIGTERM and SIGHUP stop the Lab as ``exit`` does. From the moment the
+    prompt has returned until the Lab has stopped, SIGINT, SIGTERM and
+    SIGHUP are ignored, so none interrupts the shutdown. In CLI Mode, and
+    under ``--enable-web`` on a terminal, the prompt runs on the main
+    thread itself, so a window of a few bytecodes remains between the
+    prompt returning and signals being held: a signal landing there can
+    still skip the shutdown.
+
+    This handling is installed only when ``run_lab`` runs on the main
+    thread; elsewhere no handler is installed and none is held. A caller's
+    own SIGTERM and SIGHUP handlers are replaced for the run and restored
+    after it, as is SIGINT's.
+
+    Args:
+        net: The Lab to run.
+        enable_web: Whether to serve the web UI beside the Lab Prompt.
+        web_host: Web server bind address, or None for the settings.
+        web_port: Web server port, or None for the settings.
+        log_level: Mininet and mnIPLab log level.
+        start_network: Whether to start ``net`` before the prompt opens.
+
+    Raises:
+        SystemExit: With code ``128 + signum`` when SIGTERM or SIGHUP ended
+            the run, once the Lab has stopped.
+    """
     # Also here, not only in parse_lab_args: a lab may call run_lab directly.
     # load_dotenv is idempotent and never overrides what is already set.
     load_lab_environment()
@@ -194,18 +311,40 @@ def run_lab(net: 'Mininet', enable_web: bool = False, web_host: Optional[str] = 
         info('\n*** Starting network\n')
         net.start()
 
+    signals = _LabSignals()
+    try:
+        _run_prompt(net, signals, enable_web, web_host, web_port)
+    except StopSignal as stop:
+        raise SystemExit(128 + stop.signum) from None
+
+
+def _run_prompt(net: 'Mininet', signals: _LabSignals, enable_web: bool,
+                web_host: Optional[str], web_port: Optional[int]) -> None:
+    """Run the Lab Prompt, then stop the Lab however the prompt ended.
+
+    Args:
+        net: The started Lab.
+        signals: The run's signal handling, which runs the shutdown.
+        enable_web: Whether to serve the web UI beside the prompt.
+        web_host: Web server bind address, or None for the settings.
+        web_port: Web server port, or None for the settings.
+    """
+    # Local import to avoid circular dependency with cli.py
+    from mniplab.cli import mnIPLabCLI
+
     if enable_web:
         import fcntl
         import pty
         import select
-        import signal
         import termios
-        import threading
         import tty
         from mniplab.webserver import start_server, stop_server
         from mniplab.webserver.pseudo_terminal import write_master
 
         master_fd, slave_fd = pty.openpty()
+        # run_lab's own handle on the master: the server closes master_fd
+        # once the prompt ends, and its number may then be reused.
+        prompt_master = os.dup(master_fd)
 
         saved_stdin = os.dup(0)
         saved_stdout = os.dup(1)
@@ -243,33 +382,39 @@ def run_lab(net: 'Mininet', enable_web: bool = False, web_host: Optional[str] = 
 
         is_tty = os.isatty(saved_stdin)
 
-        start_server(
-            net,
-            host=web_host,
-            port=web_port,
-            block=False,
-            prompt_fd=master_fd,
-            local_fd=saved_stdout,
-            # If raw mode fails below, the prompt runs on a thread and prompt_open
-            # stays clear, so this callable does nothing.
-            prompt_interrupt=interrupt_prompt if is_tty else None,
-        )
-
         old_attr = None
-        if is_tty:
-            try:
-                old_attr = termios.tcgetattr(saved_stdin)
-                tty.setraw(saved_stdin)
-                try:
-                    winsize = fcntl.ioctl(saved_stdin, termios.TIOCGWINSZ, b"\x00" * 8)
-                    fcntl.ioctl(master_fd, termios.TIOCSWINSZ, winsize)
-                except OSError:
-                    pass
-            except termios.error:
-                is_tty = False
-
         relay = None
+        server_started = False
+        # A server that fails to start, on a busy port say, falls through the
+        # same restore and stop as a normal exit: its error then reaches the
+        # launching terminal, not the pseudo-terminal nobody reads.
         try:
+            signals.install()
+            start_server(
+                net,
+                host=web_host,
+                port=web_port,
+                block=False,
+                prompt_fd=master_fd,
+                local_fd=saved_stdout,
+                # If raw mode fails below, the prompt runs on a thread and prompt_open
+                # stays clear, so this callable does nothing.
+                prompt_interrupt=interrupt_prompt if is_tty else None,
+            )
+            server_started = True
+
+            if is_tty:
+                try:
+                    old_attr = termios.tcgetattr(saved_stdin)
+                    tty.setraw(saved_stdin)
+                    try:
+                        winsize = fcntl.ioctl(saved_stdin, termios.TIOCGWINSZ, b"\x00" * 8)
+                        fcntl.ioctl(master_fd, termios.TIOCSWINSZ, winsize)
+                    except OSError:
+                        pass
+                except termios.error:
+                    is_tty = False
+
             if is_tty:
                 # The prompt runs here so Ctrl+C reaches it as on any terminal.
                 prompt_open.set()
@@ -279,35 +424,71 @@ def run_lab(net: 'Mininet', enable_web: bool = False, web_host: Optional[str] = 
             else:
                 cli_thread = threading.Thread(target=mnIPLabCLI, args=(net,), daemon=True)
                 cli_thread.start()
+                # Kept apart from is_alive(), which a join that SIGINT
+                # interrupts can leave reporting the running prompt as ended.
+                interrupted = False
+                stop: Optional[StopSignal] = None
                 try:
                     while cli_thread.is_alive():
                         cli_thread.join(timeout=0.2)
                 except KeyboardInterrupt:
-                    pass
-        finally:
-            prompt_open.clear()
-            if relay is not None:
-                relay.join(timeout=1)
-            if old_attr is not None:
+                    interrupted = True
+                except StopSignal as signalled:
+                    interrupted, stop = True, signalled
+                # Held before the hangup, so a Ctrl+C now cannot replace a
+                # SIGTERM's exit status or skip the shutdown.
+                signals.hold()
+                # The prompt's thread is still reading its pseudo-terminal, so
+                # the server's reader, which the interpreter waits for at exit,
+                # never sees the prompt end. A hangup gives that reader end of
+                # file, as a prompt that exits does; the thread is a daemon.
                 try:
-                    termios.tcsetattr(saved_stdin, termios.TCSADRAIN, old_attr)
-                except termios.error:
-                    pass
-            os.dup2(saved_stdin, 0)
-            os.dup2(saved_stdout, 1)
-            os.dup2(saved_stderr, 2)
-            os.close(saved_stdin)
-            os.close(saved_stdout)
-            os.close(saved_stderr)
-            try:
-                stop_server()
-            finally:
-                net.stop()
+                    fcntl.ioctl(prompt_master, TIOCVHANGUP)
+                except OSError as exc:
+                    if interrupted:
+                        # Without the capability, end the prompt's input
+                        # instead: kill the line typed so far, then end of
+                        # file, which the prompt reads as exit.
+                        logger.warning('Could not hang up the Lab Prompt (%s); '
+                                       'ending its input instead', exc)
+                        write_master(prompt_master, b"\x15\x04")
+                if stop is not None:
+                    raise stop
+        finally:
+            signals.hold()
+
+            def restore_terminal() -> None:
+                """End the key relay and give the launching terminal its mode back."""
+                prompt_open.clear()
+                if relay is not None:
+                    relay.join(timeout=1)
+                if old_attr is not None:
+                    try:
+                        termios.tcsetattr(saved_stdin, termios.TCSADRAIN, old_attr)
+                    except termios.error:
+                        pass
+
+            def restore_streams() -> None:
+                """Point fds 0-2 back at the launching terminal."""
+                os.dup2(saved_stdin, 0)
+                os.dup2(saved_stdout, 1)
+                os.dup2(saved_stderr, 2)
+                os.close(saved_stdin)
+                os.close(saved_stdout)
+                os.close(saved_stderr)
+                os.close(prompt_master)
+                if not server_started:
+                    # The server takes master_fd only once it has started.
+                    os.close(master_fd)
+
+            signals.shut_down(restore_terminal, restore_streams, stop_server, net.stop)
     else:
         try:
+            signals.install()
             mnIPLabCLI(net)
         finally:
-            net.stop()
+            signals.hold()
+            signals.shut_down(net.stop)
 
 
 def isolate_package_imports(package: str) -> None:

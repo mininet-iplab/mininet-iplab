@@ -210,6 +210,37 @@ def kill_lingering_labs(verbose: bool = True) -> int:
     return killed_count
 
 
+def container_name_prefix(key: Optional[str] = None) -> str:
+    """Return the prefix every container of a Lab, or of every Lab, starts with.
+
+    Args:
+        key: A Lab key to select only that Lab's containers; None selects
+            every Lab's.
+
+    Returns:
+        The prefix, e.g. ``mn.lab1.``.
+    """
+    return CONTAINER_NAME_PREFIX if key is None else f'{CONTAINER_NAME_PREFIX}{key}.'
+
+
+def container_name_filter(key: Optional[str] = None) -> str:
+    """Build the ``docker ps --filter`` value selecting a Lab's containers.
+
+    Docker's ``name`` filter is an unanchored regular expression, so the bare
+    prefix would match anywhere in a name and its ``.`` any character. The
+    prefix is escaped and anchored at the start of the name; Docker may
+    report names with a leading ``/``, which the filter allows.
+
+    Args:
+        key: A Lab key to select only that Lab's containers; None selects
+            every Lab's.
+
+    Returns:
+        The filter argument, e.g. ``name=^/?mn\\.lab1\\.``.
+    """
+    return f'name=^/?{re.escape(container_name_prefix(key))}'
+
+
 def kill_container_processes(verbose: bool = True) -> int:
     """Stop and remove Docker containers created by ContainerHost nodes.
 
@@ -230,7 +261,7 @@ def kill_container_processes(verbose: bool = True) -> int:
     removed_count = 0
     try:
         result = _run_command_silent(
-            ['docker', 'ps', '-aq', '--filter', f'name={CONTAINER_NAME_PREFIX}'],
+            ['docker', 'ps', '-aq', '--filter', container_name_filter()],
             timeout=TIMEOUT_MEDIUM
         )
         container_ids = result.stdout.strip().split() if result.returncode == 0 else []
@@ -554,9 +585,9 @@ def sweep_root_namespace_by_key(key: str) -> None:
 
     _sweep_nat_mark_rules(prefix)
 
-    container_prefix = f'{CONTAINER_NAME_PREFIX}{key}.'
+    container_prefix = container_name_prefix(key)
     try:
-        names = _run_command_silent(['docker', 'ps', '-aq', '--filter', f'name={container_prefix}'],
+        names = _run_command_silent(['docker', 'ps', '-aq', '--filter', container_name_filter(key)],
                                     timeout=TIMEOUT_MEDIUM).stdout.split()
         if names:
             _run_command_silent(['docker', 'rm', '-f'] + names, timeout=TIMEOUT_LONG)
@@ -642,7 +673,7 @@ def emergency_cleanup(net: Optional[Any] = None, lab_key: Optional[str] = None) 
     # Remove mnIPLab containers silently
     try:
         result = _run_command_silent(
-            ['docker', 'ps', '-aq', '--filter', f'name={CONTAINER_NAME_PREFIX}'],
+            ['docker', 'ps', '-aq', '--filter', container_name_filter()],
             timeout=TIMEOUT_MEDIUM
         )
         ids = result.stdout.strip().split() if result.returncode == 0 else []

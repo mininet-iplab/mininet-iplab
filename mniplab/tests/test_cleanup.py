@@ -1,10 +1,12 @@
 """Unit tests for cleanup error handling specificity."""
 
 import os
+import re
 import subprocess
 import tempfile
 import unittest
-from unittest.mock import patch
+from typing import List
+from unittest.mock import Mock, patch
 
 import pytest
 
@@ -104,7 +106,17 @@ class AncestorGuardTests(unittest.TestCase):
 
         mock_cmd_silent.side_effect = silent_cmd_side_effect
 
-        cleanup.emergency_cleanup()
+        with tempfile.TemporaryDirectory() as tmpdir:
+            runtime_root = os.path.join(tmpdir, 'mniplab')
+            os.makedirs(os.path.join(runtime_root, 'labs', 'k9'))
+            log_file = os.path.join(tmpdir, 'mniplab-web.log')
+            open(log_file, 'w').close()
+
+            with patch.object(cleanup, 'EPHEMERAL_TMP_PATHS', (log_file, runtime_root)):
+                cleanup.emergency_cleanup()
+
+            self.assertFalse(os.path.exists(runtime_root))
+            self.assertFalse(os.path.exists(log_file))
 
         for call in mock_subproc_run.call_args_list:
             args, kwargs = call
@@ -186,3 +198,65 @@ class EphemeralTmpTreeTests(unittest.TestCase):
                 uncovered.append(f'{name} = {value}')
 
         self.assertEqual(uncovered, [], f'ephemeral paths no cleanup removes: {uncovered}')
+
+
+@pytest.mark.unit
+class ContainerNameFilterTests(unittest.TestCase):
+    """Cleanup removes only containers whose name starts with the prefix.
+
+    Docker's ``name`` filter is an unanchored regular expression, so a bare
+    ``mn.`` matched ``alumni-db`` and ``mnemonic`` and force-removed them.
+    """
+
+    NAMES = ['alumni-db', 'admnx', 'mnemonic', 'xmn.lab1.h1', 'mn.lab1.h1']
+
+    def _matches(self, docker_filter: str) -> List[str]:
+        self.assertTrue(docker_filter.startswith('name='))
+        pattern = docker_filter[len('name='):]
+        candidates = self.NAMES + ['/' + name for name in self.NAMES]
+        return sorted(n for n in candidates if re.search(pattern, n))
+
+    def test_all_labs_filter_matches_only_lab_containers(self):
+        self.assertEqual(self._matches(cleanup.container_name_filter()),
+                         ['/mn.lab1.h1', 'mn.lab1.h1'])
+
+    def test_keyed_filter_matches_only_that_labs_containers(self):
+        self.assertEqual(self._matches(cleanup.container_name_filter('lab1')),
+                         ['/mn.lab1.h1', 'mn.lab1.h1'])
+        self.assertEqual(self._matches(cleanup.container_name_filter('lab2')), [])
+
+    def test_keyed_filter_matches_the_key_literally(self):
+        pattern = cleanup.container_name_filter('lab1')[len('name='):]
+        self.assertIsNone(re.search(pattern, 'mn.labXyh1'))
+        self.assertIsNone(re.search(pattern, 'mnXlab1.h1'))
+
+
+@pytest.mark.unit
+@patch('mniplab.cleanup.os.path.isdir', return_value=False)
+@patch('mniplab.cleanup._run_command_silent')
+class ContainerCleanupFilterTests(unittest.TestCase):
+    """Every path that removes containers asks Docker with the anchored filter."""
+
+    def _docker_ps_filters(self, mock_run: Mock) -> List[str]:
+        return [call.args[0][4] for call in mock_run.call_args_list
+                if call.args[0][:4] == ['docker', 'ps', '-aq', '--filter']]
+
+    def _idle(self, mock_run: Mock) -> None:
+        mock_run.return_value = subprocess.CompletedProcess([], 0, stdout='', stderr='')
+
+    def test_cleanup_command_filters_on_every_labs_prefix(self, mock_run, _isdir):
+        self._idle(mock_run)
+        cleanup.kill_container_processes(verbose=False)
+        self.assertEqual(self._docker_ps_filters(mock_run), [r'name=^/?mn\.'])
+
+    def test_unkeyed_emergency_cleanup_filters_on_every_labs_prefix(self, mock_run, _isdir):
+        self._idle(mock_run)
+        with patch('mniplab.cleanup.os.path.exists', return_value=False):
+            cleanup.emergency_cleanup()
+        self.assertEqual(self._docker_ps_filters(mock_run), [r'name=^/?mn\.'])
+
+    def test_lab_sweep_filters_on_that_labs_prefix(self, mock_run, _isdir):
+        self._idle(mock_run)
+        with patch('mniplab.kernel.release_ip_forward_leases_of'):
+            cleanup.sweep_root_namespace_by_key('lab1')
+        self.assertEqual(self._docker_ps_filters(mock_run), [r'name=^/?mn\.lab1\.'])

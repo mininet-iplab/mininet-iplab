@@ -1,14 +1,29 @@
 """Unit tests for mniplab.runner — lab entry point orchestration."""
 
 import os
+import signal
+import subprocess
+import sys
+import threading
+import time
 import unittest
+from typing import Any, List, Tuple
 from unittest.mock import ANY, Mock, patch
 
 from mniplab.runner import (
+    _LabSignals,
     setup_logging,
     parse_lab_args,
     run_lab,
 )
+
+
+def _close_quietly(fd: int) -> None:
+    """Close ``fd`` unless it is closed already."""
+    try:
+        os.close(fd)
+    except OSError:
+        pass
 
 
 class SetupLoggingTests(unittest.TestCase):
@@ -75,6 +90,16 @@ class ParseLabArgsTests(unittest.TestCase):
 
 class RunLabTests(unittest.TestCase):
     """run_lab orchestrates network start, web UI, CLI, and cleanup."""
+
+    def _keep_standard_streams(self) -> None:
+        """Put fds 0-2 back after the test, should run_lab not do so.
+
+        run_lab points them at a pseudo-terminal under --enable-web.
+        """
+        for fd in (0, 1, 2):
+            copy = os.dup(fd)
+            self.addCleanup(os.close, copy)
+            self.addCleanup(os.dup2, copy, fd)
 
     @patch('mniplab.runner.setup_logging')
     @patch('mniplab.runner.setLogLevel')
@@ -158,12 +183,7 @@ class RunLabTests(unittest.TestCase):
         net = Mock()
         order = Mock()
         order.start_server.side_effect = RuntimeError('port in use')
-        # run_lab points fds 0-2 at a pseudo-terminal and, when the server
-        # fails to start, does not give them back.
-        saved = [os.dup(fd) for fd in (0, 1, 2)]
-        for fd, copy in enumerate(saved):
-            self.addCleanup(os.close, copy)
-            self.addCleanup(os.dup2, copy, fd)
+        self._keep_standard_streams()
         with patch('mniplab.webserver.start_server', order.start_server):
             with patch('mniplab.webserver.stop_server'):
                 with patch('mniplab.cli.mnIPLabCLI'):
@@ -178,6 +198,20 @@ class RunLabTests(unittest.TestCase):
 
         order.start_server.assert_called_once()
         order.setraw.assert_not_called()
+
+    @patch('mniplab.runner.setup_logging')
+    @patch('mniplab.runner.setLogLevel')
+    def test_a_web_server_that_will_not_start_stops_the_lab(self, mock_set_level, mock_setup):
+        net = Mock()
+        self._keep_standard_streams()
+        with patch('mniplab.webserver.start_server', side_effect=RuntimeError('port in use')):
+            with patch('mniplab.webserver.stop_server'):
+                with patch('mniplab.cli.mnIPLabCLI') as mock_cli_cls:
+                    with self.assertRaises(RuntimeError):
+                        run_lab(net, enable_web=True)
+
+        mock_cli_cls.assert_not_called()
+        net.stop.assert_called_once()
 
     @patch('mniplab.runner.setup_logging')
     @patch('mniplab.runner.setLogLevel')
@@ -200,6 +234,256 @@ class RunLabTests(unittest.TestCase):
         with patch('mniplab.cli.mnIPLabCLI'):
             run_lab(net, enable_web=False)
         net.stop.assert_called_once()
+
+    def _own_pseudo_terminal(self) -> tuple:
+        """Open the pseudo-terminal run_lab will use, closed after the test."""
+        master, slave = os.openpty()
+        for fd in (master, slave):
+            self.addCleanup(_close_quietly, fd)
+        return master, slave
+
+    @patch('mniplab.runner.setup_logging')
+    @patch('mniplab.runner.setLogLevel')
+    def test_a_web_server_that_will_not_start_leaves_no_prompt_terminal_open(
+        self, mock_set_level, mock_setup
+    ):
+        self._keep_standard_streams()
+        master, slave = self._own_pseudo_terminal()
+        with patch('pty.openpty', return_value=(master, slave)):
+            with patch('mniplab.webserver.start_server', side_effect=RuntimeError('port in use')):
+                with patch('mniplab.webserver.stop_server'):
+                    with patch('mniplab.cli.mnIPLabCLI'):
+                        with self.assertRaises(RuntimeError):
+                            run_lab(Mock(), enable_web=True)
+
+        with self.assertRaises(OSError, msg='the prompt master was left open'):
+            os.fstat(master)
+
+    @patch('mniplab.runner.setup_logging')
+    @patch('mniplab.runner.setLogLevel')
+    def test_a_refused_hangup_still_ends_a_prompt_without_terminal(
+        self, mock_set_level, mock_setup
+    ):
+        """Without CAP_SYS_ADMIN the prompt still sees end of input, and it is logged."""
+        self._keep_standard_streams()
+        master, slave = self._own_pseudo_terminal()
+        main_ident = threading.get_ident()
+        prompt_ended = threading.Event()
+
+        def prompt(net: Mock) -> None:
+            """Read the pseudo-terminal until end of input, as the Lab Prompt does."""
+            time.sleep(0.3)
+            signal.pthread_kill(main_ident, signal.SIGINT)  # the supervisor's SIGINT
+            while os.read(0, 1024):
+                pass
+            prompt_ended.set()
+
+        with patch('pty.openpty', return_value=(master, slave)):
+            with patch('os.isatty', return_value=False):
+                with patch('mniplab.webserver.start_server'):
+                    with patch('mniplab.webserver.stop_server'):
+                        with patch('mniplab.cli.mnIPLabCLI', side_effect=prompt):
+                            with patch('fcntl.ioctl', side_effect=PermissionError(1, 'EPERM')):
+                                with self.assertLogs('mniplab.runner', 'WARNING'):
+                                    run_lab(Mock(), enable_web=True)
+
+        self.assertTrue(prompt_ended.wait(timeout=2), 'the prompt never saw end of input')
+
+
+def _signal(signum: int) -> None:
+    """Send ``signum`` to this process, as a supervisor or a Ctrl+C would."""
+    os.kill(os.getpid(), signum)
+
+
+def _streams() -> List[Tuple[int, int]]:
+    """Return the (device, inode) each standard stream is attached to."""
+    return [(os.fstat(fd).st_dev, os.fstat(fd).st_ino) for fd in (0, 1, 2)]
+
+
+_HELD = _LabSignals._HELD  # pylint: disable=protected-access
+
+
+class RunLabSignalTests(unittest.TestCase):
+    """A Lab stops whatever signal ends the prompt or arrives while it stops."""
+
+    def setUp(self) -> None:
+        self.handlers = {signum: signal.getsignal(signum) for signum in _HELD}
+        for signum, handler in self.handlers.items():
+            self.addCleanup(signal.signal, signum, handler)
+        for target in ('mniplab.runner.setup_logging', 'mniplab.runner.setLogLevel'):
+            patcher = patch(target)
+            patcher.start()
+            self.addCleanup(patcher.stop)
+        for fd in (0, 1, 2):
+            copy = os.dup(fd)
+            self.addCleanup(os.close, copy)
+            self.addCleanup(os.dup2, copy, fd)
+        self.streams = _streams()
+
+    def assert_handlers_restored(self) -> None:
+        """The handlers in place before run_lab are in place again."""
+        self.assertEqual({signum: signal.getsignal(signum) for signum in _HELD},
+                         self.handlers)
+
+    def test_sigterm_or_sighup_at_the_prompt_stops_the_lab_and_exits_128_plus_it(self) -> None:
+        for signum in (signal.SIGTERM, signal.SIGHUP):
+            with self.subTest(signal=signal.Signals(signum).name):
+                net = Mock()
+                with patch('mniplab.cli.mnIPLabCLI', side_effect=lambda _, s=signum: _signal(s)):
+                    with self.assertRaises(SystemExit) as raised:
+                        run_lab(net, enable_web=False)
+
+                self.assertEqual(raised.exception.code, 128 + signum)
+                net.stop.assert_called_once()
+                self.assert_handlers_restored()
+
+    def test_signals_during_the_cli_mode_shutdown_are_ignored(self) -> None:
+        net = Mock()
+        stopped = []
+
+        def stop() -> None:
+            """Stop the Lab slowly, under repeated Ctrl+C and SIGTERM."""
+            for signum in (signal.SIGINT, signal.SIGTERM, signal.SIGHUP, signal.SIGINT):
+                _signal(signum)
+                time.sleep(0.01)
+            stopped.append(True)
+
+        net.stop.side_effect = stop
+        with patch('mniplab.cli.mnIPLabCLI'):
+            run_lab(net, enable_web=False)
+
+        self.assertEqual(stopped, [True])
+        self.assert_handlers_restored()
+
+    def test_a_command_the_lab_stop_runs_survives_ctrl_c(self) -> None:
+        """The terminal sends Ctrl+C to the whole group, the Lab stop's commands too."""
+        net = Mock()
+        results = []
+
+        def stop() -> None:
+            """Run a command, as the Lab stop runs ovs-vsctl, and Ctrl+C it."""
+            command = subprocess.Popen([sys.executable, '-c', 'import time; time.sleep(0.5)'])
+            time.sleep(0.2)
+            os.kill(command.pid, signal.SIGINT)
+            results.append(command.wait(timeout=5))
+
+        net.stop.side_effect = stop
+        with patch('mniplab.cli.mnIPLabCLI'):
+            run_lab(net, enable_web=False)
+
+        self.assertEqual(results, [0], 'Ctrl+C killed a command of the Lab stop')
+
+    def _run_on_a_terminal(self, net: Mock, stop_server: Mock, tcsetattr: Mock) -> None:
+        """Run an --enable-web Lab whose prompt runs on a (patched) terminal."""
+        with patch('mniplab.webserver.start_server'), \
+                patch('mniplab.webserver.stop_server', stop_server), \
+                patch('mniplab.cli.mnIPLabCLI'), \
+                patch('os.isatty', return_value=True), \
+                patch('termios.tcgetattr', return_value=[]), \
+                patch('termios.tcsetattr', tcsetattr), \
+                patch('tty.setraw'), patch('fcntl.ioctl'), \
+                patch('select.select', return_value=([], [], [])):
+            run_lab(net, enable_web=True)
+
+    def test_a_signal_at_each_web_shutdown_step_skips_no_later_step(self) -> None:
+        for signum in (signal.SIGINT, signal.SIGTERM):
+            for step in ('terminal restore', 'server stop', 'lab stop'):
+                with self.subTest(signal=signal.Signals(signum).name, step=step):
+                    net, stop_server, tcsetattr = Mock(), Mock(), Mock()
+                    sender = {'terminal restore': tcsetattr, 'server stop': stop_server,
+                              'lab stop': net.stop}[step]
+                    sender.side_effect = lambda *_: _signal(signum)
+
+                    self._run_on_a_terminal(net, stop_server, tcsetattr)
+
+                    tcsetattr.assert_called_once()
+                    stop_server.assert_called_once()
+                    net.stop.assert_called_once()
+                    self.assertEqual(_streams(), self.streams, 'the streams were not restored')
+                    self.assert_handlers_restored()
+
+    def test_sigterm_ends_a_web_prompt_without_terminal_and_exits_128_plus_it(self) -> None:
+        net, stop_server = Mock(), Mock()
+        prompt_ended = threading.Event()
+
+        def prompt(_: Mock) -> None:
+            """Read the pseudo-terminal until end of input, as the Lab Prompt does."""
+            while os.read(0, 1024):
+                pass
+            prompt_ended.set()
+
+        timer = threading.Timer(0.3, _signal, (signal.SIGTERM,))
+        self.addCleanup(timer.cancel)
+        with patch('os.isatty', return_value=False), \
+                patch('mniplab.webserver.start_server'), \
+                patch('mniplab.webserver.stop_server', stop_server), \
+                patch('mniplab.cli.mnIPLabCLI', side_effect=prompt), \
+                patch('fcntl.ioctl', side_effect=PermissionError(1, 'EPERM')), \
+                self.assertLogs('mniplab.runner', 'WARNING'):
+            # With the hangup refused, the prompt's thread is seen to end.
+            timer.start()
+            with self.assertRaises(SystemExit) as raised:
+                run_lab(net, enable_web=True)
+
+        self.assertEqual(raised.exception.code, 128 + signal.SIGTERM)
+        self.assertTrue(prompt_ended.wait(timeout=2), 'the prompt never saw end of input')
+        stop_server.assert_called_once()
+        net.stop.assert_called_once()
+        self.assert_handlers_restored()
+
+    def test_ctrl_c_during_the_hangup_keeps_a_sigterm_exit(self) -> None:
+        """No terminal: SIGTERM ends the prompt, then Ctrl+C lands while it is hung up."""
+        net, stop_server = Mock(), Mock()
+        prompt_ended = threading.Event()
+
+        def prompt(_: Mock) -> None:
+            """Read the pseudo-terminal until end of input, as the Lab Prompt does."""
+            while os.read(0, 1024):
+                pass
+            prompt_ended.set()
+
+        def hang_up(*_: object) -> None:
+            """Take a Ctrl+C mid-hangup, then refuse it so the prompt's input ends."""
+            _signal(signal.SIGINT)
+            time.sleep(0.01)
+            raise PermissionError(1, 'EPERM')
+
+        timer = threading.Timer(0.3, _signal, (signal.SIGTERM,))
+        self.addCleanup(timer.cancel)
+        with patch('os.isatty', return_value=False), \
+                patch('mniplab.webserver.start_server'), \
+                patch('mniplab.webserver.stop_server', stop_server), \
+                patch('mniplab.cli.mnIPLabCLI', side_effect=prompt), \
+                patch('fcntl.ioctl', side_effect=hang_up), \
+                self.assertLogs('mniplab.runner', 'WARNING'):
+            timer.start()
+            with self.assertRaises(SystemExit) as raised:
+                run_lab(net, enable_web=True)
+
+        self.assertEqual(raised.exception.code, 128 + signal.SIGTERM)
+        self.assertTrue(prompt_ended.wait(timeout=2), 'the prompt never saw end of input')
+        stop_server.assert_called_once()
+        net.stop.assert_called_once()
+        self.assert_handlers_restored()
+
+    def test_a_handler_not_set_from_python_is_left_at_the_default(self) -> None:
+        """A previous handler Python cannot name (``None``) comes back as SIG_DFL."""
+        real_signal = signal.signal
+        signal.signal(signal.SIGHUP, signal.SIG_IGN)
+
+        def install(signum: int, handler: Any) -> Any:
+            """Install for real, reporting SIGHUP's first previous handler as foreign."""
+            previous = real_signal(signum, handler)
+            if signum == signal.SIGHUP and not reported:
+                reported.append(True)
+                return None
+            return previous
+
+        reported: List[bool] = []
+        with patch('signal.signal', side_effect=install), patch('mniplab.cli.mnIPLabCLI'):
+            run_lab(Mock(), enable_web=False)
+
+        self.assertEqual(signal.getsignal(signal.SIGHUP), signal.SIG_DFL)
 
 
 if __name__ == '__main__':

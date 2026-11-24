@@ -263,7 +263,13 @@ class ToolsModalResizeTests(LiveServerCase):
         appState.networkConsole.openModal(modal);
     }"""
 
-    BOX = """() => {
+    # Every measurement first waits out the page's running animations (the
+    # endless ones, such as spinners, never finish and are left out), so an
+    # open or resize animation cannot be caught mid-way on a slow machine.
+    BOX = """async () => {
+        await Promise.allSettled(document.getAnimations()
+            .filter(a => a.effect && a.effect.getComputedTiming().endTime !== Infinity)
+            .map(a => a.finished));
         const box = document.querySelector('#tools-modal .modal-content').getBoundingClientRect();
         const out = document.getElementById('ping-output');
         out.textContent = 'PING r2 (10.0.0.2) 56(84) bytes of data.';
@@ -323,3 +329,50 @@ class ToolsModalResizeTests(LiveServerCase):
             wider = page.evaluate(self.BOX)
             self.assertGreater(wider["width"], before["width"] + 50)
             self.assertAlmostEqual(wider["left"], 8, delta=1)
+
+
+class FadeInAnimationTests(LiveServerCase):
+    """Dialog overlays only fade in; the Network Tools tab panels slide as they fade."""
+
+    # Pauses the element's own CSS animation at its start, then at its end, and
+    # reads the element's box and opacity at each, so no timing is involved.
+    START_AND_END = """(selector) => {
+        const el = document.querySelector(selector);
+        const [anim] = el.getAnimations().filter(a => a.effect.target === el);
+        if (!anim) return null;
+        anim.pause();
+        const read = () => { const r = el.getBoundingClientRect();
+            return { left: r.left, top: r.top, opacity: getComputedStyle(el).opacity }; };
+        anim.currentTime = 0;
+        const start = read();
+        anim.currentTime = anim.effect.getComputedTiming().endTime - 1;
+        const end = read();
+        anim.finish();
+        return { start, end };
+    }"""
+
+    def test_a_dialog_overlay_fades_in_without_moving(self) -> None:
+        """The Help overlay's box is in the same place at the start and end of its fade."""
+        with self.signed_in_page() as page:
+            page.evaluate("() => document.getElementById('help-modal').classList.remove('hidden')")
+            seen = page.evaluate(self.START_AND_END, "#help-modal")
+
+        self.assertIsNotNone(seen, "the overlay runs no animation")
+        self.assertLess(float(seen["start"]["opacity"]), float(seen["end"]["opacity"]))
+        self.assertEqual(seen["start"]["left"], seen["end"]["left"])
+        self.assertEqual(seen["start"]["top"], seen["end"]["top"])
+
+    def test_a_tool_tab_panel_slides_in_from_the_left_as_it_fades(self) -> None:
+        """Switching Network Tools tab slides the new panel 10px in from the left."""
+        with self.signed_in_page() as page:
+            page.set_viewport_size({"width": 1366, "height": 768})
+            page.evaluate(ToolsModalResizeTests.OPEN)
+            page.evaluate("""async () => {
+                const { appState } = await import('/static/js/state/app-state.js');
+                appState.networkConsole.switchToolTab('traceroute');
+            }""")
+            seen = page.evaluate(self.START_AND_END, "#content-traceroute")
+
+        self.assertIsNotNone(seen, "the panel runs no animation")
+        self.assertLess(float(seen["start"]["opacity"]), float(seen["end"]["opacity"]))
+        self.assertAlmostEqual(seen["end"]["left"] - seen["start"]["left"], 10, delta=0.5)

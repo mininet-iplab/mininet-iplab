@@ -1,13 +1,10 @@
 name: Mininet-IPLab CI
 
 on:
-  # A change to prose only cannot break lint, types or a unit test.
   push:
     branches: [main]
-    paths-ignore: ['docs/**', '*.md']
   pull_request:
     branches: [main]
-    paths-ignore: ['docs/**', '*.md']
   workflow_dispatch:
   # The image installs FRR, Docker and Node.js fresh and pins Kea to one
   # build; a weekly run notices an upstream change before a push meets it.
