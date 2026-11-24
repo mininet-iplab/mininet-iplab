@@ -250,3 +250,77 @@ def test_nat_color_meets_non_text_contrast_on_canvas_node_and_palette() -> None:
         for background in ("bg-color", "node-bg", "surface-color"):
             ratio = contrast_ratio(nat, theme.resolve(background, theme_name))
             assert ratio >= 3.0, (theme_name, background, round(ratio, 2))
+
+
+def test_hover_grey_is_visibly_distinct_from_the_surface() -> None:
+    """The hover grey stands out from the surface: darker in Light, lighter in Dark.
+
+    In Light it is also darker than the page background, so a hovered control
+    sitting on the page gets darker, never lighter.
+    """
+    theme = _theme()
+    for theme_name in ("light", "dark"):
+        hover = theme.resolve("surface-hover", theme_name)
+        surface = theme.resolve("surface-color", theme_name)
+        ratio = contrast_ratio(hover, surface)
+        assert ratio >= 1.15, (theme_name, round(ratio, 2))
+    light_hover = theme.resolve("surface-hover", "light")
+    assert relative_luminance(light_hover) < relative_luminance(theme.resolve("surface-color", "light"))
+    assert relative_luminance(light_hover) < relative_luminance(theme.resolve("bg-color", "light"))
+    assert relative_luminance(theme.resolve("surface-hover", "dark")) > relative_luminance(
+        theme.resolve("surface-color", "dark")
+    )
+
+
+def test_text_on_the_hover_grey_stays_readable() -> None:
+    """Muted and full text on the hover grey reach 4.5:1 in both themes."""
+    theme = _theme()
+    for theme_name in ("light", "dark"):
+        hover = theme.resolve("surface-hover", theme_name)
+        for text in ("text-color", "text-muted"):
+            ratio = contrast_ratio(theme.resolve(text, theme_name), hover)
+            assert ratio >= 4.5, (theme_name, text, round(ratio, 2))
+
+
+def test_filled_button_hover_is_a_visibly_darker_step_with_readable_text() -> None:
+    """Primary and danger button hovers darken their fill by 1.15:1 and keep white text at 4.5:1."""
+    theme = _theme()
+    for theme_name in ("light", "dark"):
+        for kind in ("primary", "danger"):
+            rest = theme.resolve(f"{kind}-button-bg", theme_name)
+            hover = theme.resolve(f"{kind}-button-hover", theme_name)
+            assert relative_luminance(hover) < relative_luminance(rest), (theme_name, kind)
+            step = contrast_ratio(hover, rest)
+            assert step >= 1.15, (theme_name, kind, round(step, 2))
+            text = contrast_ratio("#ffffff", hover)
+            assert text >= 4.5, (theme_name, kind, round(text, 2))
+
+
+def test_danger_button_hover_uses_the_theme_colour() -> None:
+    """The danger button's hover takes its fill from the theme, not a literal colour."""
+    css = _css_text()
+    match = re.search(r"\n\.btn-danger:hover:not\(:disabled\)\s*\{([^}]*)\}", css)
+    assert match, "could not find the .btn-danger hover rule in main.css"
+    background = re.search(r"background:\s*([^;]+);", match.group(1))
+    assert background, ".btn-danger hover rule sets no background"
+    assert background.group(1).strip() == "var(--danger-button-hover)"
+
+
+def test_selected_tab_text_is_readable_where_tabs_sit() -> None:
+    """A selected tab's primary text reaches 4.5:1 wherever the tab sits.
+
+    Selected tabs take no fill, so their text sits on the dialog or panel
+    surface, or on the page background behind the Terminal tabs; a fill such
+    as the hover grey would drop it under 4.5:1 in Dark.
+    """
+    css = _css_text()
+    match = re.search(r"\n:is\(\.tools-tab[^{)]*\)\[aria-selected=\"true\"\][^{]*\{([^}]*)\}", css)
+    assert match, "could not find the shared selected-tab rule in main.css"
+    assert re.search(r"(?<![-\w])color:\s*var\(--primary-color\);", match.group(1))
+    assert re.search(r"background:\s*transparent;", match.group(1))
+    theme = _theme()
+    for theme_name in ("light", "dark"):
+        primary = theme.resolve("primary-color", theme_name)
+        for background in ("surface-color", "bg-color"):
+            ratio = contrast_ratio(primary, theme.resolve(background, theme_name))
+            assert ratio >= 4.5, (theme_name, background, round(ratio, 2))

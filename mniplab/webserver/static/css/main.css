@@ -9,7 +9,7 @@
     --secondary-color: #28a745;
     --bg-color: #f4f6f8;
     --surface-color: #ffffff;
-    --surface-hover: #f8f9fa;
+    --surface-hover: #e9ecef;
     --text-color: #212529;
     --text-muted: #595959;
     --border-color: #e1e4e8;
@@ -31,6 +31,12 @@
        token since it already passes both roles. */
     --primary-button-bg: var(--primary-color);
     --danger-button-bg: var(--error-color);
+    /* Hovered button fills: a visibly darker step from the resting fill,
+       white text still at 4.5:1. */
+    --primary-button-hover: var(--primary-hover);
+    --danger-button-hover: #bb2d3b;
+    /* --primary-hover itself is a text colour (hovered links); button fills
+       hover with --primary-button-hover. */
     --input-border-color: #7a838d;
 
     /* Terminal & Console */
@@ -101,6 +107,8 @@
        white button text, per the :root comment above. */
     --primary-button-bg: #3b73b5;
     --danger-button-bg: #a65261;
+    --primary-button-hover: #33649e;
+    --danger-button-hover: #924554;
     --input-border-color: #7a7a7a;
 
     /* Node Styling */
@@ -333,8 +341,25 @@ button {
     gap: 0.5rem;
 }
 
-button:hover:not(:disabled) {
-    background: var(--primary-hover);
+/* The page-wide default hover. :where() gives it zero specificity, so any
+   component's own :hover rule wins over it without extra conditions. */
+button:where(:hover:not(:disabled)) {
+    background: var(--primary-button-hover);
+}
+
+/* Only real buttons lift: primary (classed, or a plain button with no class
+   or role, which takes the default fill), secondary, danger, the panels'
+   own submit and cancel buttons, and the Class Overview's Start. Tabs, menu
+   items, rows, palette items, links and icon buttons stay still. A new
+   button class that should lift is added here. Zero specificity, like the
+   default hover above. */
+:where(button:not([class]):not([role]), .btn-primary, .btn-secondary,
+       .btn-danger, .resolver-danger-btn,
+       .dns-record-submit-btn, .dns-record-cancel-btn,
+       .rpki-submit-btn, .rpki-cancel-btn,
+       .resolver-submit-btn, .resolver-cancel-btn,
+       .dhcp-pool-submit-btn, .speaker-submit-btn,
+       .dashboard-action-start):where(:hover:not(:disabled)) {
     transform: translateY(-1px);
 }
 
@@ -372,8 +397,9 @@ a.btn-secondary {
     transition: all 0.2s ease;
 }
 
-/* Outranks the base button's :not(:disabled) hover, which would turn a
-   secondary button blue under its own dark text. */
+/* The default button hover has zero specificity, so a plain :hover rule
+   is enough to win over its blue fill; :not(:disabled) keeps a disabled
+   secondary button from hovering. */
 .btn-secondary:hover:not(:disabled),
 a.btn-secondary:hover {
     background: var(--surface-hover);
@@ -397,7 +423,7 @@ a.btn-secondary:focus-visible {
 }
 
 .btn-danger:hover:not(:disabled) {
-    background: #b94a5c;
+    background: var(--danger-button-hover);
 }
 
 .btn-danger:focus-visible {
@@ -415,7 +441,6 @@ a.btn-secondary:focus-visible {
 button.btn-icon:hover:not(:disabled) {
     background: var(--surface-hover);
     color: var(--primary-color);
-    transform: none;
 }
 
 /* Main content */
@@ -925,11 +950,6 @@ fieldset.toolbar-dropdown-group {
     justify-content: flex-start;
     padding: 0.25rem 0.6rem;
     border-radius: 6px;
-    transform: none;
-}
-
-.toolbar-dropdown-action:hover:not(:disabled) {
-    transform: none;
 }
 
 .separator-vertical {
@@ -1372,8 +1392,6 @@ input[type="checkbox"] {
     overflow-x: auto;
     flex-shrink: 0;
     padding: 0.25rem;
-    background: var(--surface-hover);
-    border-radius: var(--radius);
 }
 
 /* The tablist element only names the tabs it owns; it takes no room. */
@@ -1399,23 +1417,9 @@ input[type="checkbox"] {
     display: flex;
     align-items: center;
     flex-shrink: 0;
-    border-radius: 6px;
+    border-radius: 6px 6px 0 0;
     color: var(--text-muted);
     transition: all 0.2s;
-}
-
-.terminal-tab-item:hover {
-    background: rgba(0, 0, 0, 0.05);
-}
-
-[data-theme="dark"] .terminal-tab-item:hover {
-    background: rgba(255, 255, 255, 0.05);
-}
-
-.terminal-tab-item:has(> .terminal-tab[aria-selected="true"]) {
-    background: var(--surface-color);
-    color: var(--text-color);
-    box-shadow: var(--shadow-sm);
 }
 
 .terminal-tab {
@@ -1426,9 +1430,10 @@ input[type="checkbox"] {
     padding: 0.125rem 0.25rem 0.125rem 0.5rem;
     background: transparent;
     border: none;
-    border-radius: 6px;
+    border-radius: 6px 6px 0 0;
     cursor: pointer;
-    color: var(--text-muted);
+    /* The item's colour, so the shared tab hover and selected look reach it. */
+    color: inherit;
     white-space: nowrap;
     display: flex;
     align-items: center;
@@ -1438,12 +1443,7 @@ input[type="checkbox"] {
     font-family: monospace;
 }
 
-.terminal-tab:hover {
-    color: var(--text-color);
-}
-
 .terminal-tab[aria-selected="true"] {
-    color: var(--text-color);
     font-weight: 600;
 }
 
@@ -3394,7 +3394,7 @@ kbd {
     font-weight: 500;
     border: 1px solid var(--error-color);
     border-radius: 4px;
-    background: var(--surface-hover);
+    background: var(--surface-color);
 }
 
 .dns-modal-error[hidden] {
@@ -3480,7 +3480,7 @@ kbd {
 }
 
 .dns-record-submit-btn:hover:not(:disabled) {
-    background: var(--primary-hover);
+    background: var(--primary-button-hover);
 }
 
 .dns-record-submit-btn:focus-visible {
@@ -3504,7 +3504,7 @@ kbd {
 }
 
 .dns-record-cancel-btn:hover {
-    background: var(--primary-hover);
+    background: var(--primary-button-hover);
     color: #ffffff;
 }
 
@@ -3528,7 +3528,7 @@ kbd {
 }
 
 .dns-record-action-btn:hover {
-    background: var(--primary-hover);
+    background: var(--primary-button-hover);
     color: #ffffff;
 }
 
@@ -3538,7 +3538,7 @@ kbd {
 }
 
 .dns-record-delete-btn:hover {
-    background: var(--error-color);
+    background: var(--danger-button-bg);
     color: #ffffff;
     border-color: var(--error-color);
 }
@@ -3739,7 +3739,7 @@ kbd {
 }
 
 .rpki-submit-btn:hover:not(:disabled) {
-    background: var(--primary-hover);
+    background: var(--primary-button-hover);
 }
 
 .rpki-submit-btn:focus-visible,
@@ -3765,7 +3765,7 @@ kbd {
 }
 
 .rpki-cancel-btn:hover {
-    background: var(--primary-hover);
+    background: var(--primary-button-hover);
     color: #ffffff;
 }
 
@@ -3789,12 +3789,12 @@ kbd {
 }
 
 .rpki-action-btn:hover {
-    background: var(--primary-hover);
+    background: var(--primary-button-hover);
     color: #ffffff;
 }
 
 .rpki-remove-btn:hover {
-    background: var(--error-color);
+    background: var(--danger-button-bg);
     border-color: var(--error-color);
 }
 
@@ -3807,7 +3807,7 @@ kbd {
     font-weight: 500;
     border: 1px solid var(--error-color);
     border-radius: 4px;
-    background: var(--surface-hover);
+    background: var(--surface-color);
 }
 
 .rpki-form-error:focus-visible {
@@ -4238,8 +4238,10 @@ kbd {
     display: inline;
 }
 
-.dns-link-btn:hover {
-    color: var(--primary-hover);
+/* Unfilled, like a link. The underline thickens rather than the text
+   darkening: Dark's --primary-hover is under 4.5:1 on the surface. */
+.dns-link-btn:hover:not(:disabled) {
+    text-decoration-thickness: 2px;
 }
 
 .dns-link-btn:focus-visible {
@@ -4271,17 +4273,6 @@ kbd {
     font-weight: 500;
     cursor: pointer;
     border-radius: var(--radius) var(--radius) 0 0;
-}
-
-.resolver-tab:hover {
-    color: var(--text-color);
-    background: var(--surface-hover);
-}
-
-.resolver-tab.active {
-    color: var(--primary-color);
-    border-bottom-color: var(--primary-color);
-    background: var(--surface-hover);
 }
 
 .resolver-tab:focus-visible {
@@ -4324,7 +4315,7 @@ kbd {
     font-weight: 500;
     border: 1px solid var(--error-color);
     border-radius: 4px;
-    background: var(--surface-hover);
+    background: var(--surface-color);
 }
 
 .resolver-error[hidden] {
@@ -4538,7 +4529,7 @@ kbd {
 }
 
 .resolver-row-btn:hover {
-    background: var(--primary-hover);
+    background: var(--primary-button-hover);
     color: #ffffff;
 }
 
@@ -4548,7 +4539,7 @@ kbd {
 }
 
 .resolver-row-delete-btn:hover {
-    background: var(--error-color);
+    background: var(--danger-button-bg);
     color: #ffffff;
     border-color: var(--error-color);
 }
@@ -4568,8 +4559,10 @@ kbd {
     cursor: pointer;
 }
 
+/* The danger button fill, not --error-color: the same red in Light, and in
+   Dark the shade that keeps white text at 4.5:1. */
 .resolver-danger-btn:hover {
-    background: var(--error-color);
+    background: var(--danger-button-bg);
     color: #ffffff;
 }
 
@@ -4637,7 +4630,7 @@ kbd {
 }
 
 .resolver-submit-btn:hover:not(:disabled) {
-    background: var(--primary-hover);
+    background: var(--primary-button-hover);
 }
 
 .resolver-submit-btn:focus-visible {
@@ -4661,7 +4654,7 @@ kbd {
 }
 
 .resolver-cancel-btn:hover {
-    background: var(--primary-hover);
+    background: var(--primary-button-hover);
     color: #ffffff;
 }
 
@@ -4786,7 +4779,7 @@ kbd {
 }
 
 .dhcp-pool-submit-btn:hover:not(:disabled) {
-    background: var(--primary-hover);
+    background: var(--primary-button-hover);
 }
 
 .dhcp-pool-submit-btn:focus-visible {
@@ -4857,7 +4850,7 @@ kbd {
 }
 
 .dhcp-reservation-remove-btn:hover {
-    background: var(--error-color);
+    background: var(--danger-button-bg);
     color: #ffffff;
 }
 
@@ -4879,7 +4872,7 @@ kbd {
 }
 
 .dhcp-reservation-add-btn:hover {
-    background: var(--primary-hover);
+    background: var(--primary-button-hover);
     color: #ffffff;
 }
 
@@ -5205,7 +5198,7 @@ kbd {
 }
 
 .speaker-submit-btn:hover:not(:disabled) {
-    background: var(--primary-hover);
+    background: var(--primary-button-hover);
 }
 
 .speaker-submit-btn:focus-visible {
@@ -5249,7 +5242,7 @@ kbd {
     font-weight: 500;
     border: 1px solid var(--error-color);
     border-radius: 4px;
-    background: var(--surface-hover);
+    background: var(--surface-color);
 }
 
 .speaker-modal-error[hidden] {
@@ -5369,7 +5362,7 @@ kbd {
 }
 
 .dhcp-lease-copy-btn:hover {
-    background: var(--primary-hover);
+    background: var(--primary-button-hover);
     color: #ffffff;
 }
 
@@ -5670,7 +5663,7 @@ kbd {
 }
 
 .dashboard-action-start:hover:not(:disabled) {
-    background: var(--primary-hover);
+    background: var(--primary-button-hover);
     transform: translateY(-1px);
 }
 
@@ -5755,10 +5748,8 @@ a.group-card-lab:hover,
     flex-shrink: 0;
 }
 
-/* Underlined text tabs: no fill, square ends, and a hover that only
-   darkens the text, never the page-wide button hover's blue fill. */
-.server-settings-tab,
-.server-settings-tab:hover:not(:disabled) {
+/* Underlined text tabs with square ends. */
+.server-settings-tab {
     padding: 0.45rem 0.1rem;
     margin-bottom: -1px;
     border: 0;
@@ -5769,19 +5760,7 @@ a.group-card-lab:hover,
     font: inherit;
     font-size: 0.9rem;
     font-weight: 600;
-    transform: none;
     cursor: pointer;
-}
-
-.server-settings-tab:hover:not(:disabled) {
-    color: var(--text-color);
-    border-bottom-color: var(--border-color);
-}
-
-.server-settings-tab[aria-selected="true"],
-.server-settings-tab[aria-selected="true"]:hover:not(:disabled) {
-    color: var(--text-color);
-    border-bottom-color: var(--primary-color);
 }
 
 .server-settings-tab:focus-visible,
@@ -5962,7 +5941,6 @@ a.group-card-lab:hover,
     background: none;
     color: inherit;
     font: inherit;
-    transform: none;
     cursor: pointer;
 }
 
@@ -6217,7 +6195,6 @@ a.group-card-lab:hover,
 button.switch-hint-btn:hover:not(:disabled) {
     background: var(--surface-hover);
     color: var(--primary-color);
-    transform: none;
 }
 
 .switch-hint {
@@ -6723,8 +6700,12 @@ button.switch-hint-btn:hover:not(:disabled) {
     white-space: nowrap;
     cursor: pointer;
 }
+/* The hover grey, like the toolbar dropdowns; the outline marks keyboard
+   focus only, so hover and focus stay distinct. */
 .pane-menu-list :is([role="menuitem"], [role="menuitemcheckbox"]):is(:hover, :focus-visible) {
-    background: color-mix(in srgb, var(--primary-color) 15%, transparent);
+    background: var(--surface-hover);
+}
+.pane-menu-list :is([role="menuitem"], [role="menuitemcheckbox"]):focus-visible {
     outline: 2px solid var(--focus-color);
     outline-offset: -2px;
 }
@@ -6765,6 +6746,17 @@ button.switch-hint-btn:hover:not(:disabled) {
 }
 .pane-menu-list .menu-item-danger {
     color: var(--error-color);
+}
+/* Red text on the hover grey falls under 4.5:1 in both themes, so the
+   destructive item fills with the danger button red instead. */
+.pane-menu-list .menu-item-danger:is(:hover, :focus-visible) {
+    background: var(--danger-button-bg);
+    color: #ffffff;
+}
+/* The focus ring sits inside the red fill, where the focus blue would not
+   reach 3:1; white does in both themes. */
+.pane-menu-list .menu-item-danger:focus-visible {
+    outline-color: #ffffff;
 }
 
 /* Dragging a Pane: every Slot it can go to as a labelled target over the
@@ -6839,4 +6831,28 @@ body.pane-dragging * {
     font-weight: 600;
     white-space: nowrap;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* Tabs: one hover and one selected look for every tab set (Network Tools,
+   the Resolver, Server settings, Terminal tabs and Lab Authoring). Each set
+   keeps its own layout and draws its underline with a 2px transparent
+   bottom border; a Terminal tab's item has no border, so its underline is
+   an inset shadow of the same size. The selected tab takes no fill: primary
+   text on the hover grey falls under 4.5:1 in Dark. */
+:is(.tools-tab, .resolver-tab, .server-settings-tab, .authoring-tabs [role="tab"]):hover:not([aria-selected="true"], :disabled),
+.terminal-tab-item:hover:not(:has(> [aria-selected="true"])) {
+    color: var(--text-color);
+    background: var(--surface-hover);
+}
+
+:is(.tools-tab, .resolver-tab, .server-settings-tab, .authoring-tabs [role="tab"])[aria-selected="true"] {
+    color: var(--primary-color);
+    background: transparent;
+    border-bottom-color: var(--primary-color);
+}
+
+.terminal-tab-item:has(> .terminal-tab[aria-selected="true"]) {
+    color: var(--primary-color);
+    background: transparent;
+    box-shadow: inset 0 -2px 0 var(--primary-color);
 }

@@ -286,7 +286,6 @@
 .authoring-explorer-more:hover:not(:disabled) {
     background: var(--surface-hover);
     color: var(--text-color);
-    transform: none;
 }
 
 .authoring-explorer-name {
@@ -369,7 +368,6 @@
 .authoring-draft-title:hover:not(:disabled) {
     background: var(--surface-hover);
     color: var(--text-color);
-    transform: none;
 }
 
 .authoring-draft-title svg {
@@ -575,24 +573,15 @@
 }
 
 .authoring-tabs [role="tab"] {
-    padding: .45rem .8rem;
+    /* The extra pixel at the bottom stands in for the 3px underline border
+       this tab used to have, so the shared 2px one keeps its height. */
+    padding: .45rem .8rem calc(.45rem + 1px);
     color: var(--text-muted);
     font-weight: 600;
     background: transparent;
     border: 0;
-    border-bottom: 3px solid transparent;
+    border-bottom: 2px solid transparent;
     border-radius: var(--radius) var(--radius) 0 0;
-}
-
-.authoring-tabs [role="tab"]:hover:not(:disabled) {
-    color: var(--text-color);
-    background: var(--surface-hover);
-    transform: none;
-}
-
-.authoring-tabs [role="tab"][aria-selected="true"] {
-    color: var(--primary-color);
-    border-bottom-color: var(--primary-color);
 }
 
 .authoring-tabpanel:not([hidden]) {
@@ -676,6 +665,11 @@
     text-align: start;
     text-decoration: underline;
     cursor: pointer;
+}
+
+/* Unfilled, like a link: the underline thickens. */
+.authoring-link-button:hover:not(:disabled) {
+    text-decoration-thickness: 2px;
 }
 
 .authoring-link-button:focus-visible {
@@ -796,7 +790,6 @@
 .authoring-palette-item:hover:not(:disabled) {
     background: var(--surface-hover);
     border-color: var(--border-color);
-    transform: none;
 }
 
 .authoring-palette-item svg {
@@ -1856,7 +1849,7 @@ button.info-tip:hover:not(:disabled),
 .row-more { width: 100%; padding: 8px; border-left: 2px solid var(--border-color); }
 .row-editor-table tr:has(+ .row-more-row [aria-invalid="true"]) .row-more-toggle::after { content: ' ⚠'; color: var(--error-color); }
 
-/* Keep secondary-button contrast when the global button hover rule is more specific. */
+/* Secondary-button hover: the grey of the hover token, not the default blue fill. */
 .row-more-toggle:hover:not(:disabled),
 .row-editor-add:hover:not(:disabled) { background: var(--surface-hover); color: var(--text-color); }
 

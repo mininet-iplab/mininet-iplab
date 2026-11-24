@@ -137,17 +137,6 @@
     border-radius: var(--radius) var(--radius) 0 0;
 }
 
-.tools-tab:hover {
-    color: var(--text-color);
-    background: var(--surface-hover);
-}
-
-.tools-tab.active {
-    color: var(--primary-color);
-    border-bottom-color: var(--primary-color);
-    background: var(--surface-hover);
-}
-
 .tools-content {
     display: none;
     animation: slideFadeIn 0.2s ease;
